@@ -63,8 +63,7 @@ This video demonstrates the Simple FOC library basic usage, electronic connectio
 
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <i><small>v2.0.3</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/G5pbo0C6ujE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### Features
+### 特性
 - **Plug & play**: In combination with Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
 - **Low-cost**: Price of €15 - [Check the pricing](https://www.simplefoc.com/shop) 
 - **In-line current sensing**: Up to 3Amps/5Amps bidirectional
@@ -84,7 +83,6 @@ This video demonstrates the Simple FOC library basic usage, electronic connectio
 
 
 <p><img src="extras/Images/simple_foc_shield_v13_small.gif" class="img200" ><img src="https://simplefoc.com/assets/img/v1.jpg" class="img200 img_half" ><img src="https://simplefoc.com/assets/img/v2.jpg" class="img200 img_half" ></p>
-
 ## Alternative FOC supporting projects
 These are just a few of the alternative FOC supporting projects which provide hardware and software solutions. 
 
