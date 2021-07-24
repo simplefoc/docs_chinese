@@ -23,6 +23,7 @@ Let's start by including the library header file:
 
 First step when writing the code is initializing and configuring the position sensor.
 The library supports these position sensors:
+
  - [Encoders](encoder): Optical, Capacitive, Magnetic encoders (ABI)
  - [Magnetic sensors](magnetic_sensor): SPI, I2C, Analog or PWM
  - [Hall sensors](hall_sensors): 3xHall sonde, Magnetic sensor (UVW interface) 
@@ -239,7 +240,7 @@ For the real-time routine of the FOC algorithm we need to add the `motor.loopFOC
 - `motor.loopFOC()`:  FOC algorithm execution - should be executed as fast as possible `> 1kHz`
 - `motor.move(target)`: motion control routine - depends of the `motor.controller` parameter
 
-Here is how it looks in code:
+下面是它在代码中的样子：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -392,7 +393,7 @@ For full documentation of the setup and all configuration parameters please visi
 
         return 0;
     }
-
+    
     function showEncoder(){
         document.getElementById("mag").classList.remove("btn-primary");
         document.getElementById("enc").classList.add("btn-primary");
@@ -400,7 +401,7 @@ For full documentation of the setup and all configuration parameters please visi
         hideClass('language-c++');
         hideClass('hide_p');
         document.getElementById("enc_p").style.display = "block";
-
+    
         return 0;
     }
 
