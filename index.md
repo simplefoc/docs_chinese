@@ -15,6 +15,7 @@ We live in very exciting times 😃! BLDC motors are entering the hobby communit
 The solutions that can be found on-line are almost exclusively very specific for certain hardware configuration and the microcontroller architecture used.
 Additionally, most of the efforts at this moment are still channeled towards the high-power applications of the BLDC motors and proper low-cost and low-power FOC supporting boards are very hard to find today and even may not exist. <br>
 Therefore this is an attempt to: 
+
 - 🎯 Demystify FOC algorithm and make a robust but simple Arduino library: [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> ](#arduino-simplefoclibrary-v160)
   - <i>Support as many <b>motor + sensor + current sense + driver + mcu</b> combinations out there</i>
 - 🎯 Develop a modular FOC supporting BLDC driver boards:
@@ -42,7 +43,7 @@ Therefore this is an attempt to:
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 This video demonstrates the Simple FOC library basic usage, electronic connections and shows its capabilities.
 
-### Features
+### 特性
 - **Arduino compatible**: 
    - Arduino library code
   - Arduino Library Manager integration
