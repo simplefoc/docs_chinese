@@ -3,9 +3,9 @@ layout: default
 title: Home
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) project documentation."
-permalink: /基于Arduino 的 SimpleFOC 控制器 😃中文文档
+permalink: /
 ---
-# 基于Arduino 的 SimpleFOC 控制器😃中文文档
+# Arduino Simple Field Oriented Control (FOC) project - Chinese 😃🇨🇳
 
 ![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
