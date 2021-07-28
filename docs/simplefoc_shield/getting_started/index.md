@@ -8,33 +8,33 @@ permalink: /arduino_simplefoc_shield_installation
 has_children: true
 has_toc: false
 ---
-# Getting Started with Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  
+# 开始着手 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  
 
 <img src="extras/Images/simple_foc_shield_v13_small.gif" class="width50">
 
-## Step 1: [Hardware configuration](pads_soldering) 
-One of the very important features of the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> is the hardware configuration. 
+## 第一步: [硬件配置](pads_soldering) 
+ Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个非常重要的事情是硬件配置。
 
 <img src="extras/Images/shield_bot_v131_pinout.gif" class="width40">
 
-Each board has a set of solder pads on the bottom side which are used for configuration. These solder pads enable board to:
-- Enable / Disable pull-up resistors for encoder A,B and Index channel
-- Configure BLDC driver pinout (PWM pins A,B,C and enable pin)
+每个板的底部有一组用于配置的锡盘。这些焊盘使电路板能够：
+- 启用/禁用编码器A、B和索引通道的负载电阻
+- 配置无刷直流的驱动引脚（PWM引脚A、B、C和使能引脚）
 
-[Read more](pads_soldering)
+[查看更多](pads_soldering)
 
 
 
-## Step 2: [Connecting the hardware](foc_shield_connect_hardware)
+## 第二步：[连接硬件](foc_shield_connect_hardware)
 
 <img src="extras/Images/connection.gif" class="width50">
 
-Connecting the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> to the microcontroller, BLDC motor, power-supply and the sensors is very straight forward. 
+将 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 与单片机、无刷直流电机、电源和传感器连接起来非常简单。
 
-[Read more](foc_shield_connect_hardware)
+[查看更多](foc_shield_connect_hardware)
 
-## Step 3: [Writing the code](foc_shield_code)
+## 第三步：[编写代码](foc_shield_code)
 
-Once when you have decided the appropriate [hardware configuration](pads_soldering) of yous board and once you have all the hardware [ready to be connected](foc_shield_connect_hardware), we can start the most exciting part, coding!
+一旦你决定了合适板的 [硬件配置](pads_soldering) ，一旦你准备好所有的硬件 [连接](foc_shield_connect_hardware)，我们就可以开始最激动人心的部分，编码！
 
-[Read more](foc_shield_code)
+[查看更多](foc_shield_code)
