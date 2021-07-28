@@ -7,8 +7,6 @@ permalink: /
 ---
 # Arduino Simple Field Oriented Control (FOC) project - Chinese 😃🇨🇳
 
-Arduino 磁场定向控制 (FOC) 的简易项目 - 中文 😃
-
 ![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)
