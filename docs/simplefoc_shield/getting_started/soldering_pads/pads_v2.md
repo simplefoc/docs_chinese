@@ -63,9 +63,7 @@ stm32 (nucleo, bluepill) 和 esp32 chips - 3.3V 范围
 </blockquote>
 
 ## Configuring the current sensing pinout（配置电流检测引脚）
-电流检测的引脚是非常简单的，重要的是其他地方不使用相同的引脚。因此，如果堆叠多个板，确
-
-保使用一对引脚以一种方式配置一个板，另一个则不同。 
+电流检测的引脚是非常简单的，重要的是其他地方不使用相同的引脚。因此，如果堆叠多个板，确保使用一对引脚以一种方式配置一个板，另一个则不同。 
 
 Signal（信号） | Possible pins（可用的引脚） 
 --- | ---
@@ -94,7 +92,6 @@ Encoder I | 4, 11, 13
 另一个例子是用 STM32 Nucleo 堆叠两块板。Nucleo 板不能在引脚`11`和 `6`上产生 pwm，因此，您不能同时组合这些引脚。当使用 Nucleo 板时，我们的经验是避免使用引脚`11`，而使用引脚`13`。
 
 <blockquote class="info"><p class="heading">引脚 13 or 引脚 11</p> 我们建议您先尝试与引脚13配置，如果引脚13不行的话再与引脚11配置。我们测试的时候是 Nucleo-F401RE - 引脚13有效/引脚11无效，Nucleo-F466RE 引脚11有效/引脚13无效。</blockquote>
-
 因此在下文中，您可以根据堆叠的必要性和所使用的微控制器找到建议的引出线配置。
 
 ### Suggested pinout: Single board（建议的引脚：单板）
