@@ -93,5 +93,5 @@ permalink: /
 ✔️ Open Source | ❌ Open Source | ✔️ Open Source(recently) | ✔️ Open Source
 ✔️Simple to use | ✔️ Simple to use | ✔️Simple to use | ❌ Simple to use
 ❌ Low cost ($100) | ❌ Low cost ($100) | ✔️Low cost ($40) | ✔️ Low cost
-❌ Low power (>50A) | ✔️ Low power  | ✔️  Low power | ✔️ Low power
-❌ Stepper support | ❌ Stepper support | ❌ Stepper support | ❌ Stepper support
+❌ Low power (>50A) | ✔️ 低功率  | ✔️  低功率 | ✔️ 低功率
+❌ 步进的支持 | ❌ 步进的支持 | ❌ 步进的支持 | ❌ 步进的支持
