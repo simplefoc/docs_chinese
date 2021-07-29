@@ -139,7 +139,7 @@ BLDCDriver3PWM driver2 = BLDCDriver3PWM(9, 3, 11, 7);
 <img src="extras/Images/v2_nuc1.jpg" class="width30">
 <img src="extras/Images/v2_nuc2.jpg" class="width30">
 
-Here is an example of chosen pinout configuration valid for stacking with Nucleo board.
+这里是一个例子，选择的引脚配置有效地与 Nucleo 板堆叠。
 
 Signal（信号） | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I
 --- | --- | ---- | --- | --- | --- | --- | ---
