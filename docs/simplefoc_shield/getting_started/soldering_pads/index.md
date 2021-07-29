@@ -10,8 +10,8 @@ has_children: true
 has_toc: false
 ---
 
-# Hardware configuration using soldering pads
-One of the very important features of the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> is the hardware configuration. 
+# Hardware configuration using soldering pads 使用焊盘进行硬件配置
+ Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个重要特性是硬件配置。
 
 
 <div class="image_icon width40" >
