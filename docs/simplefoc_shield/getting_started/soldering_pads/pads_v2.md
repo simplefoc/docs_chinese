@@ -38,7 +38,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
  shield [<i class="fa fa-tag"></i>version 1.3.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 板上带有 4.7KOhm 上拉电阻的 I2C 通信引脚。上面的图片显示了如何焊接焊盘达到上拉电阻。并不是所有的 I2C 设备（尤其是磁性传感器）都需要上拉电阻，或者更确切地说，大多数 I2C 设备不需要上拉电阻，特别是 Arduino UNO。但是，这些传感器连接 STM32 板（如 Nucleo-64）时出现问题是很常见的。您需要启用这些pullups，或者自己从外部提供它们。
 <blockquote class="warning"><p class="heading">注意：堆叠</p>
-如果您正在堆叠 shields ，并且希望使用 I2C 上拉，请确保每次只在板上焊接这些焊盘！
+如果想同时使用两块板且这两块板都要要用到 I2C 上拉的时候，确保每个时刻只有其中一块板用到这些上拉电阻！
 </blockquote>
 
 ## Enabling on-board voltage regulator to power the MCU（使板载电压调节器为MCU供电）
@@ -94,7 +94,6 @@ Encoder I | 4, 11, 13
 另一个例子是用 STM32 Nucleo 堆叠两块板。Nucleo 板不能在引脚`11`和 `6`上产生 pwm，因此，您不能同时组合这些引脚。当使用 Nucleo 板时，我们的经验是避免使用引脚`11`，而使用引脚`13`。
 
 <blockquote class="info"><p class="heading">引脚 13 or 引脚 11</p> 我们建议您先尝试与引脚13配置，如果引脚13不行的话再与引脚11配置。我们测试的时候是 Nucleo-F401RE - 引脚13有效/引脚11无效，Nucleo-F466RE 引脚11有效/引脚13无效。</blockquote>
-
 因此在下文中，您可以根据堆叠的必要性和所使用的微控制器找到建议的引出线配置。
 
 ### Suggested pinout: Single board（建议的引脚：单板）

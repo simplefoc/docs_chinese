@@ -35,7 +35,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 shield [<i class="fa fa-tag"></i>version 1.3.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 的 I2C 通信引脚带有4.7KOhm的上拉电阻。上面的图片显示了如何焊接焊盘达到上拉电阻。并不是所有的 I2C 设备（尤其是磁性传感器）都需要上拉电阻，或者更确切地说，大多数 I2C 设备不需要上拉电阻，特别是 Arduino UNO。但是，这些传感器连接 STM32 板（如 Nucleo-64）时出现问题是很常见的。您需要启用这些pullups，或者自己从外部提供它们。 
 
 <blockquote class="warning"><p class="heading">注意：堆叠</p>
-如果您正在堆叠 shields ，并且希望使用 I2C 上拉，请确保每次只在板上焊接这些焊盘！
+如果想同时使用两块板且这两块板都要要用到 I2C 上拉的时候，确保每个时刻只有其中一块板用到这些上拉电阻！
 </blockquote>
 
 ## Customizing pinout （定制引脚）
