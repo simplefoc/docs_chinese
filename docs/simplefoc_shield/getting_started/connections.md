@@ -8,63 +8,73 @@ permalink: /foc_shield_connect_hardware
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 ---
 
-# Connecting the hardware
+# Connecting the hardware（连接硬件）
 
 <p>
 <img src="extras/Images/connection.gif" class="width50">
 </p>
 
-Connecting the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> to the microcontroller, BLDC motor, power-supply and the sensors is very straight forward. 
+将 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 与单片机、无刷直流电机、电源和传感器连接起来非常简单。
 
-## Microcontroller
-- Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> is designed to be easily stackable on all the devices featuring arduino headers, such as: [Arudino UNO](arduino_simplefoc_shield), Arudino MEGA, [Stm32 Nucleo](nucleo_connection) and similar.
-- Bit it can also be used as a standalone BLDC driver as shown in combination with [Stm32 Bluepill](bluepill_connection).
+## 单片机
+- Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 可轻松堆叠在所有具有 Arduino 接口的设备上，如： [Arudino UNO](arduino_simplefoc_shield), Arudino MEGA, [Stm32 Nucleo](nucleo_connection) 等。
+- Bit 它也可以作为一个独立的无刷直流电机驱动程序，如 [Stm32 Bluepill](bluepill_connection) 所示。
 
-## BLDC motor
-- Motor phases `a`, `b` and `c` are connected directly the motor terminal connector `TB_M1`
+## 无刷直流电机
+- 电机的 `a` 相， `b` 相和 `c`  相直接与电机终端连接器 `TB_M1` 连接
 
-<blockquote class="warning"><p class="heading">BEWARE: Power limitations</p>
-Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> is designed for gimbal motors with internal resistance higher than R>10Ohm. The absolute maximal current of this board is 5A. Please make sure when using this board in your projects that the BLDC motor used does comply with these limits.  <br>
-If you still want to use this driver with the BLDC motors with very low resistance R < 1Ohm make sure to limit the voltage set to the board. <br>
-For a bit more information about the choice of motors visit <a href="bldc_motors"> BLDC motor docs</a>
+<blockquote class="warning"><p class="heading">注意：功率的限制</p>
+Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 适用于内阻高于 R>10Ohm 的云台电机。此单板的绝对最大电流为5A。请确保你使用此板时的无刷直流电机符合这些限制。  <br>
+如果你仍然想把低电阻 R < 1Ohm 的无刷直流电机用在这个板子上，请确保限制板子的电压。 <br>
+有关电机选择的更多信息，请访问 <a href="bldc_motors"> 无刷直流电机文档</a>
 </blockquote>
 
-## Power supply
-- Power supply cables are connected directly to the terminal `TB_PWR` 
-- Recommended power supply voltage is from 12V to 24V but in general, the board has not been tested for higher voltages, but there shouldn't be too much problems up to 30V.
+## 电源
+- 电源线直接连接到终端 `TB_PWR` 
+- 建议电源电压在12V到24V之间，但一般情况下，在这个电路板上没有测试过更高的电压，但在30V以下应该不会有太多问题。
 
 
 
-## Encoder
-- Channels `A` and `B` are connected to the encoder connector `P_ENC`, terminals `A` and `B`. 
-- If your encoder has `index` signal you can connect it to the encoder connector as well, terminal `I`.
+## 编码器
+- 通道 `A` and `B` 连接到编码器的 `P_ENC`, 端子 `A` 和 `B`. 
+- 如果你的编码器上有 `index` 标记，你也可以将它连接到编码器的端子 `I`.
 
 <img src="extras/Images/foc_shield_v13_enc.png" class="">
 
-## Magnetic sensor SPI
-- Magnetic sensor's SPI interface signals `SCK`, `MISO` and `MOSI` are connected to the Arduino's `SPI` pins (Arduino UNO `13`,`12` and `11`). 
-  - If the application requires more than one sensor all of them are connected to the same pins of the Arduino.
-- The `chip select` pin is connected to the desired pin. Each sensor connected to the same Arduino has to have unique chip select pin.
+图片名词：Power supply （电源），Encoder（编码器）， BLDC motor（无刷直流电机），optional（可选择的）
+
+## 磁传感器 SPI
+- 磁传感器的 SPI 接口标记 `SCK`, `MISO` 和 `MOSI` 连接到 Arduino 的 `SPI` 引脚 (Arduino UNO `13`,`12` and `11`)。
+  - 如果应用程序需要多个传感器，所有传感器都连接到 Arduino 的相同引脚。
+-  `chip select` 引脚连接到所需的引脚中，每个连接到同一个 Arduino 的传感器必须有唯一的 chip 选择引脚。
 
 <img src="extras/Images/foc_shield_v13_magSPI.png" class="">
 
-## Magnetic sensor I2C
-- Magnetic sensor's I2C interface signals `SCL` and `SDA` are connected to the Arduino's `I2C` pins (Arduino UNO `A4` and `A5`). 
-  - If the application requires more than one sensor all of them are connected to the same pins of the Arduino.
-- It is possible that you will need to use additional pull-up resistors for the `SDA` and `SCL` lines.
+图片名词：Power supply （电源）， BLDC motor（无刷直流电机）
+
+## 磁传感器 I2C
+- 磁传感器的 I2C 的接口标记 `SCL` 和 `SDA` 连接到 Arduino 的 `I2C` 引脚 (Arduino UNO `A4` 和 `A5`). 
+  - 如果应用程序需要多个传感器，所有传感器都连接到 Arduino 的相同引脚。
+- 您可能需要为 `SDA` 和 `SCL` 使用额外的上拉电阻。
 
 <img src="extras/Images/foc_shield_v13_magI2C.png" class="">
 
+图片名词：Power supply （电源）， BLDC motor（无刷直流电机）
 
-## Magnetic sensor Analog output
-- Magnetic sensor's Analog output is connected directly to any analog input pin, on a figure below we use `A0`
-  - If the application requires more than one sensor each of them is connected to one of the analog input pins.
+
+## 磁传感器的模拟输出
+- 磁传感器的模拟输出直接连接到任何模拟输入引脚，在下图中我们使用 `A0`
+  - 如果应用程序需要多个传感器，则每个传感器连接到其中一个模拟输入引脚
 
 <img src="extras/Images/foc_shield_v13_analog.png" class="">
 
+图片名词：Power supply （电源）， BLDC motor（无刷直流电机）
 
-## Hall sensors
-- Channels `A`, `B` and `C` ( `U`, `V` and `W` ) are connected to the encoder connector `P_ENC`. 
+
+## 霍尔传感器
+- 通道 `A`, `B` 和 `C` ( `U`, `V` 和 `W` ) 连接到编码器的 `P_ENC`. 
 
 <img src="extras/Images/foc_shield_v13_hall.png" class="">
+
+图片名词：Power supply （电源）， BLDC motor（无刷直流电机）
 
