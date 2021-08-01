@@ -8,7 +8,7 @@ permalink: /arduino_simplefoc_shield_installation
 has_children: true
 has_toc: false
 ---
-# 开始着手 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  
+# 开始上手 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  
 
 <img src="extras/Images/simple_foc_shield_v13_small.gif" class="width50">
 
@@ -35,6 +35,6 @@ has_toc: false
 
 ## 第三步：[编写代码](foc_shield_code)
 
-一旦你决定了合适板的 [硬件配置](pads_soldering) ，一旦你准备好所有的硬件 [连接](foc_shield_connect_hardware)，我们就可以开始最激动人心的部分，编码！
+一旦你决定了合适板的 [硬件配置](pads_soldering) ，一旦你准备好所有的硬件 [连接](foc_shield_connect_hardware)，我们就可以开始最激动人心的部分，写代码！
 
 [查看更多](foc_shield_code)
