@@ -8,20 +8,20 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# BLDC Motor configuration
+# BLDC Motor configuration（配置无刷直流电机）
 
 <div class="width60">
 <img src="extras/Images/mot2.jpg" style="width:30%;display:inline"><img src="extras/Images/bigger.jpg" style="width:30%;display:inline"><img src="extras/Images/mot.jpg" style="width:30%;display:inline">
 </div>
 
-All BLDC motors are handled with the `BLDCMotor` class. This class implements:
-- BLDC FOC algorithm
-- Motion control loops
-- Monitoring
-- User communication interface
+用 `BLDCMotor` 类可以完成所有直流无刷电机的控制。这个类可以实现：
+- 直流无刷电机的 FOC 算法
+- 运动控制主循环
+- 监控
+- 用户通信接口
 
-## Step 1. Creating the instance of the BLDC motor
-To instantiate the BLDC motor we need to create an instance of the `BLDCMotor` class and provide it the number of `pole pairs` of the motor.
+## Step 1. Creating the instance of the BLDC motor（第1步. 创建无刷直流电机的实例）
+为了举例说明无刷直流电机的使用，我们需要创建 `BLDCMotor` 类的一个实例和提供电机的极对数 `pole pairs` 。
 ```cpp
 //  BLDCMotor(int pp, (optional R))
 //  - pp  - pole pair number
@@ -36,7 +36,7 @@ If you are not sure what your <code class="highlighter-rouge">pole_paris</code> 
 If you know in advance your motor's phase resistance value <code class="highlighter-rouge">R</code>, we suggest you to provide it to the library. The library will then calculate the voltage values internally and  the user will be dealing only with currents. But this is an optional feature.
  </blockquote>
 
-## Step 2. Linking the sensor 
+## Step 2. Linking the sensor （第1步.）
 Once when you have the `motor` defined and the sensor initialized you need to link the `motor` and the `sensor` by executing:    
 ```cpp
 // link the sensor to the motor
@@ -45,8 +45,7 @@ motor.linkSensor(&sensor);
 Method `linkSensor` is able to link the motor to any sensor implemented in this library. The `sensor` will be used to determine electrical position of the motor for the FOC algorithm as well as for the motion control loops of velocity and position. See the [position sensor docs](sensors) for more info!
 
 <blockquote class="info">Linking is not necessary when using the openloop motion control.</blockquote>
-
-## Step 3. Linking the driver 
+## Step 3. Linking the driver  （第1步.）
 Once when you have the `motor` defined and the driver initialized you need to link the `motor` and the `driver` by executing:    
 ```cpp
 // link the driver to the motor
@@ -56,7 +55,7 @@ motor.linkDriver(&driver);
 The `BLDCMotor` class expect to receive a `BLDCDriver` class instance, implemented by default with classes `BLDCDriver3PWM` and `BLDCDriver6PWM`. The `driver` deals with all the hardware specific operations related to specific microcontroller architecture and driver hardware. See the [bldc driver docs](bldcdriver) for more info!
 
 
-## Step 4. Linking the current sense 
+## Step 4. Linking the current sense  （第1步.）
 If you have a current sensor `current_sense` you can link it to the `motor` using:
 ```cpp
 // link the current sensor to the motor
@@ -64,12 +63,12 @@ motor.linkCurrentSense(&current_sense);
 ```
 This linking step is only necessary if you have a current sense supported by this library. See the [current sense docs](current_sense) for more info!
 
-## Step 5. Configuration paramters
+## Step 5. Configuration paramters （第1步.）
 
 If you choose not to set some of the configuration parameters they will take values defined in the `defaults.h` file.
 Check the [library source code](source_code) to dig deeper.
 
-### Step 5.1 PWM Modulation type
+### Step 5.1 PWM Modulation type （第1步.）
 
 There are four types of Field Oriented Control modulation types implemented for BLDC motors:
 - Sinusoidal PWM modulation
@@ -90,11 +89,10 @@ motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 Sinusoidal PWM and Space vector commutation patters will produce sinusoidal currents and smooth operation but block commutation will be faster to execute, therefore more suitable for higher velocities. It is suggested to use the Trapesoidal 120 commutation with Hall sensors. Other commutation patterns will work as well but this one will have the best performance.
 
 <blockquote class="info"> <p class="heading">FOC currents torque control requirements</p> FOC torque control requires sinusoidal currents therefore please use either Sinusoidal PWM or Space vector PWM</blockquote>
-
 For more information about the theory of these approaches please and source code implementation check the [FOC implementation docs](foc_implementation) or visit the [digging deeper section](digging_deeper).
 
 
-### Step 5.2 Sensor and motor aligning parameters
+### Step 5.2 Sensor and motor aligning parameters （第1步.）
 The voltage used for the motor and sensor alignment set the variable `motor.voltage_sensor_align`:
 ```cpp
 // aligning voltage [V]
@@ -107,7 +105,7 @@ If your sensor is an encoder and if it has an index pin, you can set the index s
 motor.velocity_index_search = 3; // default 1 rad/s
 ```
 
-### Step 5.3 Position sensor offset
+### Step 5.3 Position sensor offset （第1步.）
 For some applications it is convenient to specify the sensor absolute zero offset, you can define it by changing the parameter  `motor.sensor_offset`:
 ```cpp
 // sensor offset [rad]
@@ -115,7 +113,7 @@ motor.sensor_offset = 0; // default 0 rad
 ```
 This parameter can be changed in real-time.
 
-### Step 5.3 Motor phase resistance
+### Step 5.3 Motor phase resistance （第1步.）
 Motor phase resistance is an optional parameter which is not very important for current based torque modes, but if the voltage mode is used and if user specifies the `motor.phase_resistance` (either in constructor or in the `setup()` function) the library will allow user to work with current value and it will calculate the necessary voltages automatically. In the setup function you can change this parameter by setting:
 ```cpp
 // motor phase resistance [Ohms]
@@ -129,7 +127,7 @@ Finally, this parameter is suggested to be used if one whats to switch in real t
 
 Phase resistance can be changed in real-time if needed.
 
-### Step 5.4 Torque control mode
+### Step 5.4 Torque control mode （第1步.）
 There are 3 different torque control modes implemented in the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>: 
 - [Voltage mode](voltage_mode)
 - [DC current](dc_current_torque_mode)
@@ -146,7 +144,7 @@ The torque mode can be set by changing the motor attribute `torque_controller`.
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-### Step 5.5 Motion control parameters  
+### Step 5.5 Motion control parameters （第1步.）  
 
 There are 3 different closed loop control strategies implemented in the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>: 
 - [Torque control loop](voltage_loop)
@@ -168,7 +166,6 @@ You set it by changing the `motor.controller` variable.
 motor.controller = MotionControlType::angle;
 ```
 <blockquote class="warning"><p class="heading"> Important!</p>This parameter doesn't have a default value and it has to be set before real-time execution starts.</blockquote>
-
 Each motion control strategy has its own parameters and you can find more about them on [motion control docs](motion_control). 
 
 Here is the list of all the motion control configuration parameters:
@@ -201,16 +198,16 @@ motor.velocity_limit = 50;
 motor.voltage_limit = 12; // Volts -  default driver.voltage_limit
 // or current limit - if phase_resistance set
 motor.current_limit = 12; // Amps -  default 0.5 Amps
-```  
+```
 
-### Step 5.6 Configuration done - `motor.init()`
+### Step 5.6 Configuration done - `motor.init()` （第1步.）
 Finally the configuration is terminated by running `init()` function which prepares all the hardware and software motor components using the configured values.
 ```cpp
 // initialize motor
 motor.init();
 ```
 
-## Step 6. Align motor and all the sensors - Field Oriented Control init
+## Step 6. Align motor and all the sensors - Field Oriented Control init （第1步.）
 
 After the position sensor, current sense, driver and the motor are configured, and before we can start the motion control we need to align all  hardware components in order to initialize the FOC algorithm. This is done in the scope of the funciton `motor.initFOC()`
 ```cpp
@@ -218,7 +215,6 @@ After the position sensor, current sense, driver and the motor are configured, a
 motor.initFOC();
 ```
 <blockquote class="info"><p class="heading"> Can be skipped for openloop control!</p>If no sensor is attached this function will not really do anything, but you can still call it if necessary or more convenient. </blockquote>
-
 This function does several things:
 - Checks/modifies position sensor direction in respect to the motor's direction
 - Searches for encoder index if necessary
@@ -229,7 +225,7 @@ This function is a final check function and it will disable your motor and displ
 
 The alignment procedure will have to move your motor several times and might not be desirable behavior, therefore for most of the position sensors (except encodes) and current senses, this alignment procedure can be skipped by following the steps 6.1 an 6.2. 
 
-### Step 6.1 Skip alignment - position sensor
+### Step 6.1 Skip alignment - position sensor （第1步.）
 
 If you are using absolute sensors such as magnetic sensors or hall sensors, once you have done the alignment procedure and once you have the motor's zero electrical offset sensor direction you no longer need the full calibration sequence. Therefore, to the `motor.initFOC()` you can provide the sensor offset `zero_electric_offset` and sensor direction `sensor_direction` to avoid alignment procedure:
 ```cpp
@@ -247,7 +243,7 @@ motor.initFOC();
 You can find these values by running the `find_sensor_offset_and_direction.ino` example.
 
 More generally, if you know any of these two values make sure to provide and the `iniFOC` will skip that part of the calibration. For example, for encoder sensors the zero electrical offset changes all the time but the sensor direction will stay the same so you can provide it and skip a large part of the calibration sequence.
-### Step 6.2 Skip alignment - current sense
+### Step 6.2 Skip alignment - current sense （第1步.）
 
 For the current sensors it is as well possible to avoid the calibration procedure an that is done by specifying the curren sense flag called `skip_align`:
 ```cpp
@@ -255,7 +251,7 @@ current_sense.skip_align  = true; // default false
 ```
 But make sure that all of your gains are well set and all of your ADC pins are aligned to the driver/motor phases. For more information about the alignment please visit the [current sense docs](current_sense).
 
-## Step 7. Real-time motion control
+## Step 7. Real-time motion control （第1步.）
 
 The real-time motion control of theArduino <span class="simple">Simple<span class="foc">FOC</span>library</span> is realized with two functions: 
 - `motor.loopFOC()` - low level torque control 
@@ -273,7 +269,6 @@ motor.loopFOC();
 ```
 
 <blockquote class="info"><p class="heading"> Can be skipped for openloop control!</p>This function will have no effect if the motor is run in open loop! </blockquote>
-
 This function is execution time is critical both in the voltage mode and in current control modes. Therefore it is very important that the `motor.loopFOC()` function is executed as fast as possible.
 
 <blockquote class="warning"><p class="heading">Rule od thumb: execution time</p>
@@ -336,7 +331,7 @@ motor.target = 2;
 motor.move();
 ```
 
-## Step 7.1 Motion control downsampling
+## Step 7.1 Motion control downsampling （第1步.）
 For many motion control applications it will make sense run multiple torque control loops for each motion control loop. This can have a great impact on the smoothness and can provide better high-speed performance. Therefore this library enables a very simple downsampling strategy for the `move()` function which is set using the parameter `motor.motion_downsample`:
 ```cpp
 // downsampling value
@@ -349,17 +344,17 @@ Different values of the downsampling might require a bit of tuning of motion par
 
 
 And that is it, you have your complete Field Oriented Controlled BLDC motor with motion control. 
-## User interaction
+## User interaction 
 
 <span class="simple">Simple<span class="foc">FOC</span>library</span> implements two types of real-time user interaction:
 - [Monitoring functionality](monitoring)
 - [Motor commands](communication)
 
 
-## Digging deeper
+## Digging deeper 
 For more theoretical explanations and source code implementations of the FOC algorithm and the motion control approaches check out the [digging deeper section](digging_deeper).
 
-## Example code
+## Example code 
 A simple BLDC motor torque control using voltage based on the FOC algorithm.
 ```cpp
 /**
