@@ -8,88 +8,87 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Stepper Motor configuration
+# Stepper Motor configuration（步进电机配置）
 
 <div class="width60">
 <img src="extras/Images/nema17_2.jpg" style="width:30%;display:inline"><img src="extras/Images/nema17_1.jpg" style="width:30%;display:inline"><img src="extras/Images/nema23.jpg" style="width:30%;display:inline">
 </div>
 
-All stepper motor are handled by `StepperMotor` class. The class implements:
-- Stepper motor FOC algorithm
-- Motion control loops
-- Monitoring
-- User communication interface
+用 `StepperMotor` 类可以实现步进电机的控制：
+- 步进电机 FOC 算法
+- 运动控制主循环
+- 监控
+- 用户通信接口
 
-## Step 1. Creating the instance of the stepper motor
-To create a stepper motor instance you need to specify the number of `pole pairs` of the motor.
+## Step 1. Creating the instance of the stepper motor（步骤1. 为步进电机创建实例）
+为了举例说明步进电机的使用，需要指定电机的极对数  `pole pairs` 。
 ```cpp
 // StepperMotor(  int pp)
 // - pp  - pole pair number
 StepperMotor motor = StepperMotor( 50 );
 ```
-<blockquote class="info"><p class="heading">Pole pair number </p>
-Most of the stepper motors are 200 step per rotation motors making them 50 pole pair motors. In practice you can know the <code class="highlighter-rouge">pole_paris</code> number by dividing the number of steps per rotation by <code class="highlighter-rouge">4</code>.<br><br>
-If you are not sure what your <code class="highlighter-rouge">pole_paris</code> number is. The library provides you an example code to estimate your <code class="highlighter-rouge">pole_paris</code> number in the examples <code class="highlighter-rouge">find_pole_pairs_number.ino</code>.
+<blockquote class="info"><p class="heading">极对数 </p>
+大多数步进电机每旋转一周是200步，电机极对数是50。在实践中，你可以通过用每周旋转的步数除以 <code class="highlighter-rouge">4</code>来得到 <code class="highlighter-rouge">pole_paris</code> 极对数。<br><br>
+如果你不确定你电机的极对数 <code class="highlighter-rouge">pole_paris</code> number ，library 库提供了<code class="highlighter-rouge">find_pole_pairs_number.ino</code>实例来计算 <code class="highlighter-rouge">pole_paris</code> number 极对数。
  </blockquote>
 
 
-## Step 2. Linking the sensor 
-Once when you have the `motor` defined and the sensor initialized you need to link the `motor` and the `sensor` by executing:    
+## Step 2. Linking the sensor （步骤2. 连接传感器）
+定义好 `motor` 和初始化 sensor 之后，执行以下代码来连接 `motor` 和 `sensor` ：  
 ```cpp
 // link the sensor to the motor
 motor.linkSensor(&sensor);
 ```
-Method `linkSensor` is able to link the motor to any sensor implemented in this library. The `sensor` will be used to determine electrical position of the motor for the FOC algorithm as well as for the motion control loops of velocity and position. See the [position sensor docs](sensors) for more info!
+方法 `linkSensor` 能够将电机连接到本库的任何传感器。 `sensor` 将用于确定电机的 FOC 算法中的电路位置，以及速度和位置的运动控制主循环。更多信息请参阅 [位置传感器文档](sensors) 。
 
-<blockquote class="info">Linking is not necessary when using the openloop motion control.</blockquote>
+<blockquote class="info">当使用开环运动控制时，不需要进行连接。</blockquote>
 
-## Step 3. Linking the driver 
-Once when you have the `motor` defined and the driver initialized you need to link the `motor` and the `driver` by executing:    
+## Step 3. Linking the driver （步骤3. 连接驱动程序）
+定义好 `motor` 和初始化 driver 之后，执行以下代码来连接 `motor` 和 `driver` ：
 ```cpp
 // link the driver to the motor
 motor.linkDriver(&driver);
 ```
 
-The `StepperMotor` class expect to receive a `StepperDriver` class instance, implemented by default with the `StepperDriver4PWM` class. The `driver` deals with all the hardware specific operations related to specific microcontroller architecture and driver hardware. See the [stepper driver docs](stepperdriver) for more info!
+ `StepperMotor` 类期望接收到一个 `StepperDriver` 类实例，通过，默认的 `StepperDriver4PWM` 来实现。 `driver`  能够实现所有涉及到微控制器架构和驱动硬件的具体操作。 更多信息请参阅 [步进电机驱动文档](stepperdriver) ！
 
-## Step 4. Configuration
+## Step 4. Configuration（步骤4. 配置）
 
-If you choose not to set some of the configuration parameters they will take values defined in the `defaults.h` file.
-Check the [library source code](source_code) to dig deeper.
+如果你选择不设置某些配置参数，它们将会使用`defaults.h` 文件中定义的默认值，查看 [library 库源代码](source_code) 来进行更深入的挖掘。
 
-### Step 4.1 Modulation type
+### Step 4.1 Modulation type（步骤4.1 调制方式）
 
-You can set them by changing the `motor.foc_modulation` variable:
+可以改变 `motor.foc_modulation` 变量来传输：
 ```cpp
 // choose FOC modulation
 // FOCModulationType::SinePWM;
 motor.foc_modulation = FOCModulationType::SinePWM;
 ```
-`StepperMotor` class has only Sinusoidal PWM modulation implemented for the moment <a href="https://github.com/simplefoc/Arduino-FOC/releases"> <i class="fa fa-tag"> current version</i></a>.
+当前的版本 <a href="https://github.com/simplefoc/Arduino-FOC/releases"> <i class="fa fa-tag"> current version</i></a>  的 `StepperMotor` 类只有正弦PWM调制。
 
-For more information about the theory of these approaches please and source code implementation check the [FOC implementation docs](foc_implementation) or visit the [digging deeper section](digging_deeper).
+有关这些方法的理论和源代码实现的更多信息，请查看 [FOC实现文档](foc_implementation) 或访问 [深入挖掘部分](digging_deeper) 。
 
 
-### Step 4.2 Sensor and motor aligning parameters
-The voltage used for the motor and sensor alignment set the variable `motor.voltage_sensor_align`:
+### Step 4.2 Sensor and motor aligning parameters（步骤4.2 传感器和电机校准参数）
+用于电机和传感器校准的电压设置变量`motor.voltage_sensor_align`：
 ```cpp
 // aligning voltage [V]
 // default 6V
 motor.voltage_sensor_align = 3;
 ```
 
-### Step 4.3 Motion control parameters  
+### Step 4.3 Motion control parameters  （步骤4.3运动控制参数）
 
-There are 3 different closed loop control strategies implemented in the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>: 
-- [torque control loop using voltage](voltage_loop)
-- [position/angle motion control](angle_loop)
-- [velocity motion control](velocity_loop)
+ Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的闭环控制：
+- [torque control loop using voltage（用电压控制力矩）](voltage_loop)
+- [position/angle motion control（位置/角度运动控制）](angle_loop)
+- [velocity motion control（速度运动控制）](velocity_loop)
 
-Additionally <span class="simple">Simple<span class="foc">FOC</span>library</span> implements two open loop control strategies as well:
-- [position open-loop control](angle_openloop)
-- [velocity open-loop control](velocity_openloop)
+另外 <span class="simple">Simple<span class="foc">FOC</span>library</span> 也有两种开环控制策略：
+- [position open-loop control（位置开环控制）](angle_openloop)
+- [velocity open-loop control（速度开环控制）](velocity_openloop)
 
-You set it by changing the `motor.controller` variable. 
+通过改变 `motor.controller` 变量来设置它：
 ```cpp
 // set FOC loop to be used
 // MotionControlType::torque      - torque control loop using voltage
@@ -99,11 +98,11 @@ You set it by changing the `motor.controller` variable.
 // MotionControlType::angle_openloop       - position open-loop control
 motor.controller = MotionControlType::angle;
 ```
-<blockquote class="warning"><p class="heading"> Important!</p>This parameter doesn't have a default value and it has to be set before real-time execution starts.</blockquote>
+<blockquote class="warning"><p class="heading"> 注意！</p>该参数没有默认值，实时执行之前必须要设置这个值。</blockquote>
 
-Each motion control strategy has its own parameters and you can find more about them on [motion control docs](motion_control). 
+每种运动控制策略都有自己的参数，更多信息请参阅 [运动控制文档](motion_control) 。
 
-Here is the list of all the motion control configuration parameters:
+下面是所有运动控制配置参数的列表：
 ```cpp
 // set control loop type to be used
 motor.controller = MotionControlType::angle;
@@ -132,37 +131,37 @@ motor.velocity_limit = 50;
 // voltage limit
 motor.voltage_limit = 12; // Volts -  default driver.voltage_limit
 ```
-### Step 4.4 Configuration done - `motor.init()`
-Finally the configuration is terminated by running `init()` function which prepares all the hardware and software motor components using the configured values.
+### Step 4.4 Configuration done - `motor.init()` （步骤4.4 完成配置）
+最后，通过运行 `init()` 函数完成配置，该函数使用配置值完成所有的硬件和软件电机组件。
 ```cpp
 // initialize motor
 motor.init();
 ```
 
-## Step 5. Field Oriented Control initialization
+## Step 5. Field Oriented Control initialization（步骤5. FOC 初始化）
 
-After the motor and sensor are initialized and configured, and before we can start the motion control we need to initialize the FOC algorithm. 
+在电机和传感器初始化和配置之后，开始控制运动之前，我们需要初始化 FOC 算法。
 ```cpp
 // align sensor and start FOC
 motor.initFOC();
 ```
-<blockquote class="danger"><p class="heading"> Skip for openloop control!</p>This function should not be called if the motor is run in open loop! </blockquote>
+<blockquote class="danger"><p class="heading"> 开环控制时可以跳过它！</p>开环控制时，不应该调用这个函数！ </blockquote>
 
-This function aligns sensor and motor zero positions and initializes FOC variables. It is intended to be run in the `setup` function of the Arduino. After the call of this function FOC is ready and our setup is done! 
+该函数校准传感器和电机的零位，并初始化 FOC 变量，在 Arduino 的 `setup` 函数中运行。调用这个函数之后，FOC就准备好了，设置也完成了！
 
-If you are using absolute sensors such as magnetic sensors, in the `initFOC()` you can provide the sensor offset `zero_electric_offset` and sensor direction `sensor_direction` to avoid alignment procedure:
+如果你使用的是绝对传感器，比如磁传感器，你可以在 `initFOC()` 中提供传感器偏移量 `zero_electric_offset` 和传感器方向 `sensor_direction` 来避免校准程序：
 ```cpp
 // align sensor and start FOC
 //motor.initFOC(zero_electric_offset, sensor_direction);
 motor.initFOC(2.15, Direction::CW);
 ```
-You can find these values by running the `find_sensor_offset_and_direction.ino` example.
+你可以运行 `find_sensor_offset_and_direction.ino` 实例来找到这些值。
 
-For more info about what really happens in `initFOC()` check the [FOC source code implementation](foc_implementation).
+有关 `initFOC()` 中实际发生的情况的更多信息，请查看 [FOC 源代码实现](foc_implementation) 。
 
-## Step 6. Real-time motion control
+## Step 6. Real-time motion control（步骤6. 实时运动控制）
 
-The real-time motion control of theArduino <span class="simple">Simple<span class="foc">FOC</span>library</span> is realized with two functions: `motor.loopFOC()` and `motor.move(float target)`.
+用两个函数来完成 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 的实时运动控制： `motor.loopFOC()` 和 `motor.move(float target)` 。
 ```cpp
 // Function running FOC algorithm in real-time
 // it calculates the gets motor angle and sets the appropriate voltages 
@@ -170,18 +169,20 @@ The real-time motion control of theArduino <span class="simple">Simple<span clas
 // - the faster you can run it the better Arduino UNO ~1ms, Bluepill ~ 100us
 motor.loopFOC();
 ```
-<blockquote class="danger"><p class="heading"> Skip for openloop control!</p>This function should not be called if the motor is run in open loop! </blockquote>
+<blockquote class="danger"><p class="heading"> 开环控制时可以跳过它！</p>开环控制时，不应该调用这个函数！</blockquote>
 
-The function `loopFOC()` gets the current motor angle from the sensor, turns it into the electrical angle and transforms the quadrature <i>U<sub>q</sub></i> voltage `motor.voltage_q` to the appropriate phase voltages <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> which are set then set to the motor. 
+ `loopFOC()` 函数从传感器获取当前电机角度， 将其转换成电角度并将正交 <i>U<sub>q</sub></i> 电压 `motor.voltage_q` 转换为电机上相应的相电压 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 。
 
-The transformation of the <i>U<sub>q</sub></i> to <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i>  is defined with the configuration parameter `motor.foc_modulation` that is set to ***Sinusoidal PWM***.
+将 <i>U<sub>q</sub></i> 转换到 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i>  是由 ***Sinusoidal PWM*** 的配置参数 `motor.foc_modulation` 定义的。 
 
-<blockquote class="info"><p class="heading"> New Feature - <i>U<sub>d</sub></i> direct voltage support!</p><i><b>Sinusoidal PWM</b></i> supports the direct voltage setting <i>U<sub>d</sub></i> setting. Direct voltage can be set by changing the variable <code class="highlighter-rouge">motor.voltage_d</code>! This is a new feature and it will be exploited more in the feature releases with the current control.</blockquote>
-This function is execution time is critical, therefore it is very important that the `motor.loopFOC()` function is executed as fast as possible!
+<blockquote class="info"><p class="heading"> 新特性 - <i>U<sub>d</sub></i> 直流电压支持！</p><i><b>Sinusoidal PWM</b></i> 支持直流电压设置 <i>U<sub>d</sub></i> ，直流电压可以通过改变 <code class="highlighter-rouge">motor.voltage_d</code>变量来设定！这是一个新特性，在当前版本中会被更多地使用。</blockquote>
 
-<blockquote class="warning"><p class="heading">Rule od thumb: execution time</p>
+这个函数的执行时间很关键，因此，尽可能快地执行 `motor.loopFOC()` 函数是非常重要的！
 
-The faster you can run this function the better!
+<blockquote class="warning"><p class="heading">经验法则：执行时间</p>
+
+
+运行这个函数的速度越快越好！
 <ul style="margin-bottom:0em">
     <li> Arduino UNO <code class="highlighter-rouge">loop()</code> ~ 1ms </li>
     <li> Esp32 <code class="highlighter-rouge">loop()</code> ~ 500us</li>
@@ -191,7 +192,7 @@ The faster you can run this function the better!
 </blockquote>
 
 
-Finally, when we can set the phase voltages to the motor using the FOC algorithm we can proceed to the motion control. And this is done with `motor.move()` function.
+最后，利用 FOC 算法设置电机的相位电压，进行运动控制。这是通过 `motor.move()` 函数完成的。
 
 ```cpp
 // Function executing the control loops configured by the motor.controller parameter of the motor. 
@@ -202,34 +203,35 @@ Finally, when we can set the phase voltages to the motor using the FOC algorithm
 motor.move(target);
 ```
 
-The `move()` method executes the control loops of the algorithm. If is governed by the `motor.controller` variable. It executes either pure voltage loop, velocity loop or angle loop.
+ `move()` 方法执行算法的控制回路。如果是由变量 `motor.controller` 控制的。它可以执行纯电压回路、速度回路或角度回路。
 
-It receives one parameter `float target` which is current user defined target value.
-- If the user runs [velocity loop](velocity_loop) or [velocity open-loop](velocity_openloop), `move` function will interpret `target` as the target velocity <i>v<sub>d</sub></i>.
-- If the user runs [angle loop](angle_loop) or [angle open-loop](angle_openloop), `move` will interpret `target` parameter as the target angle <i>a<sub>d</sub></i>. 
-- If the user runs the [voltage loop](voltage_loop), `move` function will interpret the `target` parameter as voltage <i>u<sub>d</sub></i>.
+它接收一个参数 `float target` ，该参数是当前用户定义的目标值。
+- 如果用户运行 [速度环](velocity_loop) 或 [速度开环](velocity_openloop)， `move` 函数把 `target` 作为目标速度 <i>v<sub>d</sub></i> 来解释。
+- 如果用户运行 [角度环](angle_loop) or [角度开环](angle_openloop), `move` 函数把 `target` 作为目标角度 <i>a<sub>d</sub></i> 来解释。 
+- 如果用户运行 [电压环](voltage_loop)，`move` 函数把 `target` 作为目标电压 <i>u<sub>d</sub></i> 来解释。
 
- The `target` parameter is optional and if it is not set, the target value will be set by the public motor variable `motor.target`. The equivalent code would be:
+ `target` 参数是可选的，如果未设置，则由公用的电机变量 `motor.target` 设置目标值，代码是：
 
 ```cpp
 motor.target = 2;
 motor.move();
 ```
 
-And that is it, you have your complete Field Oriented Controlled BLDC motor with motion control. 
+这就是它，你有了完整运动控制的 FOC 无刷直流电机。
 
-## User interaction
+## 用户接口
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> implements two types of real-time user interaction:
-- [Monitoring functionality](monitoring)
-- [Motor commands](communication)
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 有2种实时用户接口：
+
+- [Monitoring functionality（监控功能）](monitoring)
+- [Motor commands（用户指令）](communication)
 
 
-## Digging deeper
-For more theoretical explanations and source code implementations of the FOC algorithm and the motion control approaches check out the [digging deeper section](digging_deeper).
+## 深入挖掘
+更多 FOC 算法和运动控制方法的理论解释和源代码实现，查看 [深入挖掘的部分](digging_deeper) 。
 
-## Example code
-A simple stepper motor torque control using voltage based on the FOC algorithm.
+## 实例代码
+基于 FOC 算法的简单的用电压控制步进电机力矩的实例。
 ```cpp
 /**
  * Torque control example using voltage control loop.
