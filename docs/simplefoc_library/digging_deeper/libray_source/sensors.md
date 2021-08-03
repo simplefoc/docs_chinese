@@ -8,9 +8,12 @@ nav_order: 3
 permalink: /sensor_support
 ---
 
-# Supporting additional sensors [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
+# 支持附加传感器 [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
 
 In order to be able to use a new type of sensor with the FOC algorithm implemented with Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>, it needs to be wrapped in a class which extends the `Sensor` class. And it needs to implement just few generic functions.
+
+为了能够使用一种新型传感器，该传感器采用Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>实现的FOC算法，需要将其封装在一个扩展`Sensor`的类中。它只需要实现几个通用函数。
+
 ```cpp
 class Sensor{
 public:
@@ -27,8 +30,8 @@ public:
 }
 ```
 
-## Step 1. Header file `MySensor.h `
-Lets make a mockup example of the new sensor implementation. We start with the `MySensor.h ` file: 
+## 步骤1.头文件 `MySensor.h `
+让我们制作一个新传感器实现的模型示例。我们从`MySensor.h `文件开始：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -46,8 +49,9 @@ class MySensor: public Sensor{
 };
 ```
 
-## Step 2. Class implementation file `MySensor.cpp`
-Now let's implement the `MySensor.cpp` file:
+## 步骤2.类实现文件 `MySensor.cpp`
+现在让我们实现`MySensor.cpp` 文件：
+
 ```cpp
 #include "MySensor.h"
 
@@ -70,8 +74,8 @@ MySensor::getAngle(){
 }
 ```
 
-## Step 3. Arduino program
-Finally we will be able to use it in Arduino code:
+## 步骤3.Arduino项目
+最后，我们将能够在Arduino代码中使用它：
 ```cpp
 #include <SimpleFOC.h>
 #include "MySensor.h"
