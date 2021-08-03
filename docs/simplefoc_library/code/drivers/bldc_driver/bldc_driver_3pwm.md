@@ -9,23 +9,24 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# BLDC driver 3PWM - `BLDCDriver3PWM`
+# BLDC driver 3PWM - `BLDCDriver3PWM`（无刷直流电机 3PWM）
 
-This is the class which provides an abstraction layer of most of the common 3PWM bldc drivers out there. Basically any BLDC driver board that can be run using 3PWM signals can be represented with this class.
-Examples:
+这个类提供了一个大多数常见的 3PWM 无刷直流驱动器的抽象层。基本上，任何可以使用 3PWM 信号运行的无刷直流驱动器都可以用这个类来表示。
+实例：
+
 - Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 - Arduino <span class="simple">Simple<span class="foc">FOC</span> <span class="power">Power</span>Shield</span>
-- L6234 breakout board
+- L6234 转接板
 - HMBGC v2.2
-- DRV830x ( can be run in 3pwm or 6pwm mode )
+- DRV830x ( 可以在 3pwm 或者 6pwm 模式下运行 )
 - X-NUCLEO-IHM07M1
-- etc.
-
+- 等等
 
 <img src="extras/Images/3pwm_driver.png" class="width40">
 
-## Step 1. Hardware setup
-To create the interface to the BLDC driver you need to specify the 3 `pwm` pin numbers for each motor phase and optionally `enable` pin.
+## Step 1. Hardware setup（步骤1. 硬件设置）
+要创建接口到无刷直流驱动器，需要为电机的每个阶段和可选的 `enable` 引脚指定 3 `pwm`  引脚编号。
+
 ```cpp
 //  BLDCDriver3PWM( int phA, int phB, int phC, int en)
 //  - phA, phB, phC - A,B,C phase pwm pins
@@ -33,7 +34,7 @@ To create the interface to the BLDC driver you need to specify the 3 `pwm` pin n
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
 ```
 
-Additionally this bldc driver class enables the user to provide enable signal for each phase if available. <span class="simple">Simple<span class="foc">FOC</span>library</span> will then handle enable/disable calls for each of the enable pins and if using modulation type `Trapezoidal_120` or `Trapezoidal_150` using these pins the library will be able to set high impedance to motor phases, which is very suitable for Back-EMF control for example:
+此外，这个无刷电机驱动类（bldc driver class）允许用户为每个阶段提供使能信号（如果可行的话）。然后 <span class="simple">Simple<span class="foc">FOC</span>library</span> 为每个使能引脚处理启用/禁用调用。如果使用调制方式 `Trapezoidal_120` 或 `Trapezoidal_150` 使用这些引脚，library 库可以设置高阻抗电机相位，这非常适用于反电动势（Back-EMF control）控制，例如：
 ```cpp
 //  BLDCDriver3PWM( int phA, int phB, int phC, int enA, int enB, int enC )
 //  - phA, phB, phC - A,B,C phase pwm pins
@@ -41,7 +42,7 @@ Additionally this bldc driver class enables the user to provide enable signal fo
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8, 7, 6);
 ```
 
-## Step 2.1 PWM Configuration
+## Step 2.1 PWM Configuration（步骤2.1 PWM 配置）
 ```cpp
 // pwm frequency to be used [Hz]
 // for atmega328 fixed to 32kHz
@@ -49,24 +50,23 @@ BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8, 7, 6);
 driver.pwm_frequency = 50000;
 ```
 <blockquote class="warning">
-⚠️ Arduino devices based on ATMega328 chips have fixed pwm frequency of 32kHz.
+⚠️ 基于 ATMega328 芯片的 Arduino  设备固定的 pwm 频率为 32kHz。
 </blockquote>
 
-Here is a list of different microcontrollers and their PWM frequency and resolution used with the  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>.
+下面是  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中使用的不同微控制器及其PWM频率和分辨率的列表。
 
-MCU | default frequency | MAX frequency | PWM resolution | Center-aligned | Configurable freq
---- | --- | --- | --- | ---
+MCU | default frequency（默认频率） | MAX frequency（最大频率） | PWM resolution（分辨率） | Center-aligned（中心对齐） | Configurable freq（可配置的频率） 
+--- | --- | --- | --- | --- | --- 
 Arduino UNO(Atmega328) | 32 kHz | 32 kHz | 8bit | yes | no
 STM32 | 50kHz | 100kHz | 14bit | yes | yes
 ESP32 | 40kHz | 100kHz | 10bit | yes | yes
 Teensy | 50kHz | 100kHz | 8bit | yes | yes
 
-All of these settings are defined in the `drivers/hardware_specific/x_mcu.cpp/h` of the library source. 
+这些设置都在 library 库的源文件的 `drivers/hardware_specific/x_mcu.cpp/h` 中定义。
 
 
-## Step 2.2 Voltages
-Driver class is the one that handles setting the pwm duty cycles to the driver output pins and it is needs to know the DC power supply voltage it is plugged to.
-Additionally driver class enables the user to set the absolute DC voltage limit the driver will be set to the output pins.  
+## Step 2.2 Voltages（步骤2.2 电压）
+驱动器类（Driver class）可以为驱动器输出引脚设置 pwm 占空比，需要知道它插接的直流电源电压。此外，用户能通过驱动器类（Driver class）设置驱动器输出引脚的绝对直流限压 。
 ```cpp
 // power supply voltage [V]
 driver.voltage_power_supply = 12;
@@ -76,30 +76,30 @@ driver.voltage_limit = 12;
 
 <img src="extras/Images/limits.png" class="width60">
 
-This parameter is used by the `BLDCMotor` class as well. As shown on the figure above the once the voltage limit `driver.voltage_limit` is set, it will be communicated to the FOC algorithm in `BLDCMotor` class and the phase voltages will be centered around the `driver.voltage_limit/2`.
+ `BLDCMotor` 类也使用这个参数。 如图所示当限压 `driver.voltage_limit` 设置了，它会和 FOC 算法中的 `BLDCMotor` 类通信，相位电压大约是  `driver.voltage_limit/2`。
 
-Therefore this parameter is very important if there is concern of too high currents generated by the motor. In those cases this parameter can be used as a security feature. 
+因此，如果担心电机产生的电流过大，这个参数是非常重要的。在这种情况下，该参数可以当作安全特性来使用。
 
-## Step 2.3 Initialisation
-Once when all the necessary configuration parameters are set the driver function `init()` is called. This function uses the configuration parameters and configures all the necessary hardware and software for driver code execution.
+## Step 2.3 Initialisation（初始化）
+当必要的配置参数都设置好了，就会调用驱动器函数 `init()` 。该函数使用配置参数，并配置驱动器代码执行所需的所有硬件和软件。
 ```cpp
 // driver init
 driver.init();
 ```
 
-## Step 3. Using `BLDCDriver3PWM` in real-time
+## Step 3. Using `BLDCDriver3PWM` in real-time（实时使用 `BLDCDriver3PWM`）
 
-BLDC driver class was developed to be used with the <span class="simple">Simple<span class="foc">FOC</span>library</span> and to provide the abstraction layer for FOC algorithm implemented in the `BLDCMotor` class. But the `BLDCDriver3PWM` class can used as a standalone class as well and once can choose to implement any other type of control algorithm using the bldc driver.  
+BLDC 驱动器类（BLDC driver class）是与 <span class="simple">Simple<span class="foc">FOC</span>library</span> 一起开发的，为 FOC 算法中实现的  `BLDCMotor`  类提供抽象层。但是 `BLDCDriver3PWM` 类可以作为一个独立的类使用，以及使用无刷直流驱动器可以实现任何其他类型的控制算法。
 
-## FOC algorithm support
-In the context of the FOC control all the driver usage is done internally by the motion control algorithm and all that is needed to enable is is just link the driver to the `BLDCMotor` class.
+## FOC algorithm support（FOC 算法支持）
+在 FOC 控制下，驱动器的使用是由运动控制算法内部完成的，只需将驱动器连接到  `BLDCMotor` 类。
 ```cpp
 // linking the driver to the motor
 motor.linkDriver(&driver)
 ```
 
-## Standalone driver 
-If you wish to use the bldc driver as a standalone device and implement your-own logic around it this can be easily done. Here is an example code of a very simple standalone application.
+## Standalone driver （独立的驱动器）
+如果使用 bldc 驱动器作为一个独立的设备，实现操作是很容易的。下面是一个非常简单的应用程序的实例代码。
 ```cpp
 // BLDC driver standalone example
 #include <SimpleFOC.h>
@@ -132,7 +132,7 @@ void loop() {
 }
 ```
 
-An example code of the BLDC driver with three enable pins, one for each phase. This code will put one phase at the time to the high-impedance mode and pun 3 and 6 Volts on the remaining two. 
+带有三个使能引脚（每个相一个）的无刷直流驱动器的实例代码。该代码会在同一时刻将一个相位设置为高阻抗模式，双关3和6伏的其余两个。在剩下的两个相位上双关3和6伏。
 ```cpp
 // BLDC driver standalone example
 #include <SimpleFOC.h>
