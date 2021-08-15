@@ -12,13 +12,13 @@ has_toc: False
 ---
 
 
-# Magnetic sensor 
+# 磁传感器
 <div class="width60">
 <img src="extras/Images/mag0.jpg" style="width:32%;display:inline"><img src="extras/Images/mag.jpg" style="width:32%;display:inline"><img src="extras/Images/mag2.jpg" style="width:32%;display:inline">
 </div>
 
 
-Magnetic sensors implementation in this library ([current version <i class="fa fa-tag"></i>](https://github.com/simplefoc/Arduino-FOC/releases)) support communications:
+磁传感器在这个库的实现 ([current version <i class="fa fa-tag"></i>](https://github.com/simplefoc/Arduino-FOC/releases)) 支持通信:
 - **SPI** - [MagneticSensorSPI](magnetic_sensor_spi)
 - **I2C** - [MagneticSensorI2C](magnetic_sensor_i2c)
 - **Analog** - [MagneticSensorAnalog](magnetic_sensor_analog)

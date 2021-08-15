@@ -11,10 +11,11 @@ permalink: /magnetic_sensor_pwm
 ---
 
 
-# PWM output Magnetic sensor setup
+# 磁传感器设置PWM输出
 <img src="./extras/Images/pwm_sensor.png">
 
-In order to use your PWM output magnetic position sensor with <span class="simple">Simple<span class="foc">FOC</span>library</span> first create an instance of the `MagneticSensorPWM` class:
+为了使用你的PWM输出磁位置传感器与SimpleFOClibrary首先创建一个`MagneticSensorPWM` 的实例:
+
 ```cpp
 // MagneticSensorPWM(uint8_t _pinPWM, int _min_raw_count, int _max_raw_count)
 // - _pinPWM:         the pin that is reading the pwm from magnetic sensor
@@ -23,26 +24,27 @@ In order to use your PWM output magnetic position sensor with <span class="simpl
 MagneticSensorPWM sensor = MagneticSensorPWM(2, 4, 904);
 ```
 
-The parameters of the class are
-- `pinPWM` - the pin that is reading the analog output from magnetic sensor , 
-- `min_raw_count` - the smallest expected pulse time in microseconds. This is typically the length of init time of the pulse
-- `max_raw_count` - the largest pulse time in microseconds. This is the value of init pulse time plus the data sending time.
+类的参数为
+- `pinPWM` - 从磁传感器读取模拟输出的引脚。
+- `min_raw_count` - 期望的最小脉冲时间(以微秒计)。这通常是脉冲初始化时间的长度
+- `max_raw_count` - 以微秒为单位的最大脉冲时间。这是初始化脉冲时间加上数据发送时间的值。
 
-<blockquote class="info"> <p class="heading"> 💡 Find out min and max</p>
-Every mcu is a bit different and every sensor as well so we advise you to use the provided example in the <code class="highlighter-rouge">examples/sensor_test/magentic_sensor_pwm_example/find_raw_min_max</code> to find out the maximal and minimal values of your sensor.
+<blockquote class="info"> <p class="heading"> 💡求最小值和最大值</p>
+每个mcu和每个传感器都有一点不同，所以我们建议你使用提供的例子 <code class="highlighter-rouge">examples/sensor_test/magentic_sensor_pwm_example/find_raw_min_max</code> 找出传感器的最大值和最小值
 </blockquote>
 
-<blockquote class="info"> 📚 See page 27 of the AS5048 datasheet or AS5600 datasheet for more in depth explanation about how the PWM sensors encode the angle. <a href="https://ams.com/documents/20143/36005/AS5048_DS000298_4-00.pdf">AS5048 </a>, <a href="https://ams.com/documents/20143/36005/AS5600_DS000365_5-00.pdf">AS5600</a>   </blockquote>
+<blockquote class="info"> 📚 请查阅27页AS5048 datasheet 或者 AS5600 datasheet 的第27页以获得关于PWM传感器如何编码角度的更深入的解释. <a href="https://ams.com/documents/20143/36005/AS5048_DS000298_4-00.pdf">AS5048 </a>, <a href="https://ams.com/documents/20143/36005/AS5600_DS000365_5-00.pdf">AS5600</a>   </blockquote>
+
+在这个库中有两种方法来使用PWM传感器:
+
+- 阻塞方式 - 基于 `pulseln` function
+- 基于中断的,非阻塞
 
 
-There are two ways to use the PWM sensors implemented in this library:
-- Blocking way - based on `pulseln` function
-- Interrupt based, non-blocking
+### 阻碍实现
 
+在创建传感器类之后，你需要做的唯一一件事就是调用 `init()` 函数。该函数初始化传感器硬件。所以你最终的磁传感器代码看起来像:
 
-### Blocking implementation
-
-After the creation of the sensor class the only thing you need to do is to call the `init()` function. This function initializes the sensor hardware. So your final magnetic sensor code will look like:
 ```cpp
 MagneticSensorPWM sensor = MagneticSensorPWM(2, 4, 904);
 
@@ -53,7 +55,8 @@ void loop(){
 }
 ```
 
-If you wish to use more than one magnetic sensor, make sure you connect their `chip_select` pins to different arduino pins and follow the same idea as above, here is a simple example:
+如果你希望使用多个磁传感器，请确保你将它们的 `chip_select`  pins连接到不同的arduino pins，遵循上述相同的思路，这里是一个简单的例子:
+
 ```cpp
 MagneticSensorPWM sensor1 = MagneticSensorPWM(2, 4, 904);
 MagneticSensorPWM sensor2 = MagneticSensorPWM(3, 4, 904);
@@ -65,17 +68,17 @@ void loop(){
   ...
 }
 ```
-Please check the `magnetic_sensor_analog_pwm.ino` example to see more about it.
+请检查 `magnetic_sensor_analog_pwm.ino` ，来看更多例子吧!
 
 <blockquote class="warning">
-<p class="heading">BEWARE: Blocking support limitations ⚠️</p>
-Blocking support for magnetic sensors is arguably has the worst performance out of all the  position sensing techniques supported in this library. Each time the code reads the angle from the sensor it will read one pulse and since the magnetic sensor have PWM frequency of around 1kHz, it means the the shortest execution time for reading an angle is around 1ms. 
-But in case of Arudino UNO and similar MCUs this might be the only option.
+<p class="heading">注意:阻止支持限制” ⚠️</p>
+磁传感器的阻塞支持可以说是在本库支持的所有位置传感技术中性能最差的。每当代码从传感器读取角度时，它将读取一个脉冲，由于磁传感器的PWM频率约为1kHz，这意味着读取角度的最短执行时间约为1ms。但在Arudino UNO和类似的mcu情况下，这可能是唯一的选择
 </blockquote>
 
-### Interrupt based implementation
 
-For reading the magnetic sensors asynchronously, in the non-blocking manner, this library proposes the interrupt based method. To enable this approach one needs to first create a simple buffering handler function:
+### 基于中断的实现
+
+为了异步读取磁传感器，在非阻塞的方式，该库提出了基于中断的方法。我们要启用这种方法，首先需要创建一个简单的缓冲处理函数:
 ```cpp
 // create the class
 MagneticSensorPWM sensor = MagneticSensorPWM(3, 4, 904);
@@ -83,7 +86,8 @@ MagneticSensorPWM sensor = MagneticSensorPWM(3, 4, 904);
 void doPWM(){sensor.handlePWM();}
 ```
 
-And then, in the `setup` function, user needs to call `init()` funciton and afterwards call the `attachInterrupt` function with the buffering function in the argument. Here is an example code: 
+然后，在 `setup` 函数中，用户需要调用 `init()` 函数，然后调用 `attachInterrupt` 函数，参数中包含缓冲函数。下面是一个示例代码:
+
 ```cpp
 // create the class
 MagneticSensorPWM sensor = MagneticSensorPWM(3, 4, 904);
@@ -99,7 +103,7 @@ void loop(){
   ...
 }
 ```
-And here is an example code for two sensors:
+下面是两个传感器的示例代码:
 ```cpp
 MagneticSensorPWM sensor1 = MagneticSensorPWM(2, 4, 904);
 void doPWM1(){sensor1.handlePWM();} 
@@ -115,25 +119,28 @@ void loop(){
   ...
 }
 ```
-Make sure to look into the examples `magnetic_sensor_pwm` and `magnetic_sensor_pwm_software_interrupt` for an example of using software interrupts if you run out of hardware interrupt pins. 
+请你确保查看示例 `magnetic_sensor_pwm` 和 `magnetic_sensor_pwm_software_interrupt` ，如果你用完硬件中断引脚，使用软件中断的例子。
 
 
-## Using magnetic sensor in real-time
+## 实时使用磁传感器
 
-There are two ways to use magnetic sensor implemented within this library:
-- As motor position sensor for FOC algorithm
-- As standalone position sensor
+在这个库中有两种方法来使用磁传感器:
+- 作为电机位置传感器用于FOC算法
+- 作为独立位置传感器
 
-### Position sensor for FOC algorithm
+### FOC算法的位置传感器
 
-To use the ensor with the FOC algorithm implemented in this library, once when you have initialized `sensor.init()` (and possibly started the interrupts) you just need to link it to the motor by executing:
+要使用这个库中实现的FOC算法的传感器，一旦你初始化了 `sensor.init()`(并且可能启动了中断)，你只需要通过执行以下命令将它链接到电机:
+
+
+
 ```cpp
 motor.linkSensor(&sensor);
 ```
 
-### Standalone sensor 
+### 独立的传感器
 
-To get the magnetic sensor angle and velocity at any given time you can use the public methods:
+要在任何给定时间获得磁传感器的角度和速度，你可以使用公共方法:
 ```cpp
 class MagneticSensorPWM{
  public:
@@ -144,7 +151,7 @@ class MagneticSensorPWM{
 }
 ```
 
-Here is a quick example for AS5048A magnetic sensor using it's pwm output:
+这里是一个快速的例子，AS5048A磁传感器使用它的pwm输出:
 ```cpp
 #include <SimpleFOC.h>
 

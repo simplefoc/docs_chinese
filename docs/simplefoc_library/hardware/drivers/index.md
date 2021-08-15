@@ -10,31 +10,34 @@ has_children: true
 has_toc: false
 ---
 
-# Supported driver boards
+# 支持的驱动板
 
 <div class="width60">
 <img src="extras/Images/drv8302.png" style="width:25%;display:inline"><img src="extras/Images/bgc_30.jpg" style="width:25%;display:inline"><img src="extras/Images/l6234.jpg" style="width:25%;display:inline"><img src="extras/Images/l298n.jpg" style="width:25%;display:inline">
 </div>
 
-Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> has a goal to support as many BLDC and stepper motor drivers as possible. Till this moment there are two kinds of motor drivers supported by this library:
 
-- [BLDC motor driver <i class="fa fa-external-link"></i>](bldc_drivers)
-    - **3 PWM signals** ( 3 phase )
-    - **6 PWM signals** ( 3 phase )
-    - gimbal motor drivers or high-performance boards
-- [Stepper drivers <i class="fa fa-external-link"></i>](stepper_drivers)
-    - **4 PWM signals** ( 2 phase )
-    - Stepper drivers or double DC motor drivers
+Arduino <span>Simple<span>FOC</span>library</span>的目标是支持尽可能多的无刷直流电机和步进电机驱动器。到目前为止，这个库支持两种驱动程序:
 
-## 📢 Make sure to read this before settling for a driver!
-Before running any BLDC motor with the <span class="simple">Simple<span class="foc">FOC</span>library</span> please make sure your hardware can handle the currents your motor requires. 
+- [无刷直流电机驱动器 <i class="fa fa-external-link"></i>](bldc_drivers)
+    - **3路PWM信号**（3相）
+    - **6路PWM信号**（3相）
+    - 云台电机驱动器或高性能板
+- [步进电机驱动器 <i class="fa fa-external-link"></i>](stepper_drivers)
+    - **4路PWM信号**（2相）
+    - 步进驱动器或双直流电机驱动器
 
-The simplest way to do it is by checking the motor phase resistance `R`. Either check the datasheet of your motor and search for the resistance value or measure it yourself using a multimeter. Then check the value of your power supply voltage `V_dc` and once when you have the values you can find the maximum current `I_max` value by calculating:
+# 📢在设置驱动之前一定要读一下这篇文章!
+
+最简单的方法是通过检查电机的相电阻`R`。检查你的电机的数据表，查找电阻值，或者用万用表自己测量。然后检查你的电源电压 `V_dc` 的值，测量出来的数值能帮助你推算出最大电流 `I_max` 值。
+
 ```cpp
 I_max = V_dc/R
 ```
-Finally check the value of the maximum current `I_max` with the datasheet of your driver board. If the `I_max` is too high you can lower the power supply voltage `V_dc` in order prevent too high peaks of the current. If you are not able to change your power supply voltage you can limit the voltage set to motor in software. 
+最后，根据驱动板数据表检查最大电流 `I_max` 值。如果 `I_max` 过高，可以降低电源电压`V_dc` ，以防止电流峰值过高。如果你不能改变你的供电电压，可以在软件中限制电机的电压设置。
+
 <blockquote class="warning">
-    <p class="heading">NOTE</p>
-    The equation above calculates the worst case maximum current <code class="highlighter-rouge">I_max</code> and in most cases calculated <code class="highlighter-rouge">I_max</code> is higher than the actual value. Maximum current depends both of the motor hardware such as winding configuration and the control algorithm.  
+    <p class="heading">注意</p>
+   由上式可以计算出最坏情况下的最大电流<code class="highlighter-rouge">I_max</code>，而大多数情况下计算出的<code class="highlighter-rouge">I_max</code>会大于实际值。实际最大电流取决于电机硬件，如绕组配置和控制算法。
 </blockquote>
+

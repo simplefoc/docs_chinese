@@ -11,9 +11,9 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
 # 运动控制实现 [v1.6](https://github.com/simplefoc/Arduino-FOC/releases)
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span>实现3个运动控制循环：
+<span class="simple">Simple<span class="foc">FOC</span>library</span>实现3个运动控制环：
 
-- 利用电压的转矩控制
+- 基于电压的力矩控制
 - 速度运动控制
 - 位置/角度控制
 
@@ -40,9 +40,7 @@ motor.controller = ControlType::angle;
 
 ## 实时执行 `move()` 
 
-The real-time motion control is executed inside `move()` function. Move function receives executes one of the control loops based on the `controller` variable. The parameter `new_target` of the `move()` function is the target value so be set to the control loop. the `new_target` value is optional and doesn't need ot be set. If it is not se the motion control will use `motor.target` variable.  
-
-实时运动控制在 `move()`函数中执行。Move函数根据 `controller` 变量接收并执行其中一个控制循环。`move（）`函数的参数`new_target`是目标值，因此必须设置为控制循环。`new_target`值是可选的，不需要设置。如果不是设置，运动控制将使用 `motor.target` 变量。
+实时运动控制在 `move()`函数中执行。Move函数根据 `controller` 变量接收并执行其中一个控制环。`move()`函数的参数`new_target`是目标值，因此必须设置为控制环。`new_target`值是可选的，不是必须要设置。如果不设置的话，运动控制将默认使用 `motor.target` 变量。
 
 如下:
 ```cpp
@@ -113,20 +111,20 @@ struct LPF_s{
 ### 低通速度滤波理论
 有关低通滤波器理论的更多信息，请访问 [ theory lovers corner ](low_pass_filter)
 
-## 利用电压的转矩控制
+## 基于电压的力矩控制
 
-由于大多数低成本万向节电机和驱动器的电流测量通常不可用，因此必须直接使用电压进行扭矩控制。
+由于大多数低成本云台电机和驱动器的电流测量通常不可用，因此必须直接使用电压进行扭矩控制。
 
 <a name="foc_image"></a><img src="extras/Images/voltage_loop.png">
 
-该控制回路假设电压与电流成比例，电流与扭矩成比例。这通常是正确的，但并不总是正确的。但从广义上讲，它在小电流应用（万向节电机）中运行良好。
+该控制回路假设电压与电流成比例，电流与扭矩成比例。这通常是正确的，但并不总是正确的。但从广义上讲，它在小电流应用（云台电机）中运行良好。
 这与我们通常对直流电机所做的假设相同。
 
-控制回路的实现非常简单，基本上将目标电压设置为'voltage_q'变量，以便使用FOC算法`loopFOC()`将其设置为电机。
+控制回路的实现非常简单，基本上将目标电压设置为`voltage_q`变量，以便使用FOC算法`loopFOC()`将其设置为电机。
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="voltage_loop"> voltage loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API使用</p>有关如何使用该控制环的更多信息，请查看<a href="voltage_loop"> voltage loop api docs</a></blockquote>
 
-### 基于电压理论的转矩控制
+### 基于电压理论的力矩控制
 有关这类控制理论的更多信息，请访问 [ theory lovers corner ](voltage_torque_control)
 
 ## 速度运动控制
@@ -187,7 +185,8 @@ struct PI_s{
 };
 ```
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="velocity_loop"> velocity loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API usage</p>有关如何使用该控制环的信息，请查看<a href="velocity_loop"> velocity loop api docs</a></blockquote>
+
 ### PI控制器理论
 
 有关在该库中实现的hte PI控制器理论的更多信息，请访问[theory lovers corner](pi_controller)
@@ -211,7 +210,7 @@ float BLDCMotor::positionP(float ek) {
   return velocity_target;
 }
 ```
-并配置`motor.P_angle`结构：
+配置`motor.P_angle`结构：
 
 ```cpp
 // P controller configuration structure
@@ -222,4 +221,4 @@ struct P_s{
 };
 ```
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="angle_loop"> angle loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API使用</p>有关如何使用该控制环的更多信息，请查看<a href="angle_loop"> angle loop api docs</a></blockquote>

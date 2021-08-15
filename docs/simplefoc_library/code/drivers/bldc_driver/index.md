@@ -10,7 +10,7 @@ has_children: True
 has_toc: False
 ---
 
-# BLDC Driver configuration（无刷直流驱动器配置）
+# 无刷直流驱动器配置
 
 <div class="width60">
 <img src="extras/Images/drv8302.png" style="width:25%;display:inline"><img src="extras/Images/bgc_30.jpg" style="width:25%;display:inline"><img src="extras/Images/l6234.jpg" style="width:25%;display:inline">

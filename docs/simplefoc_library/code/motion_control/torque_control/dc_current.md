@@ -10,22 +10,26 @@ grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">F
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 ---
 
-# Torque control using DC current
-This control loop allows you to run the BLDC motor as it is a current controlled DC motor. This torque control algorithm requires current sensing hardware. The user sets the target current <i>I<sub>d</sub></i> to the FOC algorithm calculates the necessary phase voltages <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> in order to maintain it. This mode is enabled by:
+# 转矩控制采用直流电流
+这个控制回路允许你运行BLDC motor，因为它是一个电流控制DC motor。这种力矩控制算法需要电流传感硬件。用户将目标电流<i>I<sub>d</sub></i>设置为FOC算法计算所需的相电压<i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> ，以维持它。启用该模式的有:
+
 ```cpp
 // DC current torque control mode
 motor.torque_controller = TorqueControlType::dc_current;
 ```
 
-## How does it work exactly
+## 它到底是如何工作的？
  <a name="foc_image"></a><img src="extras/Images/dc_current_mode.png">
 
-The DC current torque control algorithm reads the phase currents of the BLDC motor (usually <i>i<sub>a</sub></i> and <i>i<sub>b</sub></i>). Furthermore the algorithm reads the rotor angle <i>a</i> from the position sensor. The phase currents are transformed into the DC current <i>i<sub>DC</sub></i> using the Inverse Clarke and Park(simplified) transform. Using the target curren value <i>I<sub>d</sub></i> and the measured <i>i<sub>DC</sub></i> the PID controller calculates the appropriate voltage <i>U<sub>q</sub></i> to be set to the motor, <i>U<sub>d</sub></i> is kept in 0. Finally FOC algorithm sets the appropriate <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> voltages to the motor. FOC algorithm ensures that these voltages generate the magnetic force in the motor rotor exactly with <i>90 degree</i> offset from its permanent magnetic field, which guarantees maximal torque, this is called commutation.
+直流电流转矩控制算法读取无刷直流电机的相电流(通常是<i>i<sub>a</sub></i> 和 <i>i<sub>b</sub></i>)。
 
-The assumption of this torque control mode is that the torque generated in the motor is proportional the DC current <i>i<sub>DC</sub></i> drawn by the motor (<i>i<sub>DC</sub></i> = <i>i<sub>q</sub></i>). Therefore by controlling this current we user can control the torque value. This assumption is only true for the low velocities, for higher velocities the <i>i<sub>d</sub></i> component of the current becomes higher and <i>i<sub>DC</sub></i>=<i>i<sub>q</sub></i> no longer holds. 
+此外，该算法从位置传感器读取转子角度 <i>a</i>。 <i>i<sub>DC</sub></i>电流通过克拉克和帕克(简化)逆变换转换为直流电流。使用目标电流值<i>I<sub>d</sub></i>和测量的 <i>i<sub>DC</sub></i> PID 控制器计算适当的电压<i>U<sub>q</sub></i> 要设置到电机，<i>U<sub>d</sub></i> 保持在 0。最后FOC算法设置适当的<i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 电压到电机。FOC算法确保这些电压产生的磁力恰好与电机转子的永磁场偏移<i>90 degree</i>，这保证了最大转矩，这称为换向。
 
-## Configuration parameters
-In order to make this loop run smoothly the user needs to configure the PID controller parameters of teh `PID_current_q` and Low pass filter `LPF_current_q` time constant.
+这种转矩控制模式的假设是电机中产生的转矩与电机所绘制的 <i>i<sub>DC</sub></i> 直流电流成比例(<i>i<sub>DC</sub></i> = <i>i<sub>q</sub></i>)。因此，通过控制该电流，用户可以控制转矩值。这个假设只有在低速时才成立，对于较高的速度，当前的<i>i<sub>d</sub></i>分量会变得更高， <i>i<sub>DC</sub></i>=<i>i<sub>q</sub></i>不再成立。
+
+## 配置参数
+为了使该循环平稳运行，用户需要配置PID控制器参数`PID_current_q`和低通滤波器`LPF_current_q`时间常数。
+
 ```cpp
 // PID parameters - default 
 motor.PID_current_q.P = 5;                       // 3    - Arduino UNO/MEGA
@@ -39,9 +43,9 @@ LPF_current_q.Tf= 0.005;                         // 0.01 - Arduino UNO/MEGA
 
 
 
-## Torque control example code
+## 转矩控制示例代码
 
-A simple example of the DC current based torque control using Inline current sensor and setting the target value by serial command interface. 
+一个简单的例子，基于直流电流的扭矩控制，使用内联电流传感器和设置目标值的串行命令接口。
 
 ```cpp
 #include <SimpleFOC.h>

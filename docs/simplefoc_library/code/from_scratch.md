@@ -8,12 +8,12 @@ parent: Writing the Code
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Let's get started（让我们开始吧） 
+# 让我们开始吧
 
 当你的 <span class="simple">Simple<span class="foc">FOC</span>library</span> [安装](installation) 完成和准备好必要的 [硬件](supported_hardware) 之后，我们就可以开始有趣的部分了，编写代码让电机动起来！
 
-## Step 1. Testing the sensor（第1步. 测试传感器）
-一切都连接良好的第一个信号是传感器读数良好。要测试传感器，请浏览库实例 `examples/utils/sensor_test` ，并找到您的传感器实例。这个实例的结构是这样的：
+## 步骤1 测试传感器
+一切都连接良好的第一个信号是传感器读数良好。要测试传感器，请浏览库实例 `examples/utils/sensor_test` ，并找到你的传感器实例。这个实例的结构是这样的：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -46,11 +46,10 @@ void loop() {
 请确保更改传感器参数来适应你的应用程序，如引脚编号、每转的脉冲、总线地址等。如果不确定某些参数，请务必查看 [传感器文档](sensors) 。
 
 
-如果您的传感器连接良好并且一切正常运行，那么你的串行终端应该有传感器角度和速度的输出。
+如果你的传感器连接良好并且一切正常运行，那么你的串行终端应该有传感器角度和速度的输出。
 
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 确保测试电机时，电机的一个旋转输出的传感器角度是  <b>6.28 </b>弧度。</blockquote>
-
-## Step 2. Testing the driver（第2步. 测试驱动程序）
+## 步骤2 测试驱动程序
 当传感器在运行时，你可以继续进行测试。测试驱动程序的最简单方法是使用库的实例。如果你有充裕的时间，你可以使用 `examples/utils/driver_standalone_test` 文件夹中的实例来测试驱动程序。这些实例将驱动程序作为一个独立的模块进行测试，你可以将任何电压值设置到驱动器的任何相位。
 ```cpp
 #include <SimpleFOC.h>
@@ -82,7 +81,7 @@ void loop() {
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p>
 确保所有相位输出的是 PWM 信号，可以尝试在每个相位和地之间连接一个小的led 灯或者使用万用表测量它。</blockquote>
 
-## Step 2. Testing the driver + motor combination - open-loop（第2步. 测试驱动器+电机组合-开环）
+## 步骤2 测试驱动器+电机组合-开环
 如果你已经连接了电机，而且驱动器工作良好，我们建议你使用实例 `examples/motion_control/open_loop_motion_control`中的开环运动控制实例来测试电机+驱动器组合。如果你的驱动程序与实例中提供的不一样，请浏览 [驱动程序文档](drivers_config) ，并查找你需要的驱动程序和代码。此外，你可以浏览在 `examples/utils/driver_standalone_test` 文件夹中的实例，并查看如何使用。
 
 下面是 `BLDCDriver3PWM` 开环速度控制的一个实例：
@@ -145,8 +144,7 @@ void loop() {
 3. 确保正确输入极对数。很多数据表中找到极对数，如果你不确定，不要担心这一步就是为了准确地测出这个值。 😄
 
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 1. 在速度模式下，将你的目标速度设置为 <b>6.28 rad/s</b>，这应该正好是每秒旋转一周。<br>2. 在位置模式下，设置目标位置为 <b>6.28 rad</b>，应该正好旋转一周。 <br> 如果不是，这意味着你的极对数可能不是很对，试着改变它，直到你恰好旋转一周（或在速度模式下每秒旋转一周）</blockquote>
-
-## Step 3. Closed-loop control - torque using voltage（第3步. 闭环控制 - 使用电压控制力矩）
+## 步骤3 闭环控制 - 使用电压控制力矩
 
 当你有一个工作传感器、工作电机和驱动器的时候，你就可以继续进行闭环运动控制测试。第一个要测试的是使用电压控制力矩控制的模式，这是 <span class="simple">Simple<span class="foc">FOC</span>library</span> 中闭环控制的最简单形式。你可以在库实例的文件夹中找到不同传感器的该模式实例： `examples/motion_control/torque_control` 。
 下面是 `BLDCMotor3PWM` 驱动器和 `Encoder` 作为位置传感器的一个实例：
@@ -228,16 +226,16 @@ void loop() {
   command.run();
 }
 ```
-到目前为止，您已经知道了传感器、驱动器和电机如何配置好。如果之前的运行都是正常的，那这一步也不会有太大的问题。
+到目前为止，你已经知道了传感器、驱动器和电机如何配置好。如果之前的运行都是正常的，那这一步也不会有太大的问题。
 
-这里要采取两个重要的步骤，确保你的电机没有使用过高的 `motor.voltage_sensor_align` 值，以防止电流过大。这条规则和开环的 `motor.voltage_limit` 是一样的。如果你不确定你的相位电阻是多少，从小的值开始测： `motor.voltage_sensor_align < 1` 。此外，您还可以定义电机的相位电阻，然后使用 `motor.current_limit` 值，这个变量将限制 `motor.voltage_sensor_align` 所以你不用再为它担心了。但如果你指定了相位电阻值，你就不用为电机设置电压命令，但要设置电流命令，更多信息请参阅 [力矩控制文件](voltage_torque_mode) for more info 。
+这里要采取两个重要的步骤，确保你的电机没有使用过高的 `motor.voltage_sensor_align` 值，以防止电流过大。这条规则和开环的 `motor.voltage_limit` 是一样的。如果你不确定你的相位电阻是多少，从小的值开始测： `motor.voltage_sensor_align < 1` 。此外，你还可以定义电机的相位电阻，然后使用 `motor.current_limit` 值，这个变量将限制 `motor.voltage_sensor_align` 所以你不用再为它担心了。但如果你指定了相位电阻值，你就不用为电机设置电压命令，但要设置电流命令，更多信息请参阅 [力矩控制文件](voltage_torque_mode) 。
 
-第二个重要的技巧是使用 [监控](monitoring) 功能。这将帮助您调试可能出现的问题，在初始化和校准时会输出电机的状态。如果初始化失败，电机将被禁用，你可以用手毫无阻力地移动电机，如果代码可以运行，你的电机会开始旋转，你就可以通过串行终端设置电压（/电流，如果设置了`motor.phase_resistance` set）。 
+第二个重要的技巧是使用 [监控](monitoring) 功能。这将帮助你调试可能出现的问题，在初始化和校准时会输出电机的状态。如果初始化失败，电机将被禁用，你可以用手毫无阻力地移动电机，如果代码可以运行，你的电机会开始旋转，你就可以通过串行终端设置电压（/电流，如果设置了`motor.phase_resistance` set）。 
 
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 
 确保电机的初始化完成得很好。监控会输出你传感器的偏移，方向，极对数的检查，它会告诉你它是成功的或者是失败的。 </blockquote>
 
-## Step 5. Testing the current sense - if available（第5步. 测试电流传感器 - 如果可用）
+## 步骤5 测试电流传感器 - 如果可用
 如果你的设置里具有 SimpleFOClibrary 支持的电流传感器，那么我们建议在执行此步骤之前，确保你至少可以使用电压控制闭环力矩（第3步）。
 
 最好的开始方式是使用电压将电流传感器添加到力矩控制代码中（第3步）。并通过监控将d、q电流输出到串行终端。
@@ -343,7 +341,7 @@ void loop() {
 请浏览 [电流传感器文档](current_sense) ，查看支持的传感器和所有配置参数。
 
 
-## Step 6. Full FOC motion control using current sensing - if available（第6步. 使用电流传感器控制全 FOC 运行-如果可用）
+## 步骤6 使用电流传感器控制全 FOC 运行-如果可用
 当你配置和测试好你的电机、位置传感器、驱动器和电流传感器之后，你就可以进行真正的 FOC 控制。
 ```cpp
 #include <SimpleFOC.h>
@@ -443,7 +441,7 @@ void loop() {
 
 要查看所有的 FOC 力矩控制参数，请访问 [力矩控制文档](torque_mode)。在第4步中，如果你在调整速度和位置的过程中设置了相位电阻。你很可能不需要再重新调整它们。
 
-然而，最重要的事情还是使用 [命令界面](commander_interface) 来调整力矩控制的 PID 控制器和低 pas 滤波器的参数，通过这种方式，你将能够快速测试，实时更改控制器的参数，并且看到结果。一旦达到你满意的情况，你就可以在代码中写入这些值，然后停止使用命令。
+然而，最重要的事情还是使用 [命令接口](commander_interface) 来调整力矩控制的 PID 控制器和低 pas 滤波器的参数，通过这种方式，你将能够快速测试，实时更改控制器的参数，并且看到结果。一旦达到你满意的情况，你就可以在代码中写入这些值，然后停止使用命令。
 
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 
 将目标电流设置为 <b>0Amps</b> ，并尝试用手移动电机，确保像电机失灵一样地没有任何阻力。然后尝试设置小的电流值 (<b><0.5A</b>) ，看看你是否能感觉到电机的力量作用在你的手上。如果你能感觉到，那么这一步就成功了！ 

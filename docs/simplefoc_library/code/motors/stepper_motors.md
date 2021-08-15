@@ -8,7 +8,7 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Stepper Motor configuration（步进电机配置）
+# 步进电机配置
 
 <div class="width60">
 <img src="extras/Images/nema17_2.jpg" style="width:30%;display:inline"><img src="extras/Images/nema17_1.jpg" style="width:30%;display:inline"><img src="extras/Images/nema23.jpg" style="width:30%;display:inline">
@@ -20,7 +20,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 - 监控
 - 用户通信接口
 
-## Step 1. Creating the instance of the stepper motor（步骤1. 为步进电机创建实例）
+## 步骤1. 为步进电机创建实例
 为了举例说明步进电机的使用，需要指定电机的极对数  `pole pairs` 。
 ```cpp
 // StepperMotor(  int pp)
@@ -33,7 +33,7 @@ StepperMotor motor = StepperMotor( 50 );
  </blockquote>
 
 
-## Step 2. Linking the sensor （步骤2. 连接传感器）
+## 步骤2. 连接传感器
 定义好 `motor` 和初始化 sensor 之后，执行以下代码来连接 `motor` 和 `sensor` ：  
 ```cpp
 // link the sensor to the motor
@@ -42,8 +42,7 @@ motor.linkSensor(&sensor);
 方法 `linkSensor` 能够将电机连接到本库的任何传感器。 `sensor` 将用于确定电机的 FOC 算法中的电路位置，以及速度和位置的运动控制主循环。更多信息请参阅 [位置传感器文档](sensors) 。
 
 <blockquote class="info">当使用开环运动控制时，不需要进行连接。</blockquote>
-
-## Step 3. Linking the driver （步骤3. 连接驱动程序）
+## 步骤3. 连接驱动程序
 定义好 `motor` 和初始化 driver 之后，执行以下代码来连接 `motor` 和 `driver` ：
 ```cpp
 // link the driver to the motor
@@ -52,11 +51,11 @@ motor.linkDriver(&driver);
 
  `StepperMotor` 类期望接收到一个 `StepperDriver` 类实例，通过，默认的 `StepperDriver4PWM` 来实现。 `driver`  能够实现所有涉及到微控制器架构和驱动硬件的具体操作。 更多信息请参阅 [步进电机驱动文档](stepperdriver) ！
 
-## Step 4. Configuration（步骤4. 配置）
+## 步骤4. 配置
 
 如果你选择不设置某些配置参数，它们将会使用`defaults.h` 文件中定义的默认值，查看 [library 库源代码](source_code) 来进行更深入的挖掘。
 
-### Step 4.1 Modulation type（步骤4.1 调制方式）
+### 步骤4.1 调制方式
 
 可以改变 `motor.foc_modulation` 变量来传输：
 ```cpp
@@ -69,7 +68,7 @@ motor.foc_modulation = FOCModulationType::SinePWM;
 有关这些方法的理论和源代码实现的更多信息，请查看 [FOC实现文档](foc_implementation) 或访问 [深入挖掘部分](digging_deeper) 。
 
 
-### Step 4.2 Sensor and motor aligning parameters（步骤4.2 传感器和电机校准参数）
+### 步骤4.2 传感器和电机校准参数
 用于电机和传感器校准的电压设置变量`motor.voltage_sensor_align`：
 ```cpp
 // aligning voltage [V]
@@ -77,7 +76,7 @@ motor.foc_modulation = FOCModulationType::SinePWM;
 motor.voltage_sensor_align = 3;
 ```
 
-### Step 4.3 Motion control parameters  （步骤4.3运动控制参数）
+### 步骤4.3运动控制参数
 
  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的闭环控制：
 - [torque control loop using voltage（用电压控制力矩）](voltage_loop)
@@ -99,7 +98,6 @@ motor.voltage_sensor_align = 3;
 motor.controller = MotionControlType::angle;
 ```
 <blockquote class="warning"><p class="heading"> 注意！</p>该参数没有默认值，实时执行之前必须要设置这个值。</blockquote>
-
 每种运动控制策略都有自己的参数，更多信息请参阅 [运动控制文档](motion_control) 。
 
 下面是所有运动控制配置参数的列表：
@@ -131,14 +129,14 @@ motor.velocity_limit = 50;
 // voltage limit
 motor.voltage_limit = 12; // Volts -  default driver.voltage_limit
 ```
-### Step 4.4 Configuration done - `motor.init()` （步骤4.4 完成配置）
+### 步骤4.4 完成配置
 最后，通过运行 `init()` 函数完成配置，该函数使用配置值完成所有的硬件和软件电机组件。
 ```cpp
 // initialize motor
 motor.init();
 ```
 
-## Step 5. Field Oriented Control initialization（步骤5. FOC 初始化）
+## 步骤5. FOC 初始化
 
 在电机和传感器初始化和配置之后，开始控制运动之前，我们需要初始化 FOC 算法。
 ```cpp
@@ -146,7 +144,6 @@ motor.init();
 motor.initFOC();
 ```
 <blockquote class="danger"><p class="heading"> 开环控制时可以跳过它！</p>开环控制时，不应该调用这个函数！ </blockquote>
-
 该函数校准传感器和电机的零位，并初始化 FOC 变量，在 Arduino 的 `setup` 函数中运行。调用这个函数之后，FOC就准备好了，设置也完成了！
 
 如果你使用的是绝对传感器，比如磁传感器，你可以在 `initFOC()` 中提供传感器偏移量 `zero_electric_offset` 和传感器方向 `sensor_direction` 来避免校准程序：
@@ -159,7 +156,7 @@ motor.initFOC(2.15, Direction::CW);
 
 有关 `initFOC()` 中实际发生的情况的更多信息，请查看 [FOC 源代码实现](foc_implementation) 。
 
-## Step 6. Real-time motion control（步骤6. 实时运动控制）
+## 步骤6. 实时运动控制
 
 用两个函数来完成 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 的实时运动控制： `motor.loopFOC()` 和 `motor.move(float target)` 。
 ```cpp
@@ -170,13 +167,11 @@ motor.initFOC(2.15, Direction::CW);
 motor.loopFOC();
 ```
 <blockquote class="danger"><p class="heading"> 开环控制时可以跳过它！</p>开环控制时，不应该调用这个函数！</blockquote>
-
  `loopFOC()` 函数从传感器获取当前电机角度， 将其转换成电角度并将正交 <i>U<sub>q</sub></i> 电压 `motor.voltage_q` 转换为电机上相应的相电压 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 。
 
 将 <i>U<sub>q</sub></i> 转换到 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i>  是由 ***Sinusoidal PWM*** 的配置参数 `motor.foc_modulation` 定义的。 
 
 <blockquote class="info"><p class="heading"> 新特性 - <i>U<sub>d</sub></i> 直流电压支持！</p><i><b>Sinusoidal PWM</b></i> 支持直流电压设置 <i>U<sub>d</sub></i> ，直流电压可以通过改变 <code class="highlighter-rouge">motor.voltage_d</code>变量来设定！这是一个新特性，在当前版本中会被更多地使用。</blockquote>
-
 这个函数的执行时间很关键，因此，尽可能快地执行 `motor.loopFOC()` 函数是非常重要的！
 
 <blockquote class="warning"><p class="heading">经验法则：执行时间</p>

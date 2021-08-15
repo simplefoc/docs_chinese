@@ -9,7 +9,7 @@ has_children: True
 has_toc: False
 ---
 
-# Driver configuration（驱动器配置）
+# 驱动器配置
 
 <div class="width60">
 <img src="extras/Images/drv8302.png" style="width:25%;display:inline"><img src="extras/Images/bgc_30.jpg" style="width:25%;display:inline"><img src="extras/Images/l6234.jpg" style="width:25%;display:inline"><img src="extras/Images/l298n.jpg" style="width:25%;display:inline">
@@ -18,12 +18,13 @@ has_toc: False
 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 支持无刷直流电机和步进电机：
 
 - [无刷直流电机 <i class="fa fa-external-link"></i>](bldcdriver)
-    
-    - **3 PWM 信号** ( 3 相 ) - `BLDCDriver3PWM`
-    - **6 PWM 信号** ( 3 相 ) - `BLDCDriver6PWM`
-- [Stepper drivers <i class="fa fa-external-link"></i>](stepperdriver)
-    - **4 PWM 信号** ( 2 相 )  - `StepperDriver4PWM`
-
+  
+    - **3 路PWM 信号** ( 3 相 ) - `BLDCDriver3PWM`
+    - **6 路PWM 信号** ( 3 相 ) - `BLDCDriver6PWM`
+- [步进电机 <i class="fa fa-external-link"></i>](stepperdriver)
+  
+- **4 路PWM 信号** ( 2 相 )  - `StepperDriver4PWM`
+  
     
 
 该代码可以适应不同的驱动器，并且通用性高。

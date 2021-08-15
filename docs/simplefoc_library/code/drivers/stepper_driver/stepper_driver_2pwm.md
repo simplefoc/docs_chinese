@@ -9,30 +9,33 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Stepper Driver - `StepperDriver2PWM`
+# 2路PWM步进驱动器`StepperDriver2PWM`
 
-This is the class which provides an abstraction layer of most of the common 2PWM stepper drivers out there. Basically any stepper driver board that can be run using 2PWM signals can be represented with this class.
-Examples:
+这个类提供了一个常见的 2PWM 步进驱动器的抽象层。基本上，任何可以使用 2路PWM 信号运行的步进驱动器都可以用这个来表示。
+实例：
+
 - [L289P-based shield](https://github.com/Luen/Arduino-Motor-Shield-29250)
 - [MD1.3 stepper driver](https://wiki.dfrobot.com/MD1.3_2A_Dual_Motor_Controller_SKU_DRI0002)
 - [VNH2SP30 based boards](https://www.ebay.com/itm/Dual-VNH2SP30-Stepper-Motor-Driver-Module-30A-Monster-Moto-Shield-Replace-L298N/401089386943?hash=item5d62ca59bf:g:NA8AAOSw44BYEvxS)
-- etc.
+- 等等
 
-There are two common `2PWM` stepper driver architectures
-- With one direction pin per phase (`dirx`)
-- With two direction pin per phase (`phxa` & `phxb`)
+ `2PWM` 步进驱动有两种常见的结构
+- 每个相位有一个方向引脚 (`dirx`)
+- 每个相位有两个方向引脚 (`phxa` & `phxb`)
 
-Stepper driver with only one direction pin per phase has integrated inversion hardware in the driver itself which invert both pwm signal and direction pin. THese kinds of drivers are very common because they are intended for running dc motors with a simple pwm/direction interface. Basically, in order to run a stepper motor you need to combine two of these drivers.
+每个相位只有一个方向引脚的步进驱动器，它本身集成了逆变硬件，可以对 PWM 信号和方向引脚进行逆变。这类驱动器非常普遍，用一个简单的 pwm 方向接口运行直流电机即可。
+
+基本上，运行一个步进电机，需要结合两个驱动器。
 <img src="extras/Images/stepper_2pwm_one_dir.png" class="width100">
 
-Stepper driver with two direction pins per phase had internal inversion hardware only for the pwm input but not for the direction input. And therefore it requires these inversions to be done outside, in software. You can imagine that `StepperDriver2PWM` class emulates the hardware circuits that are available in the one direction pin drivers shown above.  
+每个相位有两个方向引脚的步进驱动器，内部的逆变硬件只用于PWM输入，而不用于方向输入。因此逆序在外部软件中完成。可以想象， `StepperDriver2PWM` 类在上图驱动器的一个方向引脚模拟硬件电路。  
 <img src="extras/Images/stepper_2pwm_two_dir.png" class="width100">
 
-## Step 1. Hardware setup
-To create the interface to the stepper driver you need to specify the 2 `pwm` pin numbers, one for each motor phase. In addition to this you can choose to specify two direction pins per phase or just one. Finally you can add optional `enable` pin for each phase `en1` and `en2`.
+## 步骤1. 硬件设置）
+要创建接口到步进驱动器，需要为电机的每个阶段指定 2个 `pwm`  引脚编号。除此之外，可以选择每个相或者一个相来指定两个方向引脚。最后，可以为每个相 `en1` 和 `en2` 添加可选的 `enable` 引脚。
 
 
-For only two direction pins per phase use the constructor:
+每个相有两个方向引脚，使用构造函数：
 ```cpp
 //  StepperDriver4PWM( int pwm1, int ph1A,int ph1B,int pwm2, int ph2A,int ph2B, int en1 (optional), int en2 (optional))
 //  - pwm1       - phase 1 pwm pin
@@ -42,7 +45,7 @@ For only two direction pins per phase use the constructor:
 //  - en1, en2  - enable pins (optional input)
 StepperDriver2PWM driver = StepperDriver2PWM(3, 4, 5, 10 , 9 , 8 , 11, 12);
 ```
-For only one direction pin per phase use the constructor:
+每个相有一个方向引脚，使用构造函数：
 ```cpp
 //  StepperDriver2PWM( int pwm1,int dir1,int pwm2,int dir2, int en1 (optional), int en2 (optional))
 //  - pwm1      - phase 1 pwm pin
@@ -53,7 +56,7 @@ For only one direction pin per phase use the constructor:
 StepperDriver2PWM driver = StepperDriver2PWM(3, 4, 5, 6, 11, 12);
 ```
 
-## Step 2.1 PWM Configuration
+## 步骤2.1 PWM 配置
 ```cpp
 // pwm frequency to be used [Hz]
 // for atmega328 fixed to 32kHz
@@ -61,24 +64,23 @@ StepperDriver2PWM driver = StepperDriver2PWM(3, 4, 5, 6, 11, 12);
 driver.pwm_frequency = 50000;
 ```
 <blockquote class="warning">
-⚠️ Arduino devices based on ATMega328 chips have fixed pwm frequency of 32kHz.
+⚠️ 基于 ATMega328 芯片的 Arduino  设备固定的 pwm 频率为 32kHz。
 </blockquote>
 
-Here is a list of different microcontrollers and their PWM frequency and resolution used with the  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>.
+下面是  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中使用的不同微控制器及其PWM频率和分辨率的列表。
 
-MCU | default frequency | MAX frequency | PWM resolution | Center-aligned | Configurable freq
---- | --- | --- | --- | ---
+MCU | default frequency（默认频率） | MAX frequency（最大频率） | PWM resolution（分辨率） | Center-aligned（中心对齐） | Configurable freq（可配置的频率） 
+--- | --- | --- | --- | --- | --- 
 Arduino UNO(Atmega328) | 32 kHz | 32 kHz | 8bit | yes | no
 STM32 | 50kHz | 100kHz | 14bit | yes | yes
 ESP32 | 40kHz | 100kHz | 10bit | yes | yes
 Teensy | 50kHz | 100kHz | 8bit | yes | yes
 
-All of these settings are defined in the `drivers/hardware_specific/x_mcu.cpp/h` of the library source. 
+这些设置都在 library 库的源文件的 `drivers/hardware_specific/x_mcu.cpp/h` 中定义。
 
 
-## Step 2.2 Voltages
-Driver class is the one that handles setting the pwm duty cycles to the driver output pins and it is needs to know the DC power supply voltage it is plugged to.
-Additionally driver class enables the user to set the absolute DC voltage limit the driver will be set to the output pins.  
+## 步骤2.2 电压
+驱动器类（Driver class）可以为驱动器输出引脚设置 pwm 占空比，需要知道它插接的直流电源电压。此外，用户能通过驱动器类（Driver class）设置驱动器输出引脚的绝对直流限压 。
 ```cpp
 // power supply voltage [V]
 driver.voltage_power_supply = 12;
@@ -88,30 +90,31 @@ driver.voltage_limit = 12;
 
 <img src="extras/Images/stepper_limits.png" class="width60">
 
-This parameter is used by the `StepperMotor` class as well. As shown on the figure above the once the voltage limit `driver.voltage_limit` is set, it will be communicated to the FOC algorithm in `StepperMotor` class and the phase voltages will be centered around the `driver.voltage_limit/2`.
+ `StepperMotor` 类也使用这个参数。 如图所示当限压 `driver.voltage_limit` 设置了，它会和 FOC 算法中的 `StepperMotor` 类通信，相位电压大约是  `driver.voltage_limit/2`。
 
-Therefore this parameter is very important if there is concern of too high currents generated by the motor. In those cases this parameter can be used as a security feature. 
+因此，如果担心电机产生的电流过大，这个参数是非常重要的。在这种情况下，该参数可以当作安全特性来使用。
 
-## Step 2.3 Initialisation
-Once when all the necessary configuration parameters are set the driver function `init()` is called. This function uses the configuration parameters and configures all the necessary hardware and software for driver code execution.
+## 步骤2.3 初始化
+当必要的配置参数都设置好了，就会调用驱动器函数 `init()` 。该函数使用配置参数，并配置驱动器代码执行所需的所有硬件和软件。
 ```cpp
 // driver init
 driver.init();
 ```
 
-## Step 3. Using encoder in real-time
+## 步骤3. 实时使用编码器
 
-BLDC driver class was developed to be used with the <span class="simple">Simple<span class="foc">FOC</span>library</span> and to provide the abstraction layer for FOC algorithm implemented in the `StepperMotor` class. But the `StepperDriver4PWM` class can used as a standalone class as well and once can choose to implement any other type of control algorithm using the bldc driver.  
+BLDC 驱动器类（BLDC driver class）是与 <span class="simple">Simple<span class="foc">FOC</span>library</span> 一起开发的，为 FOC 算法中实现的  `StepperMotor` 类提供抽象层。但是 `StepperDriver4PWM`类可以作为一个独立的类使用，以及使用无刷直流驱动器可以实现任何其他类型的控制算法。
 
-## FOC algorithm support
-In the context of the FOC control all the driver usage is done internally by the motion control algorithm and all that is needed to enable is is just link the driver to the `StepperMotor` class.
+## 支持FOC 算法
+在 FOC 控制下，驱动器的使用是由运动控制算法内部完成的，只需将驱动器连接到  `StepperMotor` 类。
+
 ```cpp
 // linking the driver to the motor
 motor.linkDriver(&driver)
 ```
 
-## Standalone driver 
-If you wish to use the bldc driver as a standalone device and implement your-own logic around it this can be easily done. Here is an example code of a very simple standalone application.
+## 独立的驱动器
+如果使用 bldc 驱动器作为一个独立的设备，实现操作是很容易的。下面是一个非常简单的应用程序的实例代码。
 ```cpp
 // Stepper driver standalone example
 #include <SimpleFOC.h>

@@ -8,7 +8,7 @@ has_children: true
 has_toc: false
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
-#  <span class="simple">Simple<span class="foc">FOC</span>library</span> example projects
+#  <span class="simple">Simple<span class="foc">FOC</span>library</span> 例程项目
 
 <div class="image_icon">
     <a href="position_control_example">

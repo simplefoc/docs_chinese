@@ -9,21 +9,22 @@ has_children: True
 has_toc: False
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
-# Motion control 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> has two main parameters that define the motion control architecture to be used (and each of them can be modified in real-time):
-- [Torque control mode](torque_mode) - `motor.torque_controller`
-- Motion control mode - `motor.controller`
-    - [Closed-loop motion control](closed_loop_motion_control) - with position sensor
-    - [Open-loop motion control](open_loop_motion_control) - no position sensor
+# 运动控制
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 有两个主要参数来定义要使用的运动控制架构(每个参数都可以实时修改):
 
-## Torque control modes
-There are three torque control types implemented in the <span class="simple">Simple<span class="foc">FOC</span>library</span>:
-- Voltage - `TorqueControlType::voltage`
-- DC current - `TorqueControlType::dc_current`
-- FOC current - `TorqueControlType::foc_current`
+- [Torque control mode](torque_mode) - `motor.torque_controller`
+- 运动控制模式 - `motor.controller`
+    - [Closed-loop motion control](closed_loop_motion_control) - -带有位置传感器
+    - [Open-loop motion control](open_loop_motion_control) - 无位置传感器
+
+## 转矩控制模式
+在<span class="simple">Simple<span class="foc">FOC</span>library</span>中有三种扭矩控制类型: 
+- 电压 - `TorqueControlType::voltage`
+- 直流电流 - `TorqueControlType::dc_current`
+- 当前的FOC - `TorqueControlType::foc_current`
 <blockquote class="warning"> ⚠️ This parameter is not used if the open-loop motion control is chosen.</blockquote>
 
-And they can be set by changing the motor attribute `torque_controller`.
+它们可以通过改变运动属性来设置 `torque_controller`.
 ```cpp
 // set torque mode to be used
 // TorqueControlType::voltage    ( default )
@@ -32,20 +33,22 @@ And they can be set by changing the motor attribute `torque_controller`.
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-For more in depth explanations about different torque modes visit the [torque mode docs](torque_mode)
+有关不同扭矩模式的更深入的解释，请访问 [torque mode docs](torque_mode)
 
-## Motion control modes
-<span class="simple">Simple<span class="foc">FOC</span>library</span> implements motion control for both cases:
-- [Closed-loop motion control](closed_loop_motion_control) - with position sensor
-- [Open-loop motion control](open_loop_motion_control) - no position sensor
+## 运动控制模式
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 实现运动控制的两种情况:
 
-### Closed-loop motion control
-There are three closed-loop motion control types implemented in the <span class="simple">Simple<span class="foc">FOC</span>library</span>:
-- Torque - `MotionControlType::torque`
-- Velocity - `MotionControlType::velocity`
-- Angle - `MotionControlType::angle`
+- [Closed-loop motion control](closed_loop_motion_control) - 与位置传感器
+- [Open-loop motion control](open_loop_motion_control) - 无位置传感器
 
-And they can be set by changing motor's `controller` parameter.  
+###  闭环运动控制
+在<span class="simple">Simple<span class="foc">FOC</span>library</span>中有三种闭环运动控制类型: 
+- 转矩- `MotionControlType::torque`
+- 速度 - `MotionControlType::velocity`
+- 角 - `MotionControlType::angle`
+
+通过改变电机的`controller`控制器参数来设定。
+
 ```cpp
 // set motion control loop to be used
 // MotionControlType::torque
@@ -53,21 +56,22 @@ And they can be set by changing motor's `controller` parameter.
 // MotionControlType::angle
 motor.controller = MotionControlType::angle;
 ```
-For more in depth explanations about different closed-loop motion control loops visit the [closed-loop control docs](closed_loop_motion_control)
+如果了解更多关于不同闭环运动控制回路的深入解释，请访问: [closed-loop control docs](closed_loop_motion_control)
 
-### Open-loop motion control
-Additionally you can run the motor in the open-loop, without position sensor feedback, as well:
-- velocity open-loop control - `MotionControlType::velocity_openloop`
-- position open-loop control - `MotionControlType::angle_openloop`
+###  开环运动控制
+此外，你可以运行电机在开环，没有位置传感器反馈，以及:
+- 速度开环控制- `MotionControlType::velocity_openloop`
+- 位置开环控制 - `MotionControlType::angle_openloop`
 
-<blockquote class="info"> Index search uses also uses open-loop position control, but has some additional parameters, see <a href="index_search_loop">index search</a></blockquote>
+<blockquote class="info"> 索引搜索使用也使用开环位置控制，但有一些额外的参数，见 <a href="index_search_loop">index search</a></blockquote>
 
-And they too can be enabled by setting motor's `controller` parameter.  
+你也可以通过设置电机的`controller`参数来实现。
+
 ```cpp
 // MotionControlType::velocity_openloop    - velocity open-loop control
 // MotionControlType::angle_openloop       - position open-loop control
 motor.controller = MotionControlType::angle_openloop;
 ```
-For more in depth explanations about different closed-loop motion control loops visit the [open-loop control docs](open_loop_motion_control)
+关于不同的闭环运动控制回路的更深入的解释，请访问[open-loop control docs](open_loop_motion_control)
 
-For more information about the source code implementation of the motion control strategies check the [library source code documentation](motion_control_implementation)
+有关运动控制策略的源代码实现的更多信息，请查看 [library source code documentation](motion_control_implementation)

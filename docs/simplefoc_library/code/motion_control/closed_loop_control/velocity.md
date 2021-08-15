@@ -10,29 +10,28 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Velocity control loop
-This control loop allows you to spin your motor with desired velocity. This mode is enabled by:
+# 速度控制回路
+这个控制回路允许你以所需的速度旋转电机。启用该模式的有:
 ```cpp
 // set velocity motion control loop
 motor.controller = MotionControlType::velocity;
 ```
-You can test this algorithm by running the examples in the `motion_control/velocity_motion_control/` folder.
+ `motion_control/velocity_motion_control/` 文件夹中的示例可以测试此算法
 
 
-## How it works
-The velocity control closes the control loop around the torque control, regardless which one it is. If it is the voltage mode without phase resistance set, the velocity motion control will set the the torque command using the voltage <i>U<sub>q</sub></i>::
+## 它是如何工作的
+速度控制围绕扭矩控制关闭控制回路，无论它是哪一个。如果是不设置相阻的电压模式，速度运动控制将使用电压 <i>U<sub>q</sub></i>:设置转矩命令：
 
 <img src="extras/Images/velocity_loop_v.png" >
 
-And if it is any of the current torque control modes (FOC or DC current) or voltage mode with provided phase resistance, the velocity motion control will be setting the target current <i>i<sub>q</sub></i>:
+如果它是任何电流转矩控制模式(FOC或DC电流)或电压模式提供的相阻，速度运动控制将设置目标电流 <i>i<sub>q</sub></i>：
 
 <img src="extras/Images/velocity_loop_i.png" >
 
+通过在 [torque control loop](voltage_loop)中加入PID速度控制器来实现速度控制。PID控制器读取电机速度<i>v</i>，将其过滤到 <i>v<sub>f</sub></i> ，并将转矩目标(<i>u<sub>q</sub></i> voltage 或者 <i>i<sub>q</sub></i> current)设置到转矩控制回路，使其达到并保持用户设定的目标速度 <i>v<sub>d</sub></i>。
 
-The velocity control is created by adding a PID velocity controller to the [torque control loop](voltage_loop). PID controller reads the motor velocity <i>v</i>, filters it to <i>v<sub>f</sub></i> and sets the torque target (<i>u<sub>q</sub></i> voltage or <i>i<sub>q</sub></i> current) to the torque control loop in a such manner that it reaches and maintains the target velocity <i>v<sub>d</sub></i>, set by the user. 
-
-## Controller parameters
-To tune this control loop you can set the parameters to both angle PID controller and velocity measurement low pass filter. 
+## 控制器参数
+为了调整这个控制回路，你可以设置角度PID控制器和速度测量低通滤波器的参数。
 ``` cpp
 // controller configuration based on the control type 
 // velocity PID controller parameters
@@ -55,24 +54,25 @@ motor.voltage_limit = 10; // Volts - default driver.voltage_limit
 // of current 
 motor.current_limit = 2; // Amps - default 0.2Amps
 ```
-The parameters of the PID controller are proportional gain `P`, integral gain `I`, derivative gain `D`  and `output_ramp`. 
-- In general by raising the proportional gain `P`  your motor controller will be more reactive, but too much will make it unstable. Setting it to `0` will disable the proportional part of the controller.
-- The same goes for integral gain `I` the higher it is the faster motors reaction to disturbance will be, but too large value will make it unstable. Setting it to `0` will disable the integral part of the controller.
-- The derivative part of the controller `D` is usually the hardest to set therefore the recommendation is to set it to `0` and tune the `P` and `I` first. Once when they are tuned and if you have an overshoot you add a bit of `D` component to cancel it.
-- The `output_ramp` value it intended to reduce the maximal change of the voltage value which is sent to the motor. The higher the value the PI controller will be able to change faster the <i>U<sub>q</sub></i> value. The lower the value the smaller the possible change and the less responsive your controller becomes. The value of this parameter is set to be `Volts per second[V/s` or in other words how many volts can your controller raise the voltage in one time unit. If you set your `voltage_ramp` value to `10 V/s`, and on average your control loop will run each `1ms`. Your controller will be able to change the <i>U<sub>q</sub></i> value each time `10[V/s]*0.001[s] = 0.01V` what is not a lot.
+ PID控制器的参数为比例增益 `P`、积分增益 `I`、微分增益 `D` 和 `output_ramp`。
 
-Additionally, in order to smooth out the velocity measurement Simple FOC library has implemented the velocity low pass filter. [Low pass filters](https://en.wikipedia.org/wiki/Low-pass_filter) are standard form of signal smoothing, and it only has one parameter - filtering time constant `Tf`. 
-- The lower the value the less influence the filter has. If you put `Tf` to `0` you basically remove the filter completely. The exact `Tf` value for specific implementation is hard guess in advance, but in general the range of values of `Tf` will be somewhere form `0` to `0.5` seconds.
+- 通常，通过提高比例增益 `P` ，你的电机控制器将产生更多无功，但太多将使它不稳定，设置为 `0`将禁用控制器的比例部分。
+- 同样地，积分增益 `I` 越高，电机对干扰的反应就越快，但过大的值会使它不稳定。设置为 `0` 将禁用控制器的组成部分。
+- 控制器`D`的导数部分通常是最难设置的，因此建议将其设置为 `0` ，并首先调整 `P` 和 `I` 。一旦它们被调好，如果你有一个超调你添加一点 `D` 分量来抵消它。
+- `output_ramp` 它旨在减少发送给电机的电压值的最大变化。值越高，Pl控制器更改Ua值的速度就越快。值越低，可能的变化就越小，控制器的响应就越慢。这个参数的值设置为 `Volts per second[V/s` 或者换句话说控制器在一个时间单位可以提高多少伏特的电压。如果你设置你的 `voltage_ramp` 值为10 V/s，平均你的控制循环将运行每 `1ms`。你的控制器将能够改变 <i>U<sub>q</sub></i> 的值每次`10[V/s]*0.001[s] = 0.01V` ，这不是很多。
 
-The `voltage_limit` parameter is intended if, for some reason, you wish to limit the voltage that can be sent to your motor.  
+此外，为了平滑速度测量，Simple FOC library 实现了速度低通滤波器的作用。[Low pass filters](https://en.wikipedia.org/wiki/Low-pass_filter) 是信号平滑的标准形式，它只有一个参数-滤波时间常数 `Tf`。
+- 当值越低，过滤器的影响越小。如果你把 `Tf` 换成 `0` 你基本上完全去掉了过滤器。具体实现的确切`Tf`值很难预先猜测，但Tf值的范围一般在 `0` 到 `0.5` 秒之间。
 
-In order to get optimal performance you will have to fiddle a bit with with the parameters. 😁
+如果出于某种原因，你希望限制可以发送到你的电机的电压，则需要使用 `voltage_limit` 。
 
-For more theory about this approach and the source code documentation check the [digging deeper section](digging_deeper).
+为了获得最佳性能，我们将对参数进行一些调整。 😁
 
-## Velocity motion control example
+有关此方法的更多理论和源代码文档，请查看 [digging deeper section](digging_deeper).
 
-Here is one basic example of the velocity motion control with the voltage mode torque control with the complete configuration. The program will set the target velocity of `2 RAD/s` and maintain it (resist disturbances) .
+## 速度运动控制实例
+
+这里是一个基本的例子，速度运动控制与电压模式转矩控制与完整的配置。该计划将设定目标速度为`2 RAD/s` 并保持它(抵抗干扰)。
 
 ```cpp
 #include <SimpleFOC.h>
@@ -147,8 +147,8 @@ void loop() {
 }
 ```
 
-## Project examples
-Here are two project examples which use velocity motion control and describe the full hardware + software setup needed.
+## 工程实例
+这里是一个项目的例子，它使用位置控制，并描述了full hardware + software setup设置
 
 
 <div class="image_icon width30">
@@ -164,4 +164,4 @@ Here are two project examples which use velocity motion control and describe the
     </a>
 </div>
 
-Find more projects in the [example projects](example_projects) section.
+在[example projects](example_projects) 部分中可以找到更多项目。

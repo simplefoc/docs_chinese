@@ -9,25 +9,29 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Index search routine
-Finding the encoder index is performed only if the constructor of the `Encoder` class has been provided with the `index` pin. The search is performed by setting a constant velocity of the motor until it reaches the index pin. To set the desired searching velocity alter the parameter:
+# 索引搜索程序
+只有在为 `Encoder` 的构造函数提供了 `index` pin，才会执行查找编码器索引。搜索是通过设置一个恒定的速度，直到它到达 index pin。要设置所需的搜索速度，请修改参数:
+
 ```cpp
 // index search velocity - default 1rad/s
 motor.velocity_index_search = 2;
 ```
-The index search is executed in the `motor.initFOC()` function. 
+索引搜索在`motor.initFOC()`函数中执行。
 
-This velocity control loop is implemented exactly the same as [velocity open-loop](/velocity_loop) and the only difference is that the voltage set to the motor will not be the `motor.volatge_limit` (or `motor.curren_limit*motor.phase_resistance`) but `motor.voltage_sensor_align`.
+速度控制实际上与 [速度开环](/velocity_loop) 控制相同，唯一的区别是电压设定值将不在是`motor.volatge_limit` (或 `motor.curren_limit*motor.phase_resistance`)而是`motor.voltage_sensor_align`.
 
-## Example of code using Index search
 
-This is an example of a motion control program which uses encoder as position sensor and particularly, encoder with `index` signal. The index search velocity is set to be `3 RAD/s`:
+
+## 使用索引搜索的代码示例
+
+这是一个运动控制程序的例子，它使用编码器作为位置传感器，特别是编码器与 `index` 信号。索引搜索速度设置为3 RAD/s:
+
 ```cpp
 // index search velocity [rad/s]
 motor.velocity_index_search = 3;
 ```
 
-After the motor and the position senor have been aligned in `motor.initFOC()` by performing index search. The motor will start spinning with angular velocity `2 RAD/s` and maintain this value.
+通过执行索引搜索，电机和位置传感器在 `motor.initFOC()` 中对齐后。电机将以角速度 `2 RAD/s` 开始旋转并保持此值。
 
 ```cpp
 #include <SimpleFOC.h>

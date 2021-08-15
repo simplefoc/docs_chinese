@@ -9,9 +9,9 @@ has_toc: False
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Getting to know the <span class="simple">Simple<span class="foc">FOC</span>library</span> code<span class="simple">（Simple<span class="foc">FOC</span>库使用教程）</span> 
+# 开始上手Simple<span class="foc">FOClibrary</span></span> 
 
-安装好 [SimpleFOC库](installation) ，准备好所有必须的 [硬件](supported_hardware) 后, 我们就要开始了解驱动电机的Arduino代码。以下是编写程序时的所有重要步骤。
+安装好 [SimpleFOClibrary](installation) ，准备好所有必须的 [硬件](supported_hardware) 后, 我们就要开始了解驱动电机的Arduino代码。以下是编写程序时的所有重要步骤。
 
 ## 第0步 引入库
 在开始前，先引入库中的头文件：
@@ -19,7 +19,7 @@ parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</
 #include <SimpleFOC.h>
 ```
 
-## 第1步 <a href="sensors" class="remove_dec">设置位置传感器</a>
+## 步骤1 <a href="sensors" class="remove_dec">设置位置传感器</a>
 
 编写程序的第一步是初始化和配置位置传感器。
 该库支持以下位置传感器：
@@ -77,9 +77,10 @@ void loop() {
   <ul>
     <li> <code class="highlighter-rouge">A</code> 和 <code class="highlighter-rouge">B</code> 通道的引脚编号: <code class="highlighter-rouge">2</code> 和 <code class="highlighter-rouge">3</code></li>
     <li> 编码器  <code class="highlighter-rouge">PPR</code> (每转脉冲数): <code class="highlighter-rouge">2048</code></li>
-    <li> <code class="highlighter-rouge">Index</code> 引脚编号 <i>（可选）</i> </li>
+    <li> <code class="highlighter-rouge">I</code> 引脚 <i>（可选）</i> </li>
   </ul> 
 </div>
+
 
 <div id="mag_p" class="hide_p">
 在例程中，我们使用了14 位磁性传感器进行设置，比如：<a href="https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D">AS5047u<i class="fa fa-external-link"></i></a>, 并将其与引脚<code class="highlighter-rouge">10</code>连接。<br>
@@ -87,20 +88,21 @@ void loop() {
   <ul>
     <li><code class="highlighter-rouge">chip_select</code> 引脚: <code class="highlighter-rouge">10</code> </li>
     <li> 传感器总 <code class="highlighter-rouge">CPR</code>（每圈脉冲数）:   <code class="highlighter-rouge">CPR = 2^14bit =16384</code></li>
-    <li> <code class="highlighter-rouge">angle</code> SPI 注册: <code class="highlighter-rouge">0x3FFF</code></li> 
+    <li> <code class="highlighter-rouge">angle</code> SPI 寄存器: <code class="highlighter-rouge">0x3FFF</code></li> 
   </ul>
 </div>
 
 
-运行 `sensor.init()`，初始化传感器硬件引脚
+
+执行 `sensor.init()`，初始化传感器硬件引脚
 
 完整的设置和参数配置文件，请访问<a href="sensors"> 位置传感器 docs <i class="fa fa-external-link"></i></a>。
 
 
-## 第2步 <a href="drivers_config" class="remove_dec">设置驱动器</a>
+## 步骤2 <a href="drivers_config" class="remove_dec">设置驱动器</a>
 配置好位置传感器后，我们开始初始化和配置驱动器。该库支持由类`BLDCDriver3PWM` 和 `BLDCDriver6PWM`  控制的无刷直流电机驱动器以及由类`StepperDriver4PWM` 控制的步进电机驱动器。
 
-类`BLDCDriver3PWM`的实现需要以下参数 ：
+类`BLDCDriver3PWM`的实例化需要以下参数 ：
 
 -  `A`, `B` 和 `C` 相对应的引脚编号
 - `enable` 的引脚编号 *（可选）*
@@ -134,12 +136,12 @@ void loop() {
 完整的设置和参数配置文件，请访问 <a href="drivers_config"> 驱动器 docs <i class="fa fa-external-link"></i></a>。
 
 
-## 第3步 <a href="current_sense" class="remove_dec">设置电流检测</a>
-配置好位置传感器及驱动器后，如果驱动器支持电流检测的话，我们开始初始化和配置电流检测。如果不支持的话，可以跳过这一步。 该库仅支持in-line电流检测 `InlineCurrentSense`这一种电流检测方式。 
+## 步骤3 <a href="current_sense" class="remove_dec">设置电流检测</a>
+配置好位置传感器及驱动器后，如果驱动器支持电流检测的话，我们开始初始化和配置电流检测。如果不支持的话，可以跳过这一步。 该库仅支持在线电流检测 `InlineCurrentSense`这一种电流检测方式。 
 
-类`InlineCurrentSense` 的实现需要以下参数：
-- 分流电阻器值 `shunt_resistance`
-- 放大器增益 `gain`
+类`InlineCurrentSense` 的实例化需要以下参数：
+- 采样电阻的阻值 `shunt_resistance`
+- 放大增益 `gain`
 -  A, B （以及可选C）相对应的引脚编号
 
 例如：
@@ -174,7 +176,7 @@ void loop() {
 
 
 
-## 第4步 <a href="motors_config" class="remove_dec">设置电机</a>
+## 步骤4 <a href="motors_config" class="remove_dec">设置电机</a>
 配置好位置传感器及驱动器后，我们开始初始化和配置电机。 该库支持由 `BLDCMotor` 类控制的无刷直流电机以及由 `StepperMotor` 类控制的步进电机。仅需填入电机极对数就能实现这两个类的控制。
 
 ```cpp
@@ -223,23 +225,23 @@ void loop() {
 }
 ```
 
-在电机实例 `motor` 创建后，我们需要用`motor.linkSensor()` 连接电机与传感器，用 `motor.linkDriver()`连接电机与驱动器。  <br>下一步是配置电机。在这个配置例子中，我们仅用到了位置控制环：
+在 创建`motor` 实例后，我们需要用`motor.linkSensor()` 连接传感器，用 `motor.linkDriver()`连接驱动器。  <br>下一步是配置电机。在这个配置例子中，我们仅用到了运动控制：
 
 ```cpp
 // set control loop type to be used
 motor.controller = MotionControlType::velocity;
 ```
-最后，我们运行  `motor.init()` 功能，结束电机 `motor` 的设置。
+最后，我们执行  `motor.init()` 函数，完成电机 `motor` 的设置。
 
 完整的设置和参数配置文件，请访问 <a href="motors_config"> 电机 docs <i class="fa fa-external-link"></i></a>.
 
 
-## 第5步 [FOC 例程及实时位置控制](motion_control)
+## 步骤5 [FOC 例程及实时位置控制](motion_control)
 在初始化位置传感器、驱动器和电机之后，运行FOC算法之前，我们需要校准电机和传感器。这个过程被称为 `motor.initFOC()`. 
-在这一步之后，我们将拥有一个能够正常工作的位置传感器以及配置好的电机，我们的FOC算法将知道怎样基于位置传感器的测量设定合适的电压。
+在这一步之后，我们将拥有一个能够正常工作的位置传感器以及配置好的电机，我们的FOC算法就可以基于位置传感器的测量设定合适的电压。
 
-在FOC算法的实时例程里，我们需要在Arduino `loop()`加入功能模块 `motor.loopFOC()` 和 `motor.move(target)` 。
-- `motor.loopFOC()`：FOC 算法执行——应该尽可能快地被执行 `> 1kHz`。
+在FOC算法的实时运行时，我们需要在Arduino `loop()`中添加函数 `motor.loopFOC()` 和 `motor.move(target)` 。
+- `motor.loopFOC()`：FOC 算法执行——应该尽可能快地被执行 ，频率`> 1kHz`。
 - `motor.move(target)`： 位置控制例程——取决于`motor.controller` 参数。
 
 下面是其在代码中的呈现：
@@ -283,11 +285,11 @@ void loop() {
 无刷直流电机完整的设置和参数配置文件，请访问 <a href="bldcmotor"> 无刷直流电机 docs  <i class="fa fa-external-link"></i></a>， 步进电机的完整文件，请访问 <a href="steppermotor"> 步进电机 docs  <i class="fa fa-external-link"></i></a>。
 
 
-## 第6步 <a href="monitoring" class="remove_dec"> 监测 </a>
+## 步骤6 <a href="monitoring" class="remove_dec"> 监测 </a>
 
-类 `BLDCMotor` 和 `StepperMotor` 提供监测功能。为了使其拥有监测的特性，你需要确保你想要输出的串口例程 `Serial` 激活了`motor.useMonitoring()` 。 在  `motor.init()` 和 `motor.initFOC()` 的运作下，类 `Serial` 将输出电机初始化状态。 
+类 `BLDCMotor` 和 `StepperMotor` 提供监测函数。为了实现检测，你需要确保`motor.useMonitoring()` 调用了你想要输出的串口实例 `Serial`。 在  `motor.init()` 和 `motor.initFOC()` 的运行过程中，类 `Serial` 将输出电机初始化状态。 
 
-如果你对实时输出电机状态变量感兴趣（即使这样会影响它的性能——编写串口的速度会很慢！），你可以添加功能模块 `motor.monitor()` 唤起 Arduino`loop()`的运作 。
+如果你希望实时输出电机状态变量（这样会影响它的性能——串口输出的速度会很慢！），你可以在 Arduino`loop()`中添加函数`motor.monitor()` 。
 
 ```cpp
 #include <SimpleFOC.h>
@@ -330,11 +332,11 @@ void loop() {
 完整的设置和参数配置文件，请访问 <a href="monitoring"> 监测 docs</a>。
 
 
-## 第7步 <a href="communication" class="remove_dec"> 命令接口</a>
+## 步骤7 <a href="communication" class="remove_dec"> 命令接口</a>
 
-最后，为了配置控制算法，设定目标值，以用户友好的方式获得状态变量（不仅仅是像使用`motor.monitor()`那样的跳变）。Arduino <span class="simple">Simple<span class="foc">FOC</span>库</span>  为你提供像通信接口一样的 G 代码，组成类 `Commander` 。
+最后，为了配置控制算法，设定目标值，以用户友好的方式获得状态变量（不只是像使用`motor.monitor()`那样的转储）。Arduino <span class="simple">Simple<span class="foc">FOC</span>库</span>  为你提供像通信接口一样的 G 代码，组成类 `Commander` 。
 
-以下代码是用户使用接口进行通信的基础实现方式：
+以下代码是用户使用接口进行通信的基础实现：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -423,9 +425,9 @@ void loop() {
 </script>
 
 
-## 第8步 [分步使用教程](example_from_scratch)
+## 步骤8 [分步使用教程](example_from_scratch)
 
-现在你应该已经熟悉SimpleFOC库的代码框架并且能够开始编写自己的应用程序了。为了使这一过程更加简单易懂，我们为你提供了详细的分步使用教程以确保你能够在初次接触这个库时一步一步的顺利进行。
+现在你应该已经熟悉SimpleFOClibrary的代码框架并且能够开始编写自己的应用程序了。为了使这一过程更加简单易懂，我们为你提供了详细的分步使用教程以确保你能够在初次接触这个库时一步一步的顺利进行。
 
 ## 🎨 完整的Arduino代码例程
 
@@ -516,4 +518,4 @@ void loop() {
 ```
 
 ## 开源代码库
-对扩展和调整SimpleFOC库源代码有兴趣的朋友，可以在 <a href="source_code">SimpleFOC库源代码 docs</a> 中找到完整文档。
+对扩展和调整SimpleFOClibrary源代码有兴趣的朋友，可以在 <a href="source_code">SimpleFOClibrary 源代码 docs</a> 中找到完整文档。
