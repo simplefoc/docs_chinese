@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: 首页
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) project documentation."
 permalink: /
