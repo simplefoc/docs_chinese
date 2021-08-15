@@ -44,7 +44,7 @@ permalink: /
 
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.1.1</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-这个视频演示了 Simple FOC 库的基本用法、电子连接并展示了它的性能。
+这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
 ### 特性
 - **兼容 Arduino**：
@@ -52,8 +52,8 @@ permalink: /
   - Arduino 库管理器集成
 - **开源**：在github上可以获得完整的代码和文档
 - **易于设置和配置**：
-  - 简单的硬件配置
-  - 易于 [调整控制回路](motion_control)
+  - 硬件连接安装简单
+  - 易于 [调整控制模式，如 开环/闭环等](motion_control)
 - **模块化**：
   - 支持尽可能多的  [传感器，无刷直流电机和驱动器板](supported_hardware) 组合
   - 支持多种 [MCU架构](microcontrollers)：
