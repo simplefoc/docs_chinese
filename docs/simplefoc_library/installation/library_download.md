@@ -8,7 +8,7 @@ permalink: /library_download
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 安装完整的 SimpleFOClibrary </span>
+# Installing <span class="simple">Simple<span class="foc">FOC</span>library（安装完整的SimpleFOC库）</span>
 
 ## <i class="fa fa-desktop"></i> 通过Arduino Library Manager安装
 最简单的方式是直接通过 `Arduino IDE`中的 *Arduino Library Manager* 获取库。

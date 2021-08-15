@@ -10,35 +10,34 @@ has_children: True
 has_toc: False
 ---
 
-# 相关理论研究
+# Theory lovers corner
 
-本节旨在解释 Arduino <span>Simple <span>FOC </span></span>library实现的一些有趣的理论特性。目前，我只简要地写了几个主题，但计划涵盖更多的主题，更深入。
+This is the section intended to explain some interesting theoretical features of the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> implementation. For now, I have briefly written only about few topics, but the plan is to cover much more topics and much more in depth.
+
 
 <div style="display:grid; width:100%">
     <div >
         <a href="voltage_torque_control">
-            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i>基于电压的力矩控制</h3>
+            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> Torque control using voltage</h3>
         </a>
-        <p>简短地解释和论证了用电压代替电流的力矩控制。</p>
+        <p> Short explanation and justification of the torque control using voltage instead current. </p>
     </div>
     <div>
         <a href="foc_theory">
-            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> Field Oriented Control(FOC)算法</h3>
+            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> Field Oriented Control algorithm</h3>
         </a>
-        <p>简要概述了用于无刷直流电机的FOC算法的调制方法和主要使用规则。</p>
+        <p> A brief overview of implemented modulation methods and the main principles of the FOC algorithms for BLDC motors.</p>
     </div>
     <div>
         <a href="low_pass_filter">
-            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i>低通滤波理论</h3>
+            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> Low pass filter theory</h3>
         </a>
-        <p>低通滤波器微分方程和实现细节。</p>
+        <p> Low pass filter differential equation and implementation details.</p>
     </div>
     <div>
         <a href="pi_controller">
-            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> PID控制器理论</h3>
+            <h3 style="color:inherit"> <i class="fa fa-lg fa-graduation-cap" style="padding:10px"></i> PID controller theory</h3>
         </a>
-        <p>PID控制器微分方程及实现细节。</p>
+        <p> PID controller differential equation and implementation details.</p>
     </div>
 <div>
-
-

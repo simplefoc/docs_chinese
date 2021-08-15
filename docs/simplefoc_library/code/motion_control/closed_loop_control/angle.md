@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Position Control 
-description: "Arduino Simple Field Oriented Control (FOC) library 。"
+description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 3
 permalink: /angle_loop
 parent: Closed-Loop Motion control
@@ -10,28 +10,27 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 位置控制回路
-这个控制回路可以让你实时调整电机到所需的角度。启用该模式的有:
+# Position control loop
+This control loop allows you to move your motor to the desired angle in real-time. This mode is enabled by:
 ```cpp
 // set angle/position motion control loop
 motor.controller = MotionControlType::angle;
 ```
-你可以通过运行 `motion_control/position_motion_control/`文件夹中的示例来测试这个算法。
+You can test this algorithm by running the examples in `motion_control/position_motion_control/` folder.
 
-## 它是如何工作的?
+## How it works
 
-角度/位置控制回路，通过调节速度关闭控制回路。而速度控制回路又通过调节转矩关闭控制回路，不管它是哪个。如果是不设置相阻的电压模式，速度运动控制将使用电压<i>U<sub>q</sub></i>设置转矩命令：
-
+The angle/position control closes the control loop around the velocity control loop. And the velocity control closes the control loop around the torque control, regardless which one it is. If it is the voltage mode without phase resistance set, the velocity motion control will set the the torque command using the voltage <i>U<sub>q</sub></i>::
 <img src="extras/Images/angle_loop_v.png">
 
-如果它是任何电流转矩控制模式(FOC或直流电流)或电压模式提供的相位电阻，角度运动控制将设置目标电流 <i>i<sub>q</sub></i>到转矩控制器:
+And if it is any of the current torque control modes (FOC or DC current) or voltage mode with provided phase resistance, the angle motion control will be setting the target current <i>i<sub>q</sub></i> to the torque controller:
 
 <img src="extras/Images/angle_loop_i.png">
 
-因此，角度控制回路是通过在 [velocity control loop](velocity_loop) 上添加一个级联控制回路来创建的，如上图所示。通过使用附加的PID控制器和可选的低通滤波器，闭环。控制器从电机读取角度<i>a</i>(过滤器是可选的)，并决定电机应该移动哪个速度<i>v<sub>d</sub></i>以达到用户设定的所需角度<i>a<sub>d</sub></i> 。然后速度控制器从电机<i>v<sub>f</sub></i> 中读取过滤后的当前速度，并将转矩目标(<i>u<sub>q</sub></i> voltage 或者 <i>i<sub>q</sub></i> current) 设置到转矩控制回路中，以达到角度回路设定的速度 <i>v<sub>d</sub></i>。
+The angle control loop is therefore created by adding one more control loop in cascade on the [velocity control loop](velocity_loop) like showed on the figure above. The loop is closed by using additional PID controller and an optional low pass filter. The controller reads the angle <i>a</i> from the motor (filters is optionally) and determines which velocity <i>v<sub>d</sub></i> the motor should move to reach the desired angle <i>a<sub>d</sub></i> set by the user. And then the velocity controller reads the current filtered velocity from the motor <i>v<sub>f</sub></i> and sets the torque target (<i>u<sub>q</sub></i> voltage or <i>i<sub>q</sub></i> current) to the torque control loop, needed to reach the velocity <i>v<sub>d</sub></i>, set by the angle loop. 
 
-## 控制器参数
-为了调整这个控制回路，你可以设置参数的第一速度PID控制器，低通滤波器和限制，
+## Controller parameters
+To tune this control loop you can set the parameters to first velocity PID controller, low pass filter and the limits, 
 ``` cpp
 // velocity PID controller parameters
 // default P=0.5 I = 10 D =0
@@ -53,8 +52,7 @@ motor.voltage_limit = 10; // Volts - default driver.voltage_limit
 // of current 
 motor.current_limit = 2; // Amps - default 0.2Amps
 ```
-然后对角度PID 控制器、低通滤波器和极限:
-
+And then the angle PID controller, low pass filter and the limits:
 ```cpp
 // angle PID controller 
 // default P=20
@@ -74,34 +72,30 @@ motor.LPF_angle.Tf = 0; // default 0
 //  maximal velocity of the position control
 motor.velocity_limit = 4; // rad/s - default 20
 ```
-为了使速度PS
-对速度PID控制器进行了参数化 `motor.PID_velocity`结构，例如 [速度控制回路](velocity_loop)。 
-
-- 粗略的规则应该是降低比例增益 `P` ，以获得更少的振动。
-- 你可能不需要接触 `I` 或 `D` 值。
+It is important to parameter both velocity PID and angle PID controller to have the optimal performance.
+The velocity PID controller is parametrized by updating the `motor.PID_velocity` structure as explained in [velocity control loop](velocity_loop). 
+- Rough rule should be to lower the proportional gain `P` in order to achieve less vibrations.
+- You probably wont have to touch the `I` or `D` value.
   
+The angle PID controller can be updated by changing the `motor.P_angle` structure. 
+- In most applications just a simple `P` controller will be enough (`I=D=0`)
+- Proportional gain `P` will make it more responsive, but too high value will make it unstable and cause vibrations.
+- `output_ramp` value is the equivalent of the acceleration limit - default value is close to infinity, lower it if needed.
+  
+For the angle control you will be able to see the influence of the velocity LPF filter as well. 
+- The `LPF_velocity.Tf` value should not change much form the velocity control to the angle control. So once you have it tuned for the velocity loop you can leave it as is.
+- The `LPF_angle.Tf` will in most cases remain equal to 0, which makes it disabled.
 
- 角度PID控制器可通过更换电机进行更新 `motor.P_angle`结构。
-- (`I=D=0`)在大多数应用中，只需一个简单的 `P` 控制器就足够了(`I=D=0`)
-- 比例增益 `P` 将使其响应更灵敏，但过高会使其不稳定并引起振动。
-- `output_ramp` 值等于加速度极限-默认值接近无穷大，如果需要降低它。
+Additionally you can configure the `velocity_limit` value of the controller. This value prevents the controller to set too high velocities <i>v<sub>d</sub></i> to the motor. 
+- If you make your `velocity_limit` very low your motor will be moving in between desired positions with exactly this velocity. If you keep it high, you will not notice that this variable even exists. 😃 
 
-对于角度控制，你也可以看到速度LPE滤波器的影响。
-- 从速度控制到角度控制 `LPF_velocity.Tf` 值变化不大。所以一旦你把它调整到速度环上你就可以让它保持原样了。
-- `LPF_angle.Tf` 在大多数情况下仍然等于0，这使它被禁用。
+Finally, each application is a bit different and the chances are you will have to tune the controller values a bit to reach desired behavior.
 
-此外，你可以配置控制器的 `velocity_limit` 限制值。此值防止控制器将电机的速度 <i>v<sub>d</sub></i> 设置得过高。
+For more theory about this approach and the source code documentation check the [digging deeper section](digging_deeper).
 
-- 如果你让你的 `velocity_limit` 非常低，你的马达就会以这个速度在期望的位置之间移动。
-- 如果你保持高值，你甚至不会注意到这个变量的存在。 😃 
+## Position control example code
 
-最后，每个应用程序都有一点不同，你可能需要对控制器值进行一些调优，以达到所需的行为。
-
-有关此方法的更多理论和源代码文档，请查看 [digging deeper section](digging_deeper)。
-
-## 位置控制示例代码
-
-这是一个非常基础的位置运动控制程序的例子，基于电压转矩控制的完整配置。当运行此代码时，电机将在角度`-1 RAD`和`1 RAD`之间每 `1 sec`移动。
+This is a very basic example of the position motion control program, based on voltage torque control with the complete configuration. When running this code the motor will move in between angles `-1 RAD` and `1 RAD` each `1 sec`. 
 
 ```cpp
 #include <SimpleFOC.h>
@@ -197,8 +191,8 @@ void loop() {
 ```
 
 
-## 工程实例
-这里是一个项目的例子，它使用位置控制，并描述了full hardware + software setup设置
+## Project examples
+Here is one project example which uses position control and describes the full hardware + software setup needed.
 
 <div class="image_icon width30">
     <a href="position_control_example">
@@ -206,4 +200,5 @@ void loop() {
         <i class="fa fa-external-link-square fa-2x"></i>
     </a>
 </div>
-在[example projects](example_projects) 部分中可以找到更多项目。
+
+Find more projects in the [example projects](example_projects) section.

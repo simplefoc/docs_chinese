@@ -8,7 +8,7 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 配置无刷直流电机
+# BLDC Motor configuration（配置无刷直流电机）
 
 <div class="width60">
 <img src="extras/Images/mot2.jpg" style="width:30%;display:inline"><img src="extras/Images/bigger.jpg" style="width:30%;display:inline"><img src="extras/Images/mot.jpg" style="width:30%;display:inline">
@@ -20,7 +20,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 - 监控
 - 用户通信接口
 
-## 步骤1. 创建无刷直流电机的实例
+## Step 1. Creating the instance of the BLDC motor（步骤1. 创建无刷直流电机的实例）
 为了举例说明无刷直流电机的使用，我们需要创建 `BLDCMotor` 类的一个实例和提供电机的极对数 `pole pairs` 。
 ```cpp
 //  BLDCMotor(int pp, (optional R))
@@ -36,7 +36,7 @@ BLDCMotor motor = BLDCMotor(11 , 10.5);
 如果你提前知道你的电机的相位电阻值 <code class="highlighter-rouge">R</code>，我们建议你把它提供给 library 库。然后 library 库会计算内部电压值，用户只需要处理电流。不过这算是一个可选的功能。
  </blockquote>
 
-## 步骤2. 连接传感器
+## Step 2. Linking the sensor （步骤2. 连接传感器）
 定义好 `motor` 和初始化 sensor 之后，执行以下代码来连接 `motor` 和 `sensor` ：
 ```cpp
 // link the sensor to the motor
@@ -45,7 +45,7 @@ motor.linkSensor(&sensor);
 方法 `linkSensor` 能够将电机连接到本库的任何传感器。 `sensor` 将用于确定电机的 FOC 算法中的电路位置，以及速度和位置的运动控制主循环。更多信息请参阅 [位置传感器文档](sensors) 。
 
 <blockquote class="info">当使用开环运动控制时，不需要进行连接。</blockquote>
-## 步骤3. 连接驱动程序
+## Step 3. Linking the driver  （步骤3. 连接驱动程序）
 定义好 `motor` 和初始化 driver 之后，执行以下代码来连接 `motor` 和 `driver` ：
 ```cpp
 // link the driver to the motor
@@ -55,7 +55,7 @@ motor.linkDriver(&driver);
  `BLDCMotor` 类期望接收到一个 `BLDCDriver` 类实例，通过，默认的 `BLDCDriver3PWM` 和 `BLDCDriver6PWM` 类来实现。 `driver`  能够实现所有涉及到微控制器架构和驱动硬件的具体操作。 更多信息请参阅 [直流无刷电机驱动文档](bldcdriver) ！
 
 
-## 步骤4.连接电流传感器
+## Step 4. Linking the current sense  （步骤4.连接电流传感器）
 如果你有电流传感器 `current_sense` ，你可以使用以下代码连接到电机：
 ```cpp
 // link the current sensor to the motor
@@ -63,11 +63,11 @@ motor.linkCurrentSense(&current_sense);
 ```
 如果你有 Library 库支持的电流传感器，才需要进行这个连接操作。 更多信息请参阅 [电流传感器文档](current_sense) ！
 
-## 步骤5. 配置参数
+## Step 5. Configuration paramters （步骤5. 配置参数）
 
 如果你选择不设置某些配置参数，它们将会使用`defaults.h` 文件中定义的默认值，查看 [library 库源代码](source_code) 来进行更深入的挖掘。
 
-### 步骤5.1 PWM 调制方式
+### Step 5.1 PWM Modulation type （步骤5.1 PWM 调制方式）
 
 无刷直流电机有四种 FOC 调制方式：
 - 正弦 PWM 调制
@@ -91,7 +91,7 @@ motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 有关这些方法的理论和源代码实现的更多信息，请查看 [FOC实现文档](foc_implementation) 或访问 [深入挖掘部分](digging_deeper) 。
 
 
-### 步骤5.2 传感器和电机调整参数
+### Step 5.2 Sensor and motor aligning parameters （步骤5.2 传感器和电机调整参数）
 用于电机和传感器校准的电压设置变量 `motor.voltage_sensor_align` ：
 ```cpp
 // aligning voltage [V]
@@ -104,15 +104,15 @@ motor.voltage_sensor_align = 3; // default 3V
 motor.velocity_index_search = 3; // default 1 rad/s
 ```
 
-### 步骤5.3 位置传感器偏置
-在某些应用中，可以方便地指定传感器的绝对零偏移量，你可以通过改变参数来定义它  `motor.sensor_offset`:
+### Step 5.3 Position sensor offset （步骤5.3 位置传感器偏置）
+在某些应用中，可以方便地指定传感器的绝对零偏移量，您可以通过改变参数来定义它  `motor.sensor_offset`:
 ```cpp
 // sensor offset [rad]
 motor.sensor_offset = 0; // default 0 rad
 ```
 这个参数可实时修改。
 
-### 步骤5.3 电机相位电阻
+### Step 5.3 Motor phase resistance （步骤5.3 电机相位电阻）
 电机相电阻是一个可选参数，它对于基于电流的力矩模式不是很重要，但如果使用电压模式并且用户指定了 `motor.phase_resistance` （无论是在构造函数中，还是在 `setup()` 函数中）该library 库将允许用户使用电流值工作，它将自动计算所需的电压。在setup函数中，你可以设置以下值来改变这个参数：
 ```cpp
 // motor phase resistance [Ohms]
@@ -126,13 +126,13 @@ motor.phase_resistance = 2.54; // Ohms - default not set
 
 如果需要，相位电阻可以实时改变。
 
-### 步骤 5.4 力矩控制模式
+### Step 5.4 Torque control mode （步骤 5.4 力矩控制模式）
 在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的力矩控制模式：
-- [电压模式](voltage_mode)
-- [直流电流](dc_current_torque_mode)
-- [FOC 电流](foc_current_torque_mode)
+- [Voltage mode（电压模式）](voltage_mode)
+- [DC current（直流电流）](dc_current_torque_mode)
+- [FOC current（FOC 电流）](foc_current_torque_mode)
 
-[直流电流](dc_current_torque_mode) 和 [FOC 电流](foc_current_torque_mode) 需要电流检测和控制电流，并限制电机的实际电流。而 [电压模式](voltage_mode) 近似于电机电流，不使用任何电流检测。 更多信息请查阅 [力矩控制文档](torque_mode) 。
+[DC current（直流电流）](dc_current_torque_mode) 和 [FOC current（FOC 电流）](foc_current_torque_mode) 需要电流检测和控制电流，并限制电机的实际电流。而 [voltage mode（电压模式）](voltage_mode) 近似于电机电流，不使用任何电流检测。 更多信息请查阅 [力矩控制文档](torque_mode) 。
 
 力矩模式可以通过改变电机属性 `torque_controller` 来设置。
 ```cpp
@@ -143,16 +143,16 @@ motor.phase_resistance = 2.54; // Ohms - default not set
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-### 步骤5.5. 电机控制参数 
+### Step 5.5 Motion control parameters （步骤5.5. 电机控制参数）  
 
 在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的闭环控制策略：
-- [力矩控制](voltage_loop)
-- [速度运动控制](velocity_loop)
-- [位置/角度运动控制](angle_loop)
+- [Torque control loop（力矩控制）](voltage_loop)
+- [Velocity motion control（速度运动控制）](velocity_loop)
+- [Position/angle motion control（位置/角度运动控制）](angle_loop)
 
 另外 <span class="simple">Simple<span class="foc">FOC</span>library</span> 也有两种开环控制策略：
-- [速度开环控制](velocity_openloop)
-- [位置开环控制](angle_openloop)
+- [Velocity open-loop control（速度开环控制）](velocity_openloop)
+- [Position open-loop control（位置开环控制）](angle_openloop)
 
 通过改变 `motor.controller` 变量来设置它：
 ```cpp
@@ -199,14 +199,14 @@ motor.voltage_limit = 12; // Volts -  default driver.voltage_limit
 motor.current_limit = 12; // Amps -  default 0.5 Amps
 ```
 
-### 步骤5.6 完成配置
+### Step 5.6 Configuration done - `motor.init()` （步骤5.6 完成配置）
 最后，通过运行 `init()` 函数完成配置，该函数使用配置值完成所有的硬件和软件电机组件。
 ```cpp
 // initialize motor
 motor.init();
 ```
 
-## 步骤6. 调整电机和所有传感器
+## Step 6. Align motor and all the sensors - Field Oriented Control init （步骤6. 调整电机和所有传感器）
 
 在配置好位置传感器、电流传感器、驱动器和电机之后，在控制运动之前，我们需要对所有硬件部件进行校准，以便初始化 FOC 算法。这是在函数 `motor.initFOC()` 内完成的。
 ```cpp
@@ -224,7 +224,7 @@ motor.initFOC();
 
 校准程序将必须移动你的电机几次，可能不是理想的行为，因此，对于大多数位置传感器（编码除外）和电流传感器，可以通过遵循步骤 6.1 和 6.2 跳过这个校准过程。 
 
-### 步骤6.1 跳过校准 - 位置传感器
+### Step 6.1 Skip alignment - position sensor （步骤6.1 跳过校准 - 位置传感器）
 
 如果你使用绝对传感器，如磁传感器或霍尔传感器，一旦你做了校准程序和有电机的零电位移传感器方向，你就不再需要完整的校准序列。因此，对于 `motor.initFOC()` ，你可以提供传感器偏移 `zero_electric_offset` 和传感器方向 `sensor_direction` ，来避免校准程序：
 ```cpp
@@ -243,7 +243,7 @@ motor.initFOC();
 
 一般地说，如果你知道这两个值中的任何一个，请务必提供它。 `iniFOC` 会跳过这部分校准。例如，对于编码器传感器，零电偏移一直在变化，但传感器方向会保持不变，因此你可以提供它，并跳过大部分校准程序。
 
-### 步骤6.2 跳过校准 - 电流检测
+### Step 6.2 Skip alignment - current sense （步骤6.2 跳过校准 - 电流检测）
 
 对于电流传感器，最好避免通过指定的电流检测标志 `skip_align` 来完成的校准过程：
 ```cpp
@@ -251,7 +251,7 @@ current_sense.skip_align  = true; // default false
 ```
 但要确保设置好所有增益，所有 ADC 引脚都校准到驱动器/电机相位。更多信息请参阅 [电流检测文档](current_sense)。
 
-## 步骤7. 实时运动控制
+## Step 7. Real-time motion control （步骤7. 实时运动控制）
 
 用两个功能来完成 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 的实时运动控制：
 - `motor.loopFOC()` - 低力矩控制
@@ -331,9 +331,8 @@ motor.target = 2;
 motor.move();
 ```
 
-## 步骤7.1 降采样运动控制
-对于许多运动控制应用来说，为每个运动控制回路运行多个力矩控制回路都应该有意义。这可以提供更好的高速性能，对平滑度有很大的影响。因此， library 库提供简单的使用 `motor.motion_downsample` 参数设置  `move()` 函数进行降采样：
-
+## Step 7.1 Motion control downsampling （步骤7.1 降采样运动控制）
+对于许多运动控制应用来说，为每个运动控制回路运行多个力矩控制回路是有意义的。这对平滑度有很大的影响，可以提供更好的高速性能。因此， library 库支持非常简单的使用  `motor.motion_downsample` 参数设置  `move()` 函数进行降采样：
 ```cpp
 // downsampling value
 motor.motion_downsample = 5; // - times (default 0 - disabled)

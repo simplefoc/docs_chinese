@@ -10,26 +10,23 @@ permalink: /foc_current_torque_mode
 nav_order: 3 
 ---
 
-# 使用FOC电流进行扭矩控制
-这种转矩控制模式允许你对无刷直流电机进行真正的转矩控制，它需要电流传感来做到这一点。用户设置目标电流 <i>I<sub>d</sub></i> 为FOC算法计算所需的相电压 <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> ，以便通过测量相电流(<i>i<sub>a</sub></i>, <i>i<sub>b</sub></i> 和 <i>i<sub>c</sub></i>)和转子角 <i>a</i>来维持它。这种模式是通过以下方式实现的:
-
+# Torque control using FOC currents 
+This torque control mode allows you to the true torque control of a BLDC motor and it requires current sensing in order to do it. The user sets the target current <i>I<sub>d</sub></i> to the FOC algorithm calculates the necessary phase voltages <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> in order to maintain it by measuring the phase currents (<i>i<sub>a</sub></i>, <i>i<sub>b</sub></i> and <i>i<sub>c</sub></i>) and the rotor angle <i>a</i>. This mode is enabled by:
 ```cpp
 // FOC current torque control mode
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-## 它到底是如何工作的
+## How does it work exactly
  <a name="foc_image"></a><img src="extras/Images/foc_current_mode.png">
 
-FOC电流转矩控制算法读取无刷直流电机(通常为<i>i<sub>a</sub></i> 和 <i>i<sub>b</sub></i>)的相电流。此外，该算法从位置传感器读取转子角度 <i>a</i> 。采用 克拉克逆变 和 帕克变换 将相电流转换为 `d` 电流 <i>i<sub>d</sub></i> 和 `q` 电流 <i>i<sub>q</sub></i> 。 使用目标电流值 <i>I<sub>d</sub></i> 和测量电流 <i>i<sub>q</sub></i> 和 <i>i<sub>d</sub></i>, PID控制器为每个轴计算适当的电压 <i>U<sub>q</sub></i> 和 <i>U<sub>d</sub></i>设置到电机，保持 <i>i<sub>q</sub></i>=<i>I<sub>d</sub></i> 和<i>i<sub>d</sub></i>=0。最后使用 帕克+克拉克 (或者 空间矢量) 变换 FOC 算法设置适当的 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 电压到电机。通过测量相电流，这种转矩控制算法确保这些电压在电机转子中产生适当的电流和磁力，与它的永久磁场正好 <i>90 °</i>，这保证了最大的转矩，这被称为换向。
 
+The FOC current torque control algorithm reads the phase currents of the BLDC motor (usually <i>i<sub>a</sub></i> and <i>i<sub>b</sub></i>). Furthermore the algorithm reads the rotor angle <i>a</i> from the position sensor. The phase currents are transformed into the `d` current <i>i<sub>d</sub></i> and `q` current <i>i<sub>q</sub></i> using the Inverse Clarke and Park transform. Using the target current value <i>I<sub>d</sub></i> and the measured currents <i>i<sub>q</sub></i> and <i>i<sub>d</sub></i>, the PID controllers for each axis calculate the appropriate voltages <i>U<sub>q</sub></i> and <i>U<sub>d</sub></i> to be set to the motor, to maintain <i>i<sub>q</sub></i>=<i>I<sub>d</sub></i> and <i>i<sub>d</sub></i>=0. Finally using Park+Clarke (or SpaceVector) transformation the FOC algorithm sets the appropriate <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> voltages to the motor. By measuring the phase currents this torque control algorithm ensures that these voltages generate the appropriate currents and magnetic force in the motor rotor with exactly <i>90 degree</i> offset from its permanent magnetic field, which guarantees maximal torque, this is called commutation.
 
+The torque generated in the motor is proportional to the q-axis current <i>i<sub>q</sub></i>, making this torque control mode the *true torque control* of a BLDC motor.  
 
-电机产生的转矩与 q-axis电流 <i>i<sub>q</sub></i>成比例，使这种转矩控制模式成为无刷直流电动机的 *true torque control* 。
-
-## 配置参数
-为了使该循环平稳运行，用户需要配置 PID 控制器参数的 `PID_current_q` 和低通滤波器 `LPF_current_q` 时间常数。
-
+## Configuration parameters
+In order to make this loop run smoothly the user needs to configure the PID controller parameters of teh `PID_current_q` and Low pass filter `LPF_current_q` time constant.
 ```cpp
 // Q axis
 // PID parameters - default 
@@ -53,9 +50,9 @@ LPF_current_d.Tf= 0.005;                         // 0.01 - Arduino UNO/MEGA
 ```
 
 
-## 转矩控制示例代码
+## Torque control example code
 
-这是一个简单的例子 FOC 基于电流的扭矩控制，使用内联电流传感器，并通过串口命令界面设置目标值。
+A simple example of the FOC current based torque control using Inline current sensor and setting the target value by serial command interface. 
 
 ```cpp
 #include <SimpleFOC.h>

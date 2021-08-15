@@ -14,15 +14,12 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
 <img src="extras/Images/closed_loop.gif">
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> 给你使用3种不同的闭环运动控制策略的选择：
-
+<span class="simple">Simple<span class="foc">FOC</span>library</span> gives you the choice of using 3 different closed-loop motion control strategies: 
 - [Torque control loop](voltage_loop)
 - [Velocity motion control](velocity_loop)
 - [Position/angle motion control](angle_loop)
 
-你可以通过改变 `motor.controller` 变量。如果你想控制电机的角度，你可以设置 `controller` 到 `MotionControlType::angle`, 
-
-如果你想通过电压或电流来寻求无刷直流电机的扭矩，请使用 `MotionControlType::torque`如果你想控制电机的角速度 `MotionControlType::velocity`。 
+You set it by changing the `motor.controller` variable. If you want to control the motor angle you will set the `controller` to `MotionControlType::angle`, if you seek the torque of the BLDC motor either through voltage or the current use `MotionControlType::torque`, if you wish to control motor angular velocity `MotionControlType::velocity`. 
 
 ```cpp
 // set FOC loop to be used
@@ -32,4 +29,4 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 motor.controller = MotionControlType::angle;
 ```
 
-这有关运动控制策略的源代码实现的更多信息，请查看 [library source code documentation](motion_control_implementation)
+For more information about the source code implementation of the motion control strategies check the [library source code documentation](motion_control_implementation)

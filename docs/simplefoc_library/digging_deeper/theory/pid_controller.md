@@ -9,54 +9,35 @@ nav_order: 3
 permalink: /pi_controller
 ---
 
+ 
+# PID controller theory [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
+Transfer function of the PID controller this library implements is:
 
-# PID控制器的理论 [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
-该库实现的PID控制器传递函数为：
+<p><img src="./extras/Images/contPID.png" /></p>
 
-$$
-G_PID=\frac{v(s)}{e(S)}=P+\frac{I}{s}+D_s
-$$
+Continuos PID is transformed to the discrete domain and can be described as a sum of three components:
 
+<p><img src="./extras/Images/PID_eq.png" /></p>
 
-连续PID离散化，可以描述为三个分量的和：
+proportional: 
+<p><img src="./extras/Images/PID_pro.png" /></p>
+integral: 
+<p><img src="./extras/Images/PID_int.png" /></p>
+derivative: 
+<p><img src="./extras/Images/PID_der.png" /></p>
 
-$$
-u(k)=u_P(k)+u_I(k)+u_D(k)
-$$
-
-
-比例环：
-$$
-u_P(k)=P_e(k)
-$$
+Where the <i>u(k)</i> is the control signal (voltage <i>U<sub>q</sub></i> in our case) in moment <i>k</i>, <i>e(k),e(k-1)</i> is the tracking error in current moment <i>k</i> and previous step <i>k-1</i>. Tracking error presents the difference in between the target velocity value <i>v<sub>d</sub></i> and measured velocity <i>v</i>. 
 
 
-积分环：
-$$
-u_I(k)=u_I(k-1)+I\frac{e(k)+e(k-1)}{2}T_s
-$$
+<p><img src="./extras/Images/track.png" /></p>
 
 
-微分环： 
-$$
-u_D(k)=D\frac{e(k)-e(k-1)}{T_s}
-$$
-
-
-其中 <i>u(k)</i> 为k时刻的控制信号(本例中为电压<i>U<sub>q</sub></i>) ，e(k),e(k-1)为当前时刻k和前一时刻k-1的跟踪误差，跟踪误差是指目标速度值 <i>v<sub>d</sub></i>与实测速度 <i>v</i>之间的差异。
-$$
-e(k)=v_d(k)-v_f(k)
-$$
-
-
-
-## 实现细节
-PID算法在 `PIDController` 中的<span>Simple<span>FOC</span></span>library中实现。通过指定参数实例化类：
-
+## Implementation details
+The PID algorithm is implemented in the  <span class="simple">Simple<span class="foc">FOC</span>library</span> in the `PIDController` class. The class is instantiated by specifying the parameters:
 ```cpp
 PIDController(float P, float I, float D, float ramp, float limit);
 ```
-该类只有一个函数：
+And the class has only one function:
 ```cpp
 // PID controller function
 float PIDController::operator() (float error){
@@ -100,8 +81,7 @@ float PIDController::operator() (float error){
     return output;
 }
 ```
-因此，你可以很容易地将PID集成到你的代码中，只需调用：
-
+Therefore you can integrate the PID into your code very easily by just calling:
 ```cpp
 void setup(){
   ...
@@ -113,8 +93,7 @@ void loop(){
 } 
 ```
 
-这个PID是在`BLDCMotor`和 `StepperMotor`中实现的，用于处理运动控制速度(`motor.PID_velocity`)和位置 (`motor.P_angle`)。你可以通过更改这些PID控制器的公共变量来更改它们的参数
-
+This PID class is implemented in the `BLDCMotor` and `StepperMotor` class for handling the motion control velocity (`motor.PID_velocity`) and position (`motor.P_angle`). You can change the values parameters of these PID controllers by changing their public variables
 ```cpp
 // PID controller configuration structure
 class PIDController
@@ -126,7 +105,7 @@ class PIDController
   ....
 };
 ```
-例如：
+For example: 
 ```cpp
 motor.PID_velocity.P = 1;
 motor.P_angle.P = 10;

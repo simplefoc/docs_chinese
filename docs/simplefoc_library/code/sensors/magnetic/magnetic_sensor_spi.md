@@ -11,10 +11,9 @@ permalink: /magnetic_sensor_spi
 ---
 
 
-# SPI磁传感器设置
+# SPI Magnetic sensor setup
 
-为了使用你的SPl磁位置传感器simpleFOClibrary首先创建一个`MagneticSensorSPI`类的实例:
-
+In order to use your SPI magnetic position sensor with <span class="simple">Simple<span class="foc">FOC</span>library</span> first create an instance of the `MagneticSensorSPI` class:
 ```cpp
 // MagneticSensorSPI(int cs, float _cpr, int _angle_register)
 //  cs              - SPI chip select pin 
@@ -22,12 +21,12 @@ permalink: /magnetic_sensor_spi
 //  angle_register  - (optional) angle read register - default 0x3FFF
 MagneticSensorSPI sensor = MagneticSensorSPI(10, 14, 0x3FFF);
 ```
-类的参数为:
-- `chip_select` - 你连接的传感器与SPI通信使用的pin number
-- `bit_resolution` - 你的传感器分辨率(传感器内部计数器寄存器的位数)
-- `angle register` - 包含角值的寄存器号。 <br>默认值 `angle_register` 数被设定 `0x3FFF` ，因为它是大多数低成本AS5048/AS5047传感器的角度寄存器。
+The parameters of the class are
+- `chip_select` - pin number you connected your sensor to be used with the SPI communication, 
+- `bit_resolution` - resolution of your sensor (number of bits of the sensor internal counter register) and your
+- `angle register` - register number containing angle value. <br>The default `angle_register` number is set to `0x3FFF` as it is the angle register for most of the low cost AS5048/AS5047 sensors. 
 
-此外，该库允许你通过设置变量来配置SPl通信时钟速度和SPl模式:
+Additionally the library allows you to configure SPI communication clock speed and SPI mode by setting the variables:
 ```cpp
 // spi mode (phase/polarity of read/writes) i.e one of SPI_MODE0 | SPI_MODE1 (default) | SPI_MODE2 | SPI_MODE3
 sensor.spi_mode = SPI_MODE0;
@@ -35,8 +34,7 @@ sensor.spi_mode = SPI_MODE0;
 sensor.clock_speed = 500000;
 ```
 
-最后，在配置之后，你需要做的唯一一件事就是调用 `init()` 函数。该功能准备SPl接口和初始化传感器硬件。所以你的磁传感器初始化代码如下:
-
+Finally after the configuration the only thing you need to do is to call the `init()` function. This function prepares the SPI interface and initializes the sensor hardware. So your magnetic sensor initialization code will look like:
 ```cpp
 MagneticSensorSPI sensor = MagneticSensorSPI(10, 14, 0x3FFF);
 
@@ -49,8 +47,7 @@ void setup(){
 }
 ```
 
-如果你希望使用多个磁传感器，请确保将它们的 `chip_select` 引脚连接到不同的arduino引脚，并遵循上面的相同想法，这里是一个简单的例子:
-
+If you wish to use more than one magnetic sensor, make sure you connect their `chip_select` pins to different arduino pins and follow the same idea as above, here is a simple example:
 ```cpp
 MagneticSensorSPI sensor1 = MagneticSensorSPI(10, 14, 0x3FFF);
 MagneticSensorSPI sensor1 = MagneticSensorSPI(9, 14, 0x3FFF);
@@ -63,9 +60,8 @@ void setup(){
 }
 ```
 
-### 多个 SPI busses 
-对于可能的微控制器，库为你提供了一种方法来提供你希望它使用的SPl总线，而不是默认的`SPI`类。
-
+### Multiple SPI busses 
+For the microcontrollers where that is possible, library provides you a way to provide it the SPI bus you would like it to use instead of default `SPI` class.
 ```cpp
 // these are valid pins (mosi, miso, sclk) for 2nd SPI bus on storm32 board (stm32f107rc)
 SPIClass SPI_2(PB15, PB14, PB13);
@@ -75,17 +71,16 @@ void setup(){
 }
 ```
 
-### 常见传感器的快速配置
+### Quick configuration for common sensors
 
-对于最常见的SPI磁传感器，该库提供了简化的配置构造函数。即AS5047/AS5147 14位SPI传感器和MA70 14位SSl传感器。
-
+For the most common SPI magnetic sensors, the library provides the simplified configuration constructor. Namely for AS5047/AS5147 14-bit SPI sensors and MA70 14-bit SSI sensor.
 ```cpp
 // instance of AS5047/AS5147 sensor
 MagneticSensorSPI sensor = MagneticSensorSPI(10, AS5147_SPI);
 // instance of MA730 sensor
 MagneticSensorSPI sensor = MagneticSensorSPI(10, MA730_SPI);
 ```
-如果你想实现自己的快速配置结构，你需要创建一个结构的实例:
+If wish to implement your own quick configuration structure, you will need to create an instance of the structure:
 ```cpp
 struct MagneticSensorSPIConfig_s  {
   int bit_resolution;
@@ -97,7 +92,7 @@ struct MagneticSensorSPIConfig_s  {
   int command_parity_bit; // default 15
 };
 ```
-并将其提供给构造函数，下面是一个示例:
+and provide it to the constructor, here is an example:
 ```cpp
 // 12 bit, 0x3FFF angle register, spi mode 1, 1MHz, default start bit, rw command, and parity bit 
 MagneticSensorSPIConfig_s MySensorConfig = {
@@ -120,26 +115,23 @@ void setup(){
 
 Please check the `magnetic_sensor_spi_example.ino` example for a quick test of your sensor. All the features of SPI magnetic sensors are implemented in the `MagneticSensorSPI.cpp/h` files. 
 
-请检查 `magnetic_sensor_spi_example.ino` 并举一个快速测试你的传感器的例子。SPl磁传感器的所有特性都在 `MagneticSensorSPI.cpp/h` 的文件中实现
 
+## Using magnetic sensor in real-time
 
-## 实时使用磁传感器
+There are two ways to use magnetic sensor implemented within this library:
+- As motor position sensor for FOC algorithm
+- As standalone position sensor
 
-在这个库中有两种方法来使用磁传感器:
-- 作为电机位置传感器用于FOC算法
-- 作为独立位置传感器
+### Position sensor for FOC algorithm
 
-### FOC算法的位置传感器
-
-我们要使用这个库中实现的FOC算法的传感器，一旦你初始化了 `sensor.init()` ，你需要通过执行将它链接到无刷直流电机
-
+To use the ensor with the FOC algorithm implemented in this library, once when you have initialized `sensor.init()` you just need to link it to the BLDC motor by executing:
 ```cpp
 motor.linkSensor(&sensor);
 ```
 
-### 独立的传感器
+### Standalone sensor 
 
-如果在任何给定时间获得磁传感器的角度和速度的时候，你可以使用公共方法:
+To get the magnetic sensor angle and velocity at any given time you can use the public methods:
 ```cpp
 class MagneticSensorSPI{
  public:
@@ -150,7 +142,7 @@ class MagneticSensorSPI{
 }
 ```
 
-下面是一个带有SPl通信的AS5047U磁传感器的快速示例:
+Here is a quick example for the AS5047U magnetic sensor with SPI communication:
 ```cpp
 #include <SimpleFOC.h>
 

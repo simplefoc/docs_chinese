@@ -8,13 +8,12 @@ grand_parent: Digging deeper
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# **电机命令列表**[v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
+# Motor commands list [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
 
-从输入指令界面输入命令ID，调用库源中由头文件中的默认值定义：`src/communication/commands.h`，hre是hte命令的列表：
-
+The command ids used by the commander interface are defined in the library source by the default values in the header file: `src/communication/commands.h`, hre is the list of hte commands:
 ```cpp
 
-// list of commands                
+// list of commands
  #define CMD_C_D_PID   'D' //!< current d PID & LPF
  #define CMD_C_Q_PID   'Q' //!< current d PID & LPF
  #define CMD_V_PID     'V' //!< velocity PID & LPF
@@ -40,18 +39,18 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
  #define SCMD_PID_RAMP  'R' //!< PID ramp
  #define SCMD_PID_LIM   'L' //!< PID limit
  #define SCMD_LPF_TF    'F' //!< LPF time constant
- // limits                
+ // limits
  #define SCMD_LIM_CURR  'C' //!< Limit current
  #define SCMD_LIM_VOLT  'U' //!< Limit voltage
  #define SCMD_LIM_VEL   'V' //!< Limit velocity
- //sensor                       
+ //sensor
  #define SCMD_SENS_MECH_OFFSET 'M' //!< Sensor offset
  #define SCMD_SENS_ELEC_OFFSET 'E' //!< Sensor electrical zero offset
- // monitoring					  
+ // monitoring
  #define SCMD_DOWNSAMPLE 'D' //!< Monitoring downsample value
  #define SCMD_CLEAR      'C' //!< Clear all monitored variables
  #define SCMD_GET        'G' //!< Get variable only one value
  #define SCMD_SET        'S' //!< Set variables to be monitored
 ```
 
-通过修改该头文件，你可以修改整个库的默认命令字符。
+By modifying this header file you can modify the default command character for the whole library.

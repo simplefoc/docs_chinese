@@ -9,46 +9,41 @@ grand_parent: Supported Hardware
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 步进电机
+# Stepper motors 
 
-Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>支持绝大多数常见的步进电机。
+Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> supports most of common stepper motors out there. 
 
-步进电机是无刷直流电机的子集，以下是它们的一些特点：
+Stepper motors are a subset of BLDC motors, and these are some of their characteristics:
+ - 2 phase motors - 4 wires
+ - Relatively high number of pole pairs >50
+ - Internal resistance generally >5Ω
+ - Currents generally under <5A
 
- - 2相电机 - 4线
- - 相对较高的极对数 >50
- - 内阻一般 >5Ω
- - 电流一般 <5A
+Stepper motors are one of the most common hobby motors. They are everywhere. The main benefits of using stepper motors are :
+- Price - *both motors and drivers are quiet cheap*
+- Simplicity of usage - *direction and step interface*
+- Good performance - *high holding torque, velocity up to 1000rpm*
 
-步进电机是最常见的电机之一。它们随处可见。使用步进电机的主要好处是：
+## Benefits of using Field Oriented Control with stepper motors
+The main problem of using the stepper motors in open-loop (without position sensor) control mode is that we are obliged to neglect all the dynamics the motor and its load have. We assume that the motor is capable of obeying any command we might have. Therefore, when using the stepper motor we often underestimate the motor's abilities in order to be sure that the motor can produce all the movements we ask it to do.
+This can be easily seen in 3D printers for example, if you set the speed of the printer's movements to be too high, the motor will start skipping (missing steps or not being able to follow) and it will ruin your print. Therefore printers often have a feed-rate factor, which enables you to slow down your instructions and avoid the movements that your motor will not be able to produce. 
 
-- 价格实惠——电机和驱动器都很便宜
-- 使用简便——方向和步进接口
-- 性能良好—高保持扭矩，速度可达1000rpm
+Additional problem of the open-loop control of stepper motors is not knowing where the motor is, what makes the control algorithm unable to respond to the disturbances from the environment. Again in 3D printing this problem is well known as losing steps. If the nozzle of the 3D printer gets stuck for a second, the 3d printer will not know it and it will continue sending the commands to the motor as if the motor has been following the whole time. This often results by the ruined print. 
 
-# 步进电机使用Field Oriented Control的好处
+So, some of the benefits of using the FOC algorithm with the stepper motors are:
+- Better dynamics
+  - Proper choice of stepper driver + position sensor + microcontroller necessary
+- No missing steps
+  - Disturbance rejection
+- Much more energy efficient 
+  - Voltage set to the motor is modulated to minimize the positioning error - (usually fixed )
+- **Backdrivable**
 
-在开环（无位置传感器）控制模式下使用步进电机的主要问题是，我们不得不忽略电机及其负载的所有动态。我们假定电机能够服从我们可能有的任何命令。因此，在使用步进电机的时候，我们往往会低估电机为确保做出我们要求它做的所有动作的能力。
+## Some supported motors 
 
-这在3D打印机中很容易看到，例如，如果你设置打印机的运动速度过高，电机将开始跳步（漏步或不能跟上），这将毁掉你的打印。因此，打印机通常有一个馈电速率因子，这使你能够减慢你的指令，并避免你的电机将无法跟上的运动。
+Here are some examples of the different price range gimbal motors that have been successfully tested with this library.
 
-步进电机开环控制的另一个问题是不知道电机在哪里，这使得控制算法无法对环境干扰做出响应。同样，在3D打印中，这个问题被称为丢步。如果3D打印机的喷嘴卡住了一秒钟，3D打印机不知道这一状况的发生，它将继续向电机发送命令，就好像电机一直在跟随。这通常会导致印刷损坏。
-
-因此，将FOC算法用于步进电机的一些好处是：
-
-- 动力更强
-  - 选择适当的步进驱动器+位置传感器+ 单片机是必要的
-- 不会丢步
-  - 抗干扰性
-- 更节能
-  - 调整电机电压，使定位误差最小化—（通常固定）
-- 可后置驱动
-
-# 某些支持的电机
-
-以下列举了一些不同价格范围、已经与library库测试成功的云台电机。
-
-示例 | 描述 | 规格 | 链接 | 价格 
+Examples | Description | Specifications | Link | Price 
 ---- | ---- | ---- | ---- | ----
 [<img src="extras/Images/nema14.jpg" style="height:100px">](https://www.ebay.com/itm/New-Geeetech-Nema14-35-BYGHW-stepper-motor-for-3d-printer-Reprap-Prusa/272847009701) | NEMA14 BYGHW |  - 50PP (200 steps) <br> - 18N.cm  <br> - 12V/1.2A <br> - 8.8Ω <br> - 35x35x35mm| [Ebay](https://www.ebay.com/itm/New-Geeetech-Nema14-35-BYGHW-stepper-motor-for-3d-printer-Reprap-Prusa/272847009701) | 10$
 [<img src="extras/Images/nema17_1.jpg" style="height:100px">](https://www.ebay.com/itm/NEMA-17-Stepper-Motor-12V-0-4A-for-CNC-Reprap-3D-Printer-Extruder-36oz-in-26Ncm/401853894019?hash=item5d905bcd83:g:u04AAOSwRBFdp-IP) | NEMA17 42BYGH34-0400A |  - 50PP (200 steps) <br> - 26N.cm  <br> - 12V/0.4A  <br> - 30Ω <br> - 42x42x34mm| [Ebay](https://www.ebay.com/itm/NEMA-17-Stepper-Motor-12V-0-4A-for-CNC-Reprap-3D-Printer-Extruder-36oz-in-26Ncm/401853894019?hash=item5d905bcd83:g:u04AAOSwRBFdp-IP) | 12$

@@ -8,55 +8,54 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Commander 接口
+# Commander interface
 
-Commander是一个简单而灵活的监控，配置和控制接口，使用类似G代码的通信协议。该通信基于“ASCII”字符命令ID，这使得在任何mcu上解析都简单高效。接收到命令id后，将调用附加到此命令的函数，并提供接收到的命令字符后面的剩余字符串。
+Commander is a simple and flexible interface monitoring, supervision, configuration and control using the G-code like communication protocol. The communication is based on `ASCII` character command ids which makes simple and efficient to parse on any mcu. After the command id has been received the function attached to this command is called and provided the remaining string of characters received which follows the command character. 
 
 <img src="extras/Images/cmd_motor.gif" class="img100">
 <img src="extras/Images/cmd_motor_get.gif" class="img100">
 
-此类似于g代码的接口提供回调来配置和调整：
-- 无刷直流或步进电机
-  - PID控制器
-  - 低通滤波器
-  - 运动控制
-  - 监测
-  - 约束
-  - 启用/禁用
-  - 传感器偏移
-  - 相电阻
+This g-code like interface provides callback to configure and tune any:
+- BLDC or Stepper motor
+  - PID controllers
+  - Low pass filters
+  - Motion control
+  - monitoring
+  - limits
+  - enable/disable
+  - sensor offsets
+  - phase resistance 
   - ... 
-- PID控制器
-- 低通滤波器
-- 浮点变量
+- PID controllers
+- Low pass filters
+- Or float variables
 
-此外，commander使你能够轻松创建自己的命令，并以特定应用程序可能需要的任何方式扩展此接口。
+Furthermore commander enables you to easily create your own commands and extend this interface in any way you might need for your particular application.
 
-## 当用户发送命令时会发生什么？
-commander收到字符串时：
+## What happens when user sends a command?
+When the commander received the string:
 
 <img src="extras/Images/cmd1.png" class="width20">
 
-它首先检查命令id，发现是'M'，则将剩余字符串发送给电机处理回调。电机的回调检查命令id是什么，发现是'V'，则将剩余的字符串发送到速度PID回调。然后速度PID回调扫描命令id并发现它是'D'，因此会设置D环数值。
+It first checks the command id, identifies its `M` and sends the remaining string to the motor handling callback. Then the motor callback checks what is the coommand id, finds `V` and sends the remaining string to the PID velocity callbacK. Then the PID velocity callback scans the command id and finds it is the `D`, so derivative gain and sets the value.
 
-Commander | 马达回调（cmd id`M`） | PID回调（cmd id`V`） 
+Commander | Motor callback (cmd id `M` )  | PID callback (cmd id `V` ) 
 --- | ---| ---
 <img src="extras/Images/cmd2.png" > | <img src="extras/Images/cmd3.png" > | <img src="extras/Images/cmd4.png" >
 
-另一个例子是，如果Commander收到：
+The other example is if the commander receives:
 
 <img src="extras/Images/cmd5.png" class="width20">
 
-它找到的第一个id是'O'，比如是motor，则将剩余的字符串传给此命令的回调函数（本例中为电机的回调函数）。然后，电机的回调函数发现是命令“E”，并知道其所指示的状态（已启用/已禁用）为setting还是getting。它检查该值并查看该值是否为空，如果为空则意味着用户发送的是get请求。
+First id that it finds is `O`, which is for example motor. It calls the callback that is assigned to this command (which is in this case motor callback) with the string remaining string. Then the motor callback finds the command `E` and knows its the status (enabled/disabled) either getting or getting. It checks the value and sees that the value is empty, which means the user has sent a get request. 
 
 Commander | Motor callback (cmd id `O` ) 
 --- | ---
 <img src="extras/Images/cmd6.png" class="img100"> | <img src="extras/Images/cmd7.png" class="img100"> 
 
 
-## 使用Commander接口
-命令接口在`Commander` 类中实现。
-
+## Using the commander interface
+Command interface is implemented in the `Commander` class.
 ```cpp
 // Commander interface constructor
 // - serial  - optionally receives HardwareSerial/Stream instance
@@ -64,17 +63,13 @@ Commander | Motor callback (cmd id `O` )
 // - echo    - option echo last typed character (for command line feedback) - defualt false
 Commander commander = Commander(Serial, "\n", false);
 ```
-行结束符EOL是“Commander”类的可选输入，表示命令字符的结束。用户可以在此处定义自己的命令结束字符，但默认情况下使用的字符是换行符“\n”。比如我
+The end of line (eol) character is an optional input of the `Commander` class which represents end of command character. User can define its own end of command characters here, but by default the character used is newline character `\n`. For example i
 
-<blockquote class="warning"><p class="heading">注意：EOL行结束符</p> 
-不同的操作系统有不同的默认行结束符。而换行符可能是最常见的字符，linux用户也有回车符'\r'。如果你希望用的是换行符作为命令字符的结束，请确保将它传给Commander类的构造函数中。</blockquote>
+<blockquote class="warning"><p class="heading">BEWARE: EOL characters</p> Different operating systems have different EOL characters by default. Newline character is probably the most common one but there is also the carriage return '\r' for linux users. Be sure to provide it to the constructor of the Commander class if you wish to use it with your setup!</blockquote>
 
-echo标志位可用作调试功能，但不建议用于实时电机控制和配置！
+The echo flag can be used as a debugging feature but it is not recommended to be used for real time motor control and configuration!
 
 Next step would be to add the commander function that reads the `Serial` instance that you provided into the Arduino `loop()`:
-
-下一步是添加commander函数，该函数将读取你提供的`Serial`实例到Arduino`loop()`：
-
 ```cpp
 void loop(){
   ...
@@ -82,38 +77,33 @@ void loop(){
 }
 ```
 
-如果没有将`Serial`实例传给`Commander`构造函数，则可以将其提供给 `run()` 函数。
-
+If you did not provide the `Serial` instance to the `Commander` constructor you can provide it to the `run()` function. 
 ```cpp
 void loop(){
   ...
   commander.run(Serial); // reads Serial instance form run
 }
 ```
-或者，如果你希望使用不带 `Serial` 且仅使用字符串变量的commander，则可以向 `run()`函数提供和 `char*` 变量：
-
+Or, if you wish to use the commander without `Serial` and using just string variables then you can provide and `char*` variables to the `run()` function:
 ```cpp
 char* my_string = "user command";
 commander.run(my_string); // reads the string
 ```
 
-<blockquote class="warning"><p class="heading"> 串行输出</p>
-<code class="highlighter-rouge">Commander</code> 类会尝试将输出打印到构造函数中提供的串行实例。如果在构造函数中没串行实例，则会始终在 <code class="highlighter-rouge">run()</code> 函数中的串行实例。如果以上都没有，则不会在任何地方输出，但用户仍然能够使用它。</blockquote>
+<blockquote class="warning"><p class="heading"> Serial output</p>
+The <code class="highlighter-rouge">Commander</code> class will always try to print the output to the serial instance provided in the constructor. If it did not receive one in the constructor, then it will use the one provided in the <code class="highlighter-rouge">run()</code> function. If it does not any of the two, it will not output anywhere, but the user can still use it.</blockquote>
 
+### Configuration 
+Commander class has two configuration parameters:
+- `verbose` - Serial output mode
+- `decimal_places` - Number of decimal places for floating point numbers 
 
-### 配置
-Commander有两个配置参数：
-- `verbose`-串行输出模式
-- `decimal_places`-浮点数的小数位数
-
-通过设置参数`decimal_places`，可以轻松更改浮点数的小数位数：
-
+Number of decimal places for floating point numbers can be changed easily by setting the parameter `decimal_places`:
 ```cpp
 commander.decimal_places = 4; // default 3
 ```
 
-通过设置参数`verbose`，可以轻松更改串行输出模式
-
+Serial output mode can be easily changed by setting the parameter `verbose`
 ```cpp
 // VerboseMode::nothing        - display nothing - good for monitoring
 // VerboseMode::on_request     - display only on user request
@@ -121,14 +111,13 @@ commander.decimal_places = 4; // default 3
 commander.verbose = VerboseMode::user_friendly;
 ```
 
-有三种类型的输出模式：
--  `VerboseMode:：nothing`-此模式不会向串行终端输出任何内容-例如，当`Commander`与 [monitoring](monitoring) 结合使用时，它非常有用，以避免Arduino的串行绘图仪中出现未知值
-- `VerboseMode:：on_request`-此模式仅输出get和set命令的结果，不会输出任何其他不必要的（可读的）文本。
-- `VerboseMode:：user_friendly`-此模式是默认模式，适用于由用户使用串行监视器发送命令的情况。除了所有必要的get和set值外，该模式还将输出额外的文本，以便于用户理解。
+There are three types of output modes:
+-  `VerboseMode::nothing` - this mode does not output anything to the serial terminal - it is very useful when `Commander` is used in combination with [monitoring](monitoring) to avoid unkonwn values in the Arduino's Serial Plotter for example
+- `VerboseMode::on_request` - this mode outputs only there resutls of get and set commands and will not output any additional unnecessary (human readable) text.
+- `VerboseMode::user_friendly` - this mode is the default mode and is intended for the cases when it is the user who sends the commands using the serial monitor. This mode will in addition to all the necessary get and set values output additional text for easier comprehension for human user.
 
-### 添加命令
-为了将给定命令字符的回调添加到`Commander`中，你需要调用函数 `add()` ，该函数接收命令字符、函数指针和命令标签：
-
+### Adding commands
+In order to add the callback for a given command character to the `Commander` you will need to call the function `add()` that receives the command character, the function pointer and the commands label:
 ```cpp
 // creating the command A in the commander
 // - command id - character
@@ -136,23 +125,20 @@ commander.verbose = VerboseMode::user_friendly;
 // - label      - label of the command (optional) 
 commander.add('A',doSomething,"do something");
 ```
-对于可以用作回调函数的函数类型，唯一的实际要求是它们需要返回`void`，并且必须接收`char*`字符串：
-
+The only real requirement for the type of the function you can use as the callback is that hey need to return `void` and they have to receive `char*` string:
 ```cpp
 void doSomething(char* cmd){ ... }
 ```
-使用这个简单的接口，你可以非常简单地创建自己的命令，并使用一行代码将它们订阅到`Commander`。
+With this simple interface you can create your own commands very simply and subscribe them to the `Commander` using just one line of code.
 
-除了此用于添加通用回调的灵活接口之外，`Commander`类还为以下对象实现了标准化回调：
+In addition to this flexible interface for adding generic callbacks the `Commander` class additionally implements standardized callbacks for:
+- BLDC motor (`BLDCMotor`)  - `commander.motor(&motor, cmd)`
+- Stepper motor (`StepperMotor`) - `commander.motor(&motor, cmd)`
+- PID controller (`PIDController`) - `commander.pid(&pid, cmd)`
+- Low pass filter (`LowPassFilter`) - `commander.lpf(&lpf, cmd)`
+- Any numeric variable (`float`) - `commander.scalar(&variable, cmd)`
 
-- 无刷直流电动机 (`BLDCMotor`)  - `commander.motor(&motor, cmd)`
-- 步进电机 (`StepperMotor`) - `commander.motor(&motor, cmd)`
-- PID控制器(`PIDController`) - `commander.pid(&pid, cmd)`
-- 低通滤波器 (`LowPassFilter`) - `commander.lpf(&lpf, cmd)`
-- 任何数值变量(`float`) - `commander.scalar(&variable, cmd)`
-
-例如，如果你对一个`motor`的完整配置感兴趣，你的代码可能如下所示：
-
+For example if you are interested in full configuration of one `motor` your code could look something like this:
 ```cpp
 BLDCMotor motor = .....
 Commander commander = ....
@@ -170,9 +156,8 @@ void loop(){
   commander.run();
 }
 ```
-或者，你可能希望调整速度PID，更改电机的目标值，并希望消除由于你不需要的其他功能而产生的不必要的内存开销，那么你的代码可能如下所示：
-大概是这样的：
-
+Or maybe you wish to tune the velocity PID and you and change the target value of the motor and you wish to remove unnecessary memory overhead due to the other functionalities you do nto necessarily need, then your code could look something like:
+something like this:
 ```cpp
 BLDCMotor motor = .....
 Commander commander = ....
@@ -195,39 +180,37 @@ void loop(){
 }
 ```
 
+This simple interface provides the user a simple way to make communicate and configure  multiple motors, PID controllers, low pass filters, scalar variables and custom commands in the same time if necessary. 
+It also makes the tuning of the custom control loops much easier since you can close the loop with a pid controller `PIDController` very easily and just add it to the commander to tune it in real time. 
 
+You can find more examples in library examples `examples/utils/communication_test/commander` folder.
 
-这个接口为用户提供了一种简单的方式，可以同时通信和配置多个电机、PID控制器、低通滤波器、标量变量或者自定义命令。它还使自定义控制回路的调整更加容易，因为你可以非常轻松地使用pid控制器`PIDController`关闭回路，只需将其添加到commander即可实时调整。
+## List of commands
 
-你可以在库examples`examples/utils/communication\u test/commander`文件夹中找到更多示例。
+All built-in commands and subcommands are defined in the library source, in file `src/communication/commands.h`.
+If you wish to change the character id of a certain command that is the place to do it. 😄
 
-## 命令列表
+In general we can separate the commands into:
+- [Commander commands](#commander-commands) - commands specific for the `Commander` class
+- [PID commands](#pid-commands)  - commands specific for the `PIDController` class
+- [Low pass filter commands](#low-pass-filter-commands) - commands specific for the `LowPassFilter` class
+- [Motor commands](#motor-commands) - commands specific for the `FOCMotor` classes
 
-所有内置命令和子命令都在库源文件`src/communication/commands.h`中定义。如果你希望更改某个命令的字符id，则可以在此进行操作。😄
+### Commander commands
+When using the `Commander` in your program the user will have three built-in default commands he can use:
+- `?` - list all the commands available
+- `#` - get/set decimal point number
+  - Examples:
+    - get decimal places `#`
+    - set 5 decimal places: `#5`
+- `@` - get/set verbose output mode
+  - Examples:
+    - get mode: `@`
+    - set user frinedly mode : `@3`
+    - set noting mode : `@0`
+    - set on request mode : `@1`
 
-通常，我们可以将命令分为：
-- [Commander 命令](#commander-commands) - `Commander` 类的命令
-- [PID 命令](#pid-commands)  -  `PIDController`类的命令
-- [Low pass filter 命令](#low-pass-filter-commands) - `LowPassFilter`类的命令
-- [Motor 命令](#motor-commands) - `FOCMotor` 类的命令
-
-### Commander 命令
-在你的程序中使用 `Commander`时，用户可以使用三个内置的默认命令：
-
-- `?` - 列出所有可用的命令
-- `#` - 获取/设置小数点位数
-  - 示例：
-    - 小数点位数 `#`
-    - 设置小数点精确到后5位： `#5`
-- `@` - 获取/设置`Commander`的输出模式
-  - 示例：
-    - 获取当前模式： `@`
-    - 设置user frinedly模式：`@3`
-    - 设置nothing模式：`@0`
-    - 设置on request模式： `@1`
-
-list命令`?`会显示所有添加到`Commander`的命令和他的标签。比如如果我们添加了如下命令：
-
+The list command `?` will display all the commands that were added to the `Commander` and their labels. For example if we have the added commands like these ones:
 ```cpp
 void setup(){
   ...
@@ -237,28 +220,23 @@ void setup(){
   ...
 }
 ```
-以下是以 *user-friendly*模式输出 `?` 的示例：
-
+Here is the example of the output of the list `?` command in *user-friendly* mode:
 ```sh
 $ ?
 M: some motor
 P: some pid
 R: some other motor
-```
+``` 
 
-### PID 命令
+### PID commands
 When using a standard callback for `PIDController` class:`commander.pid(&pid,cmd)` the user will have available set of possible commands:
+- **P**: PID controller P gain
+- **I**: PID controller I gain
+- **D**: PID controller D gain
+- **R**: PID controller output ramp
+- **L**: PID controller output limit
 
-当对 `PIDController` 类：`commander.pid(&pid,cmd)`使用标准回调时，用户将拥有一组可用的可能命令：
-
-- **P**: PID控制器P增益
-- **I**: PID控制器I增益
-- **D**: PID控制器D增益
-- **R**: PID控制器输出斜率
-- **L**:PID控制器输出约束
-
-例如，如果在`commander`中添加了PID控制器：
-
+For example if you have a PID controller added to the `commander`:
 ```cpp
 PIDController pid = ....
 Commander commander = ...
@@ -274,8 +252,7 @@ void loop(){
   commander.run();
 }
 ```
-你将能够从串行监视器配置 (set and get) 其参数：
-
+You will be able to configure (set and get) its parameters from serial monitor:
 ```sh
 $ CP           # get P gain
 P: 1.0
@@ -285,15 +262,13 @@ $ CO           # unknown command
 err
 $ CL3.25       # set output limit
 limit: 3.25
-```
+``` 
 
-### 低通滤波器命令
-使用 `LowPassFilter` 类的标准回调时：`commander.lpf（&amp;lpf，cmd）`用户将有一个可用的命令：
+### Low pass filter commands
+When using a standard callback for `LowPassFilter` class:`commander.lpf(&lpf,cmd)` the user will have available a command:
+- **F**: Low pass filter time constant
 
-- **F**: 低通滤波器时间常数
-
-例如，如果在`commander`中添加了低通滤波器：
-
+For example if you have a low pass filter added to the `commander`:
 ```cpp
 LowPassFilter filter = ....
 Commander commander = ...
@@ -309,8 +284,7 @@ void loop(){
   commander.run();
 }
 ```
-你将能够从串行监视器配置(set and get)其参数：
-
+You will be able to configure (set and get) its parameters from serial monitor:
 ```sh
 $ AF           # get time constant
 Tf: 1.0
@@ -318,50 +292,49 @@ $ AF0.05       # set time constant
 Tf: 0.05
 $ AW           # unknown command
 err
-```
-### 电机指令
-当对`BLDCMotor`和`StepperMotor`类使用标准回调时：`commander.motor(&motor,cmd)`用户将拥有一组可用的可能命令：
+``` 
+### Motor commands
+When using a standard callback for `BLDCMotor` and `StepperMotor` classes:`commander.motor(&motor,cmd)` the user will have available set of possible commands:
 
-- **Q** - Q当前PID控制器和低通滤波器（有关命令，请参见[pid](#pid-commands)和[lpf](#low-pass-filter-commands)）
-- **D** - D当前PID控制器和低通滤波器（有关命令，请参见[pid](#pid-commands)和 [lpf](#low-pass-filter-commands)）
-- **V** - 速度PID控制器和低通滤波器（有关命令，[pid](#pid-commands)和 [lpf](#low-pass-filter-commands)）
-- **A** - 角度PID控制器和低通滤波器-（有关命令，请参见[pid](#pid-commands)和 [lpf](#low-pass-filter-commands) ）
-- **L** -约束
-  -  **C** - 电流
-  -  **U** - 电压   
-  -  **V** - 速度 
-- **C** - 运动控制模式配置
-  - **D** - 下采样运动回路
-  - `0` - 力矩
-  - `1` - 速度 
-  - `2` - 角度
-  - `3` - 速度开环
-  - `4` - 角度开环
-- **T** - 力矩控制模式
-  - `0` - 电压  
-  - `1` - 直流电流
-  - `2` - FOC电流
-- **E** - 电机状态 (启用/禁用) 
-  - `0` - 启用
-  - `1` - 禁用
-- **R** - 电机相电阻              
-- **S** - 传感器偏移
-  - **M** - 传感器偏移     
-  - **E** - 传感器电气零点    
-- **W** - PWM设置
-  - **T** - pwm 调制类型   
-  - **C** - pwm 波形中心布尔
-- **M** - 监控   
-  - **D** - 下采样监测
-  - **C** - 清除监视器
-  - **S** - 设置监控变量 
-  - **G** - 获取变量值        
-- '' - 目标获取/设置                  
+- **Q** - Q current PID controller & LPF (see [pid](#pid-commands) and [lpf](#low-pass-filter-commands) for commands)
+- **D** - D current PID controller & LPF (see [pid](#pid-commands) and [lpf](#low-pass-filter-commands) for commands)
+- **V** - Velocity PID controller & LPF  (see [pid](#pid-commands) and [lpf](#low-pass-filter-commands) for commands) 
+- **A** - Angle PID controller & LPF-  (see [pid](#pid-commands) and [lpf](#low-pass-filter-commands) for commands)
+- **L** - Limits     
+  -  **C** - Current  
+  -  **U** - Voltage   
+  -  **V** - Velocity  
+- **C** - Motion control type config 
+  - **D** - downsample motion loop 
+  - `0` - torque    
+  - `1` - velocity 
+  - `2` - angle    
+  - `3` - velocity_openloop 
+  - `4` - angle_openloop    
+- **T** - Torque control type
+  - `0` - voltage      
+  - `1` - dc_current     
+  - `2` - foc_current 
+- **E** - Motor status (enable/disable) 
+  - `0` - enable    
+  - `1` - disable  
+- **R** - Motor phase resistance               
+- **S** - Sensor offsets     
+  - **M** - sensor offset          
+  - **E** - sensor electrical zero             
+- **W** - PWM settings     
+  - **T** - pwm modulation type         
+  - **C** - pwm waveform centering boolean 
+- **M** - Monitoring control    
+  - **D** - downsample monitoring     
+  - **C** - clear monitor        
+  - **S** - set monitoring variables  
+  - **G** - get variable value        
+- '' - Target get/set                  
 
 <img src="extras/Images/motor_cmd.png" class="img100">
 
-例如，如果在`commander`中添加了无刷直流电机：
-
+For example if you have a BLDC motor added to the `commander`:
 ```cpp
 BLDCMotor motor = ....
 Commander commander = ...
@@ -378,8 +351,7 @@ void loop(){
 }
 ```
 
-你将能够从串行监视器配置(set and get)其参数：
-
+You will be able to configure (set and get) its parameters from serial monitor:
 ```sh
 $ MVP                 # get PID velocity P gain
 PID vel| P: 0.20
@@ -447,9 +419,8 @@ $ MMG6                # get variable - angle
 Monitor | angle: 25.532131 
 ```
 
-#### 电机监控命令
-Commander接口使用户能够控制 [monitoring](monitoring)功能的输出。两者的结合使用户能够完全控制电机配置和调参，以及完全控制输出给用户的变量。为了使用其功能，用户需要启用对电机的监控，这是非常直接的：
-
+#### Motor monitoring control commands
+Commander interface enables the user to control the output of the [monitoring](monitoring) functionality. The combination of the two enables user a full control of the motor configuration and tuning as well as full control of variables that are outputted to the user. In order to use his functionality the user needs to enable monitoring for the motor which is really straight-forward:
 ```cpp
 BLDCMotor motor = ....
 Commander commander = ...
@@ -467,23 +438,21 @@ void loop(){
   commander.run();
 }
 ```
-最后，一旦电机添加到commander接口，用户将能够使用以下命令配置监控：
+Finally once the motor is added to the commander interface the use will be able to configure the monitoring with commands:
+- **M** - Monitoring control    
+  - **D** - downsample monitoring     
+  - **C** - clear monitor        
+  - **S** - set monitoring variables        
 
-- **M** - 监控   
-  - **D** - 下采样监测
-  - **C** - 清除监视器
-  - **S** - 设置监控变量
-
-使用这些命令，你可以更改 `monitor()` 函数的下采样率(`motor.monitor_downsampling`)，该函数将确定输出采样频率。例如，如果 `loop` 时间约为1ms，则监视器功能的下采样率为100，它将每100ms输出一次电机变量。
-如果monitor dowsampling设置为0， `monitor()` 函数将被禁用。如果`motor.monitor_variables`位图为空（等于`0`），则情况也是如此。因此，命令**C**有效地执行以下操作：
-
+Using these commands you can change the downsampling rate (`motor.monitor_downsampling`) of the `monitor()` function that will determine your output sampling frequency. For example if your `loop` time is around 1ms, then with downsampling of monitor function with the rate of 100, it will output the motor variables each 100ms.  
+If monitor dowsampling is set to 0  the `monitor()` function is disabled. The same is true if the `motor.monitor_variables` bitmap is empty (equal to `0`). Therefore the command **C** effectively does:
 ```cpp
 // when command MC is called
 motor.monitor_variables = 0;
 ```
-最后，命令**MS**用于获取/设置 `motor.monitor_variables` 位图。
+Finally the command **MS** is used to get/set the `motor.monitor_variables` bitmap. 
 
-因此，通信可如下所示：
+Therefore te communication could look something like this:
 ```sh
 $ MMD                 # get monitor downsampling rate
 Monitor | downsample: 10 
@@ -515,9 +484,8 @@ When using monitoring to tune the motion control parameters or just to visualize
 </blockquote>
 
 
-## 使用motor命令的示例代码
-这是在代码中使用motor命令进行监控的一个简单示例。有关更多示例，请浏览库示例，尤其是`examples/utils/communication_tes/commander`文件夹。
-
+## Example code using the motor commands
+This is one simple example of using motor commands with monitoring in the code. For more examples browse through the library examples, especially through the `examples/utils/communication_tes/commander` folder.
 ```cpp
 #include <SimpleFOC.h>
 
@@ -595,9 +563,9 @@ void loop() {
 
 ## *Simple**FOC**Studio* by [@JorgeMaker](https://github.com/JorgeMaker)
 
-SimpleFOCStudio是由[@JorgeMaker](https://github.com/JorgeMaker) 构建的一个很棒的应用程序我们会尽量在没有库的情况下保持最新。它是一个python应用程序，使用commander接口来调试和配置电机。
+SimpleFOCStudio is an awesome application built by [@JorgeMaker](https://github.com/JorgeMaker) which we will try to keep up to date with out library. It is a python application that uses commander interface for tunning and configuring the motor. 
 
 <img src="https://raw.githubusercontent.com/JorgeMaker/SimpleFOCStudio/main/DOC/new_gif.gif" class="width80">
 
-有关如何安装和使用此应用程序的更多信息，请访问 docs <i class="fa fa-external-link"></i>](studio). 
+For more info how to install and use this application visit the studio [docs <i class="fa fa-external-link"></i>](studio). 
 

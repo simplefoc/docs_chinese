@@ -10,11 +10,10 @@ has_children: True
 has_toc: false
 ---
 
-# Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 源代码[v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
-arduino库代码被组织成标准 [Arduino library structure（Arduino的库结构）](https://github.com/arduino/Arduino/wiki/Library-Manager-FAQ)。
-该库包含两种类型的无刷直流电机的FOC实现，即 `BLDCMotor` 的标准三相无刷直流电机和`StepperMotor`的两相步进电机。该库实现了许多位置传感器，它们都位于 `senors`目录以及 `drivers`目录中的驱动程序中。该库还实现了电流传感器，它们被放在 `current_sense`目录中，以及几个通信接口，被放在`communication`文件夹中。最后，所有实用程序函数和类都放在 `common`文件夹中。
-
-## Arduino的库代码结构
+# Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> source code [v2.1](https://github.com/simplefoc/Arduino-FOC/releases)
+The arduino library code is organized into the standard [Arduino library structure](https://github.com/arduino/Arduino/wiki/Library-Manager-FAQ). 
+The library contains FOC implementation for two types of BLDC motors, standard three phase BLDC motor in the class `BLDCMotor` and 2 phase stepper motors `StepperMotor`. The library implements numerous position sensors and they are all placed in the `senors` directory as well as drivers which are in the `drivers` directory. The library implements current sensors as well and they are placed in the `current_sense` directory as well as several communication interfaces, placed in the `communication` folder. Finally all the utility functions and classes are placed in the `common` folder. 
+## Arduino library source structure
 ```sh
 | src
 | ├─ SimpleFOC.h               # Main include file
@@ -29,29 +28,29 @@ arduino库代码被组织成标准 [Arduino library structure（Arduino的库结
 | ├─── communication           # Communication protocols implementation
 ```
 
-<blockquote class="info">更多信息，请访问<a href="http://source.simplefoc.com/" target="_blank"> full source code documentation <i class="fa fa-external-link fa-sm"></i></a></blockquote>
+<blockquote class="info">For more info visit <a href="http://source.simplefoc.com/" target="_blank"> full source code documentation <i class="fa fa-external-link fa-sm"></i></a></blockquote>
 
-## 电机
+## Motors
 ### `BLDCMotor.cpp/h`
-无刷直流电机的实现
-- FOC算法的实现
-- 运动控制实现
+BLDCMotor class implementation
+- FOC algorithm implementation
+- Motion control implementation
 
 ### `StepperMotor.cpp/h`
-无刷直流电机的实现
-- FOC算法的实现
-- 运动控制实现
+BLDCMotor class implementation
+- FOC algorithm implementation
+- Motion control implementation
 
-<blockquote class="info"><a href="foc_implementation"><i class="fa fa-copy"></i> FOC implementation details</a> ——实现FOC算法代码的详细解释及逐步教程文件。
+
+<blockquote class="info"><a href="foc_implementation"><i class="fa fa-copy"></i> FOC implementation details</a> - Documentation of the procedures and detailed explanations of the code implementing FOC algorithm 
 </blockquote>
 <blockquote class="info">
-     <a href="motion_control_implementation"><i class="fa fa-copy"></i> Motion control implementation details</a> ——运动控制算法与代码实现选择文件。
+     <a href="motion_control_implementation"><i class="fa fa-copy"></i> Motion control implementation details</a> - Documentation of the motion control algorithms and code implementation choices
 </blockquote>
 
 
-
-## 驱动器
-此库中支持的所有驱动程序都放在驱动程序目录中。
+## Drivers
+All the drivers that are supported in this library are placed in the drivers directory. 
 ```sh
 | ├─── drivers  
 | | ├─ BLDCDriver3PWM.cpp/h         # Implementation of generic 3PWM bldc driver
@@ -69,8 +68,7 @@ arduino库代码被组织成标准 [Arduino library structure（Arduino的库结
 | | | ├─ teensy_mcu.cpp             # teensy implementation
 | | | └─ generic_mcu./h             # generic implementation - if not nay of above (not complete)   
 ```
-所有BLDC驱动程序都能实现抽象类`BLDCDriver`。
-
+ALl BLDC drivers  implement the abstract class `BLDCDriver`. 
 ```cpp
 class BLDCDriver{
     public:
@@ -102,8 +100,7 @@ class BLDCDriver{
         virtual void setPhaseState(int sa, int sb, int sc) = 0;
 };
 ```
-所有的步进驱动程序都能实现`StepperDriver`抽象类。
-
+And all the stepper drivers implement the `StepperDriver` abstract class.
 ```cpp
 class StepperDriver{
     public:
@@ -129,9 +126,8 @@ class StepperDriver{
 };
 ```
 
-此外，所有支持simplefoc库的MCU体系结构都必须实现头文件`hardware_api.h`。现成支持的体系结构将在`hardware_specific`文件夹中实现`hardware_api.h`。如果你希望实现新的MCU，请至少创建一个新的MCU实例：`my_new_mcu.cpp`  并实现文档中的所有功能，或者至少能实现你需要的功能。
-
-## 传感器
+Furthermore all the supported MCU architectures with the simplefoc library have to implement the header file `hardware_api.h`. The off-the-shelf supported architectures will have implementation of the `hardware_api.h` placed in the `hardware_specific` folder. If you wish to implement a new MCU please do create a new instance of the `my_new_mcu.cpp` and implement all the functions from the `hardware_api.h`, or at least the ones that you need.
+## Sensors
 
 ```sh
 | ├─── sensors 
@@ -141,9 +137,9 @@ class StepperDriver{
 | │ ├─ MagneticSensorAnalog.cpp/h   # class implementing Analog output for Magnetic sensors
     └─ HallSensor.cpp/h             # class implementing Hall sensor
 ```
-该库能实现的所有位置传感器类目都放置在该目录里，所有这些都将实现抽象传感器类`Sensor`。为了能够连接上电机 (`BLDCMotor` 和 `StepperMotor` )，每个传感器都需要执行`Sensor` 。如果你想实现自己版本的传感器，请扩展该类并实现虚拟函数，你将能够使用它运行FOC算法。
-你可以通过执行`motor.linkSensor(your sensor)`来连接电机和传感器
-
+All position sensor classes implemented in this library are placed in this directory, and all of them will be implementing abstract sensor class `Sensor`. Every sensor needs to implement the `Sensor` class in order to be linkable to the motor (`BLDCMotor` and `StepperMotor` class). 
+If you want to implement your own version of the sensor, jut extend this class and implement the virtual functions and you will be able to run the FOC algorithm with it.
+You will be abele to link motor and the sensor by doing `motor.linkSensor(your sensor)`
 ```cpp
 class Sensor{
 public:
@@ -161,7 +157,7 @@ public:
 }
 ```
 
-## 电流检测
+## Current Sense
 
 ```sh
 | ├─── current_sense 
@@ -172,8 +168,7 @@ public:
 | | ├─── hardware_specific          # mcu specific hadrware_api.h implementations
 | |   └─ generic_mcu./h             # generic implementation - for now generic mcu does the job 
 ```
-所有的Current Sense类都实现了`CurrentSense`接口。这个接口仍然是全新的并且可能随着更多的电流控制环被实现而在将来的版本中进行更改。
-
+All the current sense classes implement the `CurrentSense` interface. This interface is still quiet new and might be supject to change for the future releases when more current control loops are implemented.
 ```cpp
 class CurrentSense{
     public:
@@ -221,7 +216,7 @@ class CurrentSense{
 };
 ```
 
-## 通信
+## Communication
 
 ```sh
 | ├─── communication 
@@ -231,32 +226,30 @@ class CurrentSense{
 | │ └─ StepDirListener.cpp/h  # Step/dir listener implementation
 ```
 
-此文件夹包含所有内置支持的通信协议。
+This folder contains all the built-in supported communication protocols. 
 
 ### `Commander.cpp/h`
-Commander class 工具
-- 灵活的g码式通信
-- 串行通信的处理
-- 内置处理 `FOCMotor`、`PIDController`和`LowPassFilter`
-- 其他...
+Commander class implements
+- Flexible g-code like communication 
+- Handling of serial communication
+- Built-in handling of `FOCMotor`, `PIDController` and `LowPassFilter` classes
+- much more...
 <blockquote class="info">
-     <a href="commander_interface"><i class="fa fa-copy"></i> Commander functionality </a> ——commander class文档
+     <a href="commander_interface"><i class="fa fa-copy"></i> Commander functionality </a> - Documentation of the commander class
 </blockquote>
 <blockquote class="info">
-     <a href="commands_source"><i class="fa fa-copy"></i> Commands list </a> ——motor commands functionality文档
+     <a href="commands_source"><i class="fa fa-copy"></i> Commands list </a> - Documentation of the motor commands functionality
 </blockquote>
-
 
 ### `StepDirListener.cpp/h`
-StepDirListener class 工具
-- step+dir通信协议的简单实现
+StepDirListener class implements
+- A simple implementation of the step+dir communication protocol
 <blockquote class="info">
-     <a href="step_dir_interface"><i class="fa fa-copy"></i> Step/direction listener functionality </a> ——step dir listener class文档
+     <a href="step_dir_interface"><i class="fa fa-copy"></i> Step/direction listener functionality </a> - Documentation of the step dir listener class
 </blockquote>
 
 
-
-## 通用
+## Common
 ```sh
 │ ├─── common                  # Contains all the common utility classes and functions
 | | |
@@ -273,9 +266,8 @@ StepDirListener class 工具
 | | | └─ Sensor./h              # common class for all implemented sensors
 | |
 ```
-通用目录包含了<span class="simple">Simple<span class="foc">FOC</span>library</span>所有的定义和通用实用程序函数。它包含`base_classes` 目录中电机、传感器和驱动器的抽象类的定义。它有两个实用函数库，用于时间管理`time_utils.cpp/h`和FOC helpers `foc_utils.cpp/h`。最后给出了两个信号处理类的定义和实现：pid控制器`pid.cpp/h`和低通滤波器`lowpass_filter.cpp/h`。它还包含 `defaults.h`头文件中库的默认配置参数。
-包含所有默认配置变量的头文件
-
+The common directory contains all the definitions and common utility functions for the  <span class="simple">Simple<span class="foc">FOC</span>library</span>.  It contains the definitions of the abstract classes for motors, sensors and drivers in the `base_classes` directory. It has two libraries of utility functions for time management `time_utils.cpp/h` and FOC helpers `foc_utils.cpp/h`. Finally it has definition and implementation of the two signal processing classes: pid controller `pid.cpp/h` and low pass filter `lowpass_filter.cpp/h`. It also contains the default configuration parameters of the library in the `defaults.h` header file.
+Header file containing all the default configuration variables
 ```cpp
 // default configuration values
 // change this file to optimal values for your application
@@ -299,15 +291,15 @@ StepDirListener class 工具
 
 
 
-## 深入了解
+## Digging deeper
 
-有关FOC程序的更多信息以及实现FOC算法的代码的详细说明，请访问： <a href="foc_implementation"> FOC implementation details <i class="fa fa-external-link fa-sm"></i></a>
+For more info about the FOC procedures and detailed explanations of the code implementing FOC algorithm please visit: <a href="foc_implementation"> FOC implementation details <i class="fa fa-external-link fa-sm"></i></a>
 
-有关运动控制算法和代码实现选项的文档，请访问 <a href="motion_control_implementation"> Motion control implementation details <i class="fa fa-external-link fa-sm"></i></a>
+For documentation of the motion control algorithms and code implementation choices, visit <a href="motion_control_implementation"> Motion control implementation details <i class="fa fa-external-link fa-sm"></i></a>
 
-该库为不同的微控制器提供了许多电机控制示例。更多内容，请访问 [library examples <i class="fa fa-external-link"></i>](library_examples)
+The library comes with a lot of motor control examples for different microcontrollers. See more on [library examples <i class="fa fa-external-link"></i>](library_examples)
 
-要深入了解源代码，请访问 <a href="http://source.simplefoc.com/" target="_blank"> Doxygen generated code documentation <i class="fa fa-external-link fa-sm"></i></a>
+To dig deeper in the source code please visit <a href="http://source.simplefoc.com/" target="_blank"> Doxygen generated code documentation <i class="fa fa-external-link fa-sm"></i></a>
 
 <div class="image_icon width80" >
     <a href="http://source.simplefoc.com/" target="_blank">

@@ -10,17 +10,19 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 位置开环控制
-这个控制回路能让你在不使用位置传感器的情况下，实时调整你的电机到所需角度。启用该模式的有：
+# Position open-loop control 
+This control loop allows you to move your motor to the desired angle in real time without using the position sensor. This mode is enabled by:
 ```cpp
 // set position motion control open-loop
 motor.controller = MotionControlType::angle_openloop;
 ```
 <img src="extras/Images/open_loop_angle.png">
 
-你可以通过运行 `motion_control/open_loop_motor_control/` 文件夹中的示例来测试这个算法。这种控制算法非常简单。用户设定它想要达到 <i>a<sub>d</sub></i>的目标角度。算法只需要减去当前的角 <i>a<sub>c</sub></i> 和期望的角 <i>a<sub>d</sub></i>来找到它需要移动的方向，并以电机可能的最高速度`motor.velocity_limit`(最大速度)在那个方向上运行。同时为了设置这个速度，它使用了与速度相同的算法 [速度开环控制](velocity_openloop)。它在时间上对速度进行积分，以找出它需要设置什么角度到电机 <i>a<sub>c</sub></i> ，以实现它。然后是电机的最大允许电压 `motor.voltage_limit` 将使用 `SinePWM` 或 `SpaceVector` 调制应用于 <i>a<sub>c</sub></i> 的方向。
+You can test this algorithm by running the examples in the `motion_control/open_loop_motor_control/` folder.
 
-## 配置
+This control algorithm is very simple. User sets the target angle it wants to achieve <i>a<sub>d</sub></i>. The algorithm only subtracts the current angle <i>a<sub>c</sub></i> and the desired angle <i>a<sub>d</sub></i> to find the direction it needs to move and goes in that direction with the highest velocity possible `motor.velocity_limit`(max velocity). To set this velocity it uses the same algorithm as for [velocity open-loop control](velocity_openloop). It integrates the velocity it in time to find out what is the angle it needs to set to the motor <i>a<sub>c</sub></i> in order to achieve it. Then the maximal allowed voltage `motor.voltage_limit` is going to be applied in the direction of the <i>a<sub>c</sub></i> using `SinePWM` or `SpaceVector` modulation.
+
+## Configuration
 ``` cpp
 // choose FOC modulation (optional)
 motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
@@ -35,21 +37,16 @@ motor.voltage_limit = 3;   // Volts
 motor.current_limit = 0.5 // Amps
 ```
 
-这种类型的运动控制是非常低效的，因此尽量不要对`motor.voltage_limit`使用高值。我们建议为电机类提供 `phase_resistance` 值并设置电机`motor.current_limit` 代替电压限制。这个电流可能被超越，但在电机运行时，至少你会知道一个近似的电流。你可以计算电机将产生的电流通过检查电机电阻 `phase_resistance` 和评估：
-
+This type of motion control is highly inefficient therefore try not to use to high value for `motor.voltage_limit`. We suggest you to provide the motor class with the `phase_resistance` value and set the `motor.current_limit` instead the voltage limit. This current might be surpassed but at least you will know an approximate current your motor is drawing. You can calculate the current the motor is going to be producing by checking the motor resistance `phase_resistance` and evaluating:
 ```cpp
 voltage_limit = current_limit * phase_resistance; // Amps
 ```
 
-最大速度马达 `motor.velocity_limit` 值将决定你的电机在两个位置之间运行的速度。当值越高，转换越快。但由于我们是在开环中转动电机，我们将无法知道电机是否能跟随速度。因此，确保速度为 `velocity_limit` 的值，是可以实现的电机。同时你还要注意，为更高的速度和更多的保持扭矩，你将需要增加 `motor.voltage_limit` 变量或电动机 `motor.current_limit` 变量。> wait to translate
+The maximal velocity `motor.velocity_limit` value is going to determine how fast your motor goes in between positions. The higher the value the faster the transition. But since we are turning the motor in open-loop we will not be able to know if the motor can follow the velocity. So make sure to put the `velocity_limit` value that is achievable for your motor. Also beware that for higher velocities and more holding torque you will need to increase the `motor.voltage_limit` or `motor.current_limit` variable as well.
 
-此外，如果你的应用程序中需要这种行为，你可以改变在实时的电压限制 `motor.voltage_limit` (`motor.current_limit`) 和转换速度 `motor.velocity_limit` 
-
-
-
-## 位置开环控制实例
-这里是一个基本的例子的速度开环控制与完整的配置。该程序将对 `0 RAD` 的目标位置进行设置和维护，用户可以使用串行终端改变目标位置。
-
+Also, you can change the voltage limit `motor.voltage_limit` (`motor.current_limit`) and transition velocity `motor.velocity_limit` in real-time if you need this kind of behavior in your application.
+## Position open-loop control example
+Here is one basic example of the velocity open-loop control with the complete configuration. The program will set the target position of `0 RAD` and maintain it, and the user can change the target position using serial terminal.
 ```cpp
 // Open loop motor control example
 #include <SimpleFOC.h>

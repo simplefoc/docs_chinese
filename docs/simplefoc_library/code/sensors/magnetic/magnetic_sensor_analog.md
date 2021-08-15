@@ -11,10 +11,9 @@ permalink: /magnetic_sensor_analog
 ---
 
 
-# 磁传感器设置
+# Analog output Magnetic sensor setup
 
-为了使用SimpleFOClibrary的模拟输出磁位置传感器，首先创建一个`MagneticSensorAnalog` class的实例:
-
+In order to use your Analog output magnetic position sensor with <span class="simple">Simple<span class="foc">FOC</span>library</span> first create an instance of the `MagneticSensorAnalog` class:
 ```cpp
 // MagneticSensorAnalog(uint8_t _pinAnalog, int _min, int _max)
 //  pinAnalog     - the pin that is reading the analog output from magnetic sensor
@@ -23,17 +22,15 @@ permalink: /magnetic_sensor_analog
 MagneticSensorAnalog sensor = MagneticSensorAnalog(A1, 14, 1020);
 ```
 
-类的参数为
-- `pinAnalog` - 读取磁传感器模拟输出的引脚， , 
-- `min_raw_count` - 最小的预期读数。虽然你可能期望它是O，但通常是-15。如果出现这种错误，将导致每次旋转只需轻轻点击一次。
-- `max_raw_count` - 读取的最大值。虽然你可能期望它是2^10 = 1023，但它通常是-1020。注意:对于ESP32(带有12位ADC的值将更接近4096)
+The parameters of the class are
+- `pinAnalog` - the pin that is reading the analog output from magnetic sensor , 
+- `min_raw_count` - the smallest expected reading. Whilst you might expect it to be 0 it is often ~15.  Getting this wrong results in a small click once per revolution
+- `max_raw_count` - the largest value read. Whilst you might expect it to be 2^10 = 1023 it is often ~ 1020. Note: For ESP32 (with 12bit ADC the value will be nearer 4096)
 
-<blockquote class="info"> <p class="heading"> 💡 求最小值和最大值</p>
-每个mcu和每个传感器都有一点不同，所以我们建议你使用提供的例子 <code class="highlighter-rouge">examples/sensor_test/magentic_sensor_analog_example/find_raw_min_max</code>用你的传感器求最大值和最小值
+<blockquote class="info"> <p class="heading"> 💡 Find out min and max</p>
+Every mcu is a bit different and every sensor as well so we advise you to use the provided example in the <code class="highlighter-rouge">examples/sensor_test/magentic_sensor_analog_example/find_raw_min_max</code> to find out the maximal and minimal values of your sensor.
 </blockquote>
-
-最后，在初始化之后，唯一需要做的事情就是调用 `init()` 函数。该函数初始化传感器硬件。所以你的磁传感器初始化代码如下:
-
+Finally after the initialization the only thing you need to do afterwards is to call the `init()` function. This function initializes the sensor hardware. So your magnetic sensor initialization code will look like:
 ```cpp
 MagneticSensorAnalog sensor = MagneticSensorAnalog(A1, 14, 1020);
 
@@ -44,8 +41,7 @@ void loop(){
 }
 ```
 
-如果你希望使用多个磁传感器，请确保将它们的ADC pins连接到不同的arduino pins，并遵循上面的相同想法，这里是一个简单的例子:
-
+If you wish to use more than one magnetic sensor, make sure you connect their ADC pins to different arduino pins and follow the same idea as above, here is a simple example:
 ```cpp
 MagneticSensorAnalog sensor1 = MagneticSensorAnalog(A1, 14, 1020);
 MagneticSensorAnalog sensor2 = MagneticSensorAnalog(A2, 14, 1020);
@@ -58,29 +54,25 @@ void loop(){
 }
 ```
 
-请检查 `magnetic_sensor_analog_example.ino` 举个例子来了解更多。
+Please check the `magnetic_sensor_analog_example.ino` example to see more about it.
 
 
-## 实时使用磁传感器
+## Using magnetic sensor in real-time
 
-． 在这个库中有两种方法来使用磁传感器:
+There are two ways to use magnetic sensor implemented within this library:
+- As motor position sensor for FOC algorithm
+- As standalone position sensor
 
-- 作为电机位置传感器用于FOC algorithm
-- 作为独立位置传感器。
-
-### FOC算法的位置传感器
+### Position sensor for FOC algorithm
 
 To use the ensor with the FOC algorithm implemented in this library, once when you have initialized `sensor.init()` you just need to link it to the BLDC motor by executing:
-
-当你要使用这个库中实现的FOC算法的传感器的时候，一旦你初始化了 `sensor.init()` ，你只需要通过执行以下命令将它链接到BLDC电机:
-
 ```cpp
 motor.linkSensor(&sensor);
 ```
 
-### 独立的传感器
+### Standalone sensor 
 
-要在任何给定时间获得磁传感器的角度和速度，你可以使用公共方法:
+To get the magnetic sensor angle and velocity at any given time you can use the public methods:
 ```cpp
 class MagneticSensorAnalog{
  public:
@@ -91,8 +83,7 @@ class MagneticSensorAnalog{
 }
 ```
 
-下面是一个使用AS5600磁传感器模拟输出的快速示例:
-
+Here is a quick example for AS5600 magnetic sensor using it's analog output:
 ```cpp
 #include <SimpleFOC.h>
 

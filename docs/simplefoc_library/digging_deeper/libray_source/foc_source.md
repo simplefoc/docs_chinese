@@ -9,37 +9,35 @@ permalink: /foc_implementation
 ---
 
 
-# FOC算法的实现  [v1.6](https://github.com/simplefoc/Arduino-FOC/releases)
+# FOC Algorithm implementation  [v1.6](https://github.com/simplefoc/Arduino-FOC/releases)
 
-由于<span class="simple">Simple<span class="foc">FOC</span>library</span>旨在教育FOC算法以及启用各种应用程序，因此该库中实现了两个（半）版本的FOC调制。在这里，我将向你解释关于这个库中FOC实现的大部分实现细节，以便你能够更好地了解引擎盖下的内容以及如何更改它并适应你的应用程序。
+Since the <span class="simple">Simple<span class="foc">FOC</span>library</span> is intended for education about the FOC algorithm as well for enabling various applications, there are two (and a half) versions of the FOC modulation implemented in this library. Here I would like to explain you most of the implementation details about the FOC implementation in this library, so that you can better understand what is under the hood and how to change it and adapt for your application.
 
-FOC算法有三个主要部分:
-- 相电压计算算法（调制）:  `setPhaseVoltage()`
-- 电机和传感器校准: `initFOC()`
-- 实时执行: `loopFOC()`
+FOC algorithm has three main components:
+- Phase voltage calculation algorithm (modulation):  `setPhaseVoltage()`
+- Motor and sensor alignment: `initFOC()`
+- Real-time execution: `loopFOC()`
 
-现在，让我们讨论所有三个组件的实现细节！
+Now let's discuss the implementation details of all three components!
 
 
-## ❤️ FOC心脏功能：设置相电压 `setPhaseVoltage()`
+## ❤️ FOC heart function : setting the phase voltage `setPhaseVoltage()`
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> 实现两种类型的FOC PWM调制。
-实现的调制算法如下：
+<span class="simple">Simple<span class="foc">FOC</span>library</span> implements two types of FOC PWM modulation. 
+The implemented modulation algorithms are:
+ - Sinusoidal PWM: `SinePWM`
+ - Space Vector PWM: `SpaceVectorPWM`
 
- - 正弦脉宽调制: `SinePWM`
- - 电压空间矢量: `SpaceVectorPWM`
-
-你可以通过设置 `motor.foc_modulation`变量的值来配置它们:
+You can configure them by setting the value of `motor.foc_modulation` variable:
 ```cpp
 motor.foc_modulation = FOCModulationType::SinePWM; // default
 // or
 motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 ```
 
-<blockquote class="info"> <p class="heading">注意：</p>更多FOC算法的理论知识，请访问<a href="foc_theory"> foc theory corner</a>. </blockquote>
+<blockquote class="info"> <p class="heading">NOTE: </p>For more info about the FOC algorithm theory visit <a href="foc_theory"> foc theory corner</a>. </blockquote>
 
-两种调制类型和相电压计算在`setPhaseVoltage()` 函数中完全实现。下面是例子。
-
+The two modulation types and phase voltage calculation is fully implemented in the `setPhaseVoltage()` function. Here's how it looks.
 ```cpp
 void BLDCMotor::setPhaseVoltage(float Uq, float angle_el) {
   switch (foc_modulation)
@@ -138,17 +136,15 @@ void BLDCMotor::setPhaseVoltage(float Uq, float angle_el) {
 ```
 
 
+## Motor and sensor alignment `initFOC()`
 
-## 电机和传感器校准 `initFOC()`
+In order to be able to create the exact `90 degree` magnetic field in between stator and rotor, we need to know not just the exact absolute position of the sensor, but also what does that (sensor) position mean for the motor electrical angle. Therefore, before using the FOC algorithm to set the phase voltage we need to align motor electrical angle 0 with sensor angle 0. 
 
-为了能够在定子和转子之间产生准确的 `90 degree` 磁场，我们不仅需要知道传感器的准确绝对位置，还需要知道（传感器）位置对电机电气角度的意义。因此，在使用FOC算法设置相电压之前，我们需要将电机电气角度0与传感器角度0对齐。
-
-下图说明了该过程.
+The procedure is explained on following diagram.
 
 <img src="extras/Images/align_diagram.png" class="width40">
 
-当我们调用`initFOC（）`函数时，程序运行如下：
-
+This all happens when we call `initFOC()` function.
 ```cpp
 // Function initializing FOC algorithm
 // and aligning sensor's and motors' zero position 
@@ -178,8 +174,7 @@ int  BLDCMotor::initFOC( float zero_electric_offset = NOT_SET , Direction sensor
 }
 ```
 
-电机和传感器的初始角度校准在`alignSensor()` 函数中实现：
-
+The initial motor and sensor angle alignment is implemented in the `alignSensor()` function:
 ```cpp
 // Encoder alignment to electrical 0 angle
 int BLDCMotor::alignSensor() {
@@ -226,8 +221,7 @@ int BLDCMotor::alignSensor() {
 }
 ```
 
-而绝对角度对齐是在函数`absoluteZeroAlign()`中实现的。
-
+While the absolute angle alignment is implemented in the function `absoluteZeroAlign()`.
 ```cpp
 // Encoder alignment the absolute zero angle 
 // - to the index
@@ -261,14 +255,14 @@ int BLDCMotor::absoluteZeroAlign() {
 ```
 
 
-## 实时执行 `loopFOC()`
-最后，唯一要做的就是运行实时FOC例程。代码需要获取电机位置（形式传感器），从中计算电气角度（`electricAngle()`），并使用`setPhaseVoltage()`函数设置电机相位的所需电压（`motor.voltage_q`）。
+## Real-time execution `loopFOC()`
+Finally the only thing that is left to do is run the real-time FOC routine. The code needs to get motor position (form sensor), calculate the electrical angle (`electricAngle()`) from it and set the desired voltage (`motor.voltage_q`) to the motor phases by using `setPhaseVoltage()` function. 
 
 
  <a name="foc_image"></a><img src="extras/Images/voltage_loop.png">
 
 
-下面就是它在代码中形式。
+And that is it, this is how it looks in code!
 
 ```cpp
 // Function running FOC algorithm in real-time

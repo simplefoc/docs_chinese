@@ -10,46 +10,43 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 转矩控制回路
+# Torque control loop
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> 让你选择使用3种不同的转矩控制策略:
-
+<span class="simple">Simple<span class="foc">FOC</span>library</span> gives you the choice of using 3 different torque control strategies:
 - [Voltage mode](voltage_torque_mode) - `voltage`
 - [DC current mode](dc_current_torque_mode) - `dc_current`
 - [FOC current mode](foc_current_torque_mode) - `foc_current`
 
-在短电压**voltage control mode**是最简单的近似电机扭矩控制，它是基本的，可以运行在任何电机+驱动器+mcu组合里。**DC current mode** 是电机转矩近似的下一步，它比电压模式更精确，但需要电流传感和更强大的微控制器。**FOC current mode** 是控制电机真正的扭矩，它不是一个近似值，它还需要电流传感器，甚至比直流电流模式更多的处理能力。参见 [torque mode docs](torque_mode)文档中的深入解释。
+In short **voltage control mode** is the simplest approximation of the motor torque control and it so basic that can be run on any motor+driver+mcu combination out there. **DC current mode** is teh next step of the motor's torque approximation which is much more exact than the voltage mode but requires current sensing and much stronger microcontroller. **FOC current mode** is controls motor's true torque and it is not an approximation, it also requires current sensor and even more processing power than the DC current mode. See in depth explanations in [torque mode docs](torque_mode). 
 
-将控制器 `controller` 参数设置为:
-
+This motion control mode is enabled setting the `controller` parameter to:
 ```cpp
 // torque control loop
 motor.controller = MotionControlType::torque;
 ```
 
-如果采用电压控制方式，如果用户不向电机提供相阻参数，则转矩控制回路的输入为目标电压 <i>U<sub>q</sub></i>：
+If the voltage control mode is used and if the user does not provide the phase resistance parameter to the motor, the input to the torque control loop will be the target voltage <i>U<sub>q</sub></i>:
 
 <a name="foc_image"></a><img src="extras/Images/torque_loop_v.png">
 
-如果采用一种基于电流的转矩控制模式(DC电流或FOC电流)，则控制回路中的输入将是目标电流<i>i<sub>q</sub></i>。如果用户向电机类提供相电阻值，则在电压模式下也是如此。
+And if one of the current based torque control modes (DC current or FOC current) is used, the input in the control loop will be the target current <i>i<sub>q</sub></i>. The same is true in the voltage mode if the user provides the phase resistance value to the motor class. 
 
 <a name="foc_image"></a><img src="extras/Images/torque_loop_i.png">
 
-力矩控制回路是所有其他运动控制回路的基础。想了解有关蓝色框内容的更多信息，请查看 [torque mode docs](torque_mode)。
+The torque control loop is used as a base for all other motion control loops.  For more info about the content of the blue boxes check the [torque mode docs](torque_mode).
 
-## 配置参数
-根据你希望使用的扭矩控制类型，你需要考虑不同的参数。
-- [Voltage mode](voltage_mode)  - 最简单的一个-没有参数，除了可能 `motor.phase_resistance`
+## Configuration parameters
+Depending on the torque control type you wish to use there are different parameters that you need to consider. 
+- [Voltage mode](voltage_mode)  - the simplest one - no parameters except maybe `motor.phase_resistance`
 - [DC current mode](dc_current_torque_mode) - 1xPID controller + 1xLPF
 - [FOC current mode](foc_current_torque_mode) - 2xPID controller + 2xLPF filters 
 
-现在，让我们来看一个例子！
+Now, lets see one example!
 
-## 电压控制的例子
-你可以通过运行 `voltage_control.ino`.这个示例来测试这个算法。
+## Voltage control example 
+You can test this algorithm by running the example `voltage_control.ino`.
 
-在这里，我们提供了一个例子的扭矩使用电压控制程序与全运动控制配置。程序使用FOC算法给电机设定目标 <i>U<sub>q</sub></i>  2V电压。由于相位电阻参数不可用，电机目标将以伏特为单位。
-
+Here we provide an example of a toque using voltage control program with full motion control configuration. The program sets target <i>U<sub>q</sub></i> voltage of 2V to the motor using the FOC algorithm. Since the phase resistance parameter is not available the motor target will be in volts.
 ```cpp
 #include <SimpleFOC.h>
 
@@ -108,7 +105,7 @@ void loop() {
 }
 ```
 
-如果我们将pahse resitance添加到 `BLDCMotor` 的构造函数中，电机目标将以Amps为单位。
+If we add the pahse resitance to the constructor of the `BLDCMotor` class, the motor target will be in Amps. 
 ```cpp
 #include <SimpleFOC.h>
 
@@ -167,8 +164,8 @@ void loop() {
 }
 ```
 
-## 工程实例
-这里是一个项目的例子，它使用位置控制，并描述了full hardware + software setup设置
+## Project examples
+Here is one very cool project example which uses torque control and describes the full hardware + software setup needed.
 
 <div class="image_icon width30">
     <a href="simplefoc_pendulum">
@@ -177,4 +174,4 @@ void loop() {
     </a>
 </div>
 
-在[example projects](example_projects) 部分中可以找到更多项目。
+Find more projects in the [example projects](example_projects) section.

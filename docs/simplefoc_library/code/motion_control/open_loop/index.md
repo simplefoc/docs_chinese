@@ -10,16 +10,15 @@ parent: Motion Control
 grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
-# 运动控制
+# Motion control 
 
 <img src="extras/Images/open_loop.gif">
 
-<span class="simple">Simple<span class="foc">FOC</span>library </span>给你使用2种不同的开环控制策略的选择
-
+<span class="simple">Simple<span class="foc">FOC</span>library</span> gives you the choice of using 2 different open-loop control strategies:
 - [Velocity open-loop control](velocity_openloop)
 - [Position open-loop control](angle_openloop)
 
-<blockquote class="info"> 索引搜索也使用开环位置控制，但有一些额外的参数，见 <a href="index_search_loop">index search</a></blockquote>
+<blockquote class="info"> Index search uses also uses open-loop position control, but has some additional parameters, see <a href="index_search_loop">index search</a></blockquote>
 
 ```cpp
 // MotionControlType::velocity_openloop    - velocity open-loop control
@@ -27,5 +26,4 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 motor.controller = MotionControlType::angle_openloop;
 ```
 
-有关运动控制策略的源代码实现的更多信息，请查看 [library source code documentation](motion_control_implementation)
-
+For more information about the source code implementation of the motion control strategies check the [library source code documentation](motion_control_implementation)
