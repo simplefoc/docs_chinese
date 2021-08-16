@@ -78,7 +78,7 @@ permalink: /
 - **可堆叠接插**：同时运行2个电机
 - **编码器/霍尔传感器接口**：集成的3.3kΩ上拉（可配置）
 - **I2C 接口**：集成的4.7kΩ上拉（可配置）
-- **引脚课配置**：见 硬件配置 - 焊接连接 章节
+- **引脚配置**：见 硬件配置 - 焊接连接 章节
 - **支持的Arduino 型号**: Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
 - **开源**：开源全部DIY文件 - [如何自己制作它](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
 

@@ -1,114 +1,122 @@
 ---
 layout: default
-title: Position Sensors
+title: 位置传感器
 nav_order: 3
 parent: Supported Hardware
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /position_sensors
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+
 ---
 
-# Position sensors
-The library currently supports ([releases <i class="fa fa-tag"></i>](https://github.com/simplefoc/Arduino-FOC/releases)) types of position sensors: 
-- [Encoder](#encoders) 
-- [Magnetic sensor](#magnetic-sensors).
-- [Hall sensors](#hall-sensors)
-- *IMU (in development)*
+# 位置传感器
 
-## Encoders
-Encoders are by far most popular position sensors, both in industry and in hobby community. The main benefits are the precision, standardization and very low noise level. The <span class="simple">Simple<span class="foc">FOC</span>library</span> support just about any type of encoder you can find.  Here is nice short video which explains the main working principles of encoders: [YouTube video](https://www.youtube.com/watch?v=qT6FdvcEsMs)
+该库目前支持的位置传感器类型 ([releases <i class="fa fa-tag"></i>](https://github.com/simplefoc/Arduino-FOC/releases))：
 
-The encoder position tracking (pulse counting) algorithm code efficiency, and especially its implementation on Arduino devices, is one of the main limitations for both performance and smoothness of the FOC algorithm. There is a clear tradeoff in between encoder precision and execution efficiency, therefore it very is important to find a suitable encoder to your application.
+- [编码器](#encoders) 
+- [磁传感器](#magnetic-sensors)
+- [霍尔传感器](#hall-sensors)
+- *IMU (研发中)*
 
-Examples  | Description | Link | Price
----- | ---- | ---- | ----
-[<img src="extras/Images/enc.jpg"  style="height:100px">](https://www.ebay.com/itm/360-600P-R-Photoelectric-Incremental-Rotary-Encoder-5V-24V-AB-Two-Phases-Shaft/254214673272?hash=item3b30601378:m:mDiuW1F2qXINSH51TqAjhTg)  | Optical encoder<br>2400cpr | [Ebay](https://www.ebay.fr/itm/L6234-Breakout-Board-/153204519965) | 10$
-[<img src="extras/Images/enc1.png" style="height:100px">](https://www.ebay.com/itm/HMBGC-V2-0-3-Axle-Gimbal-Controller-Control-Plate-Board-Module-with-Sensor/351497840990?hash=item51d6e7695e:g:BAsAAOSw0QFXBxrZ:rk:1:pf:1) | Optical encoder<br>AMT103 <br> configurable cpr 48-8192 |  [Mouser](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D)  | 20$
-[<img src="extras/Images/mag.jpg"  style="height:100px">](hhttps://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | Margetic encoder <br> AS5047U <br> 16384cpr |  [Mouser](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D)<br> [Youtube demo](https://www.youtube.com/watch?v=Gl-DiOqXXJ8)   | 15$
+# 编码器
+
+无论在工业和业余社区，编码器都是目前最受欢迎的位置传感器。它的主要优点是精度高、标准化和噪音低。SimpleFOClibrary几乎支持市面上所有类型的编码器。下面这个短视频解释了编码器的主要工作原理：[YouTube video](https://www.youtube.com/watch?v=qT6FdvcEsMs)
+
+制约FOC算法性能和平滑度的主要因素之一是编码器位置跟踪（脉冲计数）算法的效率，尤其是在Arduino设备上的实现的代码效率。在编码器精度和执行效率之间最好有一个明显的权衡，因此为你的应用程序找到一个合适的编码器非常重要。
+
+| 示例型号                                                     | 描述                                                    | 链接                                                         | 价格 |
+| ------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ | ---- |
+| [<img src="extras/Images/enc.jpg"  style="height:100px">](https://www.ebay.com/itm/360-600P-R-Photoelectric-Incremental-Rotary-Encoder-5V-24V-AB-Two-Phases-Shaft/254214673272?hash=item3b30601378:m:mDiuW1F2qXINSH51TqAjhTg) | Optical encoder<br>2400cpr                              | [Ebay](https://www.ebay.fr/itm/L6234-Breakout-Board-/153204519965) | 10$  |
+| [<img src="extras/Images/enc1.png" style="height:100px">](https://www.ebay.com/itm/HMBGC-V2-0-3-Axle-Gimbal-Controller-Control-Plate-Board-Module-with-Sensor/351497840990?hash=item51d6e7695e:g:BAsAAOSw0QFXBxrZ:rk:1:pf:1) | Optical encoder<br>AMT103 <br> configurable cpr 48-8192 | [Mouser](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D) | 20$  |
+| [<img src="extras/Images/mag.jpg"  style="height:100px">](hhttps://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | Margetic encoder <br> AS5047U <br> 16384cpr             | [Mouser](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D)<br> [Youtube demo](https://www.youtube.com/watch?v=Gl-DiOqXXJ8) | 15$  |
 
 
 
 <blockquote class="warning">
-<p class="heading">Encoder CPR: Rule of thumb for Arduino UNO</p>
-For Arduino UNO, the maximum number of pulses/second should not exceed 20,000. After this value it start to have execution issues. 
-Please take this in consideration when choosing the encoder and especially if using more than one motor.<br>
-<p class="heading">Example</p>
-If your CPR value is 10000, you will be able to spin your motor with max velocity 120rpm - 2 rotations/second 
+<p class="heading">编码器CPR: Arduino UNO的经验法则</p>
+对于Arduino UNO，最大脉冲数每秒最好不要超过20,000。在这个值之后，它的执行会出现问题。请在选择编码器时考虑到这一点，特别是如果使用多个电机。<br>
+<p class="heading">例如</p>
+如果你的CPR值是10000，你的电机的最大测得准的转速就是120转，即2转每秒
 </blockquote>
 
-      
-## Magnetic sensors
-Magnetic position sensor has many benefits over the encoders:
-- Very efficient position calculation ( no counting ) 
-- Time of execution doesn't depend on velocity or number of sensors
-- No need for interrupt hardware
-- Absolute position value
-- Lower price then encoders
-- Simple to mount
 
-Magnetic sensors usually come with several different communication protocols:
-- ABI (✔️ supported) - *exactly the same as the encoder interface* 
-- SPI (✔️ supported)
-- I2C (✔️ supported)
-- Analog (✔️ supported)
-- UVW (✔️ supported)  - *exactly the same as the Hall sensor interface* 
-- PWM (✔️ supported)
+
+
+# 磁传感器
+
+磁位置传感器与其他编码器相比有许多优点：
+
+- 高效位置计算（无需计算步进）
+- 执行时间并不依赖于速度或传感器的数量
+- 不需要中断硬件
+- 可获得绝对位置值
+- 价格便宜
+- 易于安装
+
+磁传感器通常带有几种不同的通信协议：
+
+- ABI (✔️ 支持)
+- SPI (✔️ 支持)
+- I2C (✔️ 支持)
+- 模拟信号 (✔️ 支持)
+- UVW (✔️ 支持) —等同于霍尔传感器接口
+- PWM (✔️ 支持)
 - SSI 
 
-PWM and SSI protocol will be tested for their performance and implemented in following steps. 
-Please [let us know](contact) if you would be interested in having some other communication implemented!
+PWM和SSI正在开发测试中，如果你有兴趣参与测试,请 [让我们知道](contact)
 
-Here are some of the supported magnetic sensors:
+这里是一些支持的磁传感器：
 
-Examples  | Description | Link | Price
----- | ---- | ---- | ----
-[<img src="extras/Images/mag.jpg"  style="height:100px">](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | AS5047<br> SPI/ABI/PWM/UVW <br> 14bit |  [Mouser](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | 15$
-[<img src="extras/Images/mag2.jpg"  style="height:100px">](https://www.ebay.com/itm/AS5048-Magnetic-Encoder-PWM-SPI-Interface-14-Bit-Precision-For-Brushless-Motor/153636871434?hash=item23c5789d0a:g:oOMAAOSwd-5ddaWQ) | AS5048A<br> SPI/PWM <br> absolute <br> 14bit |  [Ebay](https://www.ebay.com/itm/AS5048-Magnetic-Encoder-PWM-SPI-Interface-14-Bit-Precision-For-Brushless-Motor/153636871434?hash=item23c5789d0a:g:oOMAAOSwd-5ddaWQ) | 10$
-[<img src="extras/Images/as5600.jpg"  style="height:100px">](https://www.ebay.com/itm/1PC-New-AS5600-magnetic-encoder-sensor-module-12bit-high-precision/303401254431?hash=item46a41fbe1f:g:nVwAAOSwTJJd8zRK) | AS5600 <br> I2C/PWM <br> 12bit | [Ebay](https://www.ebay.com/itm/1PC-New-AS5600-magnetic-encoder-sensor-module-12bit-high-precision/303401254431?hash=item46a41fbe1f:g:nVwAAOSwTJJd8zRK) | 5$ 
+| 选型示例                                                     | 描述                                        | 链接                                                         | 价格 |
+| ------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------------------------ | ---- |
+| [<img src="extras/Images/mag.jpg"  style="height:100px">](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | AS5047<br> SPI/ABI/PWM/UVW <br> 14位        | [Mouser](https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D) | 15$  |
+| [<img src="extras/Images/mag2.jpg"  style="height:100px">](https://www.ebay.com/itm/AS5048-Magnetic-Encoder-PWM-SPI-Interface-14-Bit-Precision-For-Brushless-Motor/153636871434?hash=item23c5789d0a:g:oOMAAOSwd-5ddaWQ) | AS5048A<br> SPI/PWM <br> absolute <br> 14位 | [Ebay](https://www.ebay.com/itm/AS5048-Magnetic-Encoder-PWM-SPI-Interface-14-Bit-Precision-For-Brushless-Motor/153636871434?hash=item23c5789d0a:g:oOMAAOSwd-5ddaWQ) | 10$  |
+| [<img src="extras/Images/as5600.jpg"  style="height:100px">](https://www.ebay.com/itm/1PC-New-AS5600-magnetic-encoder-sensor-module-12bit-high-precision/303401254431?hash=item46a41fbe1f:g:nVwAAOSwTJJd8zRK) | AS5600 <br> I2C/PWM <br> 12位               | [Ebay](https://www.ebay.com/itm/1PC-New-AS5600-magnetic-encoder-sensor-module-12bit-high-precision/303401254431?hash=item46a41fbe1f:g:nVwAAOSwTJJd8zRK) | 5$   |
 
-
-<blockquote class="warning"><p class="heading">BEWARE: I2C Pull-ups</p>
-Not all the I2C buses need pull-ups. But in some cases they might be necessary. Especially when using STM32 boards. In those cases, you will not be able to communicate with the sensor. 
-To enable communication usually 4.7kOhm resistors will be needed in between 5V/3.3V and SCL and SDA channels. Here is a good stack overflow question about this issue :<a href="https://electronics.stackexchange.com/questions/102611/what-happens-if-i-omit-the-pullup-resistors-on-i2c-lines"> link </a>. 
+<blockquote class="warning"><p class="heading">注意：12C 上拉</p>
+并不是所有的12C 总线都需要上拉电阻。但在某些情况下，它们可能是必要的。特别是使用STM32板时。在这些情况下，不上拉的话你将无法与传感器通信。为了实现通信，通常需要在5V/3.3V和SCL和SDA通道之间安装4.7k欧电阻。关于这个问题具体可查看<a href="https://electronics.stackexchange.com/questions/102611/what-happens-if-i-omit-the-pullup-resistors-on-i2c-lines"> link </a>. 
 <br>
-In the future versions of the <span class="simple">Simple<span class="foc">FOC</span>Shield</span> I will try to include those pullups as well.
+在<span class="simple">Simple<span class="foc">FOC</span>Shield</span>的未来版本中，我也将尝试包括这些上拉方式。
 </blockquote>
 
-<blockquote class="warning"><p class="heading">BEWARE: UVW interface</p>
-If you desire to use UVW interface of the magnetic sensor please be sure to configure your magnetic sensor to have the same pole pair number as the motor. Also beware that the alignment of the magnetic sensor and the motor phases is very important and will probably take some time to achieve. 
+<blockquote class="warning"><p class="heading">注意：UVW接口</p>
+如果你希望使用磁传感器的UVW接口，请确保将你的磁传感器配置为与电机具有相同的极对数。还要注意磁传感器和电机相位的对齐是非常重要的，可能需要一些时间来耐心调整。
 </blockquote>
-      
-## Hall sensors
 
-Hall sensors for FOC control used to be very common in past due to their commutation simplicity. Motor is usually fitted with 3 hall sensors which read the rotor magnet position and can determine electrical angle of the motor with the resolution of 60 degrees. 
 
-Sector | Electrical angle | Hall A | Hall B | Hall C
---- | ---| -- | - | - 
- 1| 0-60 | 1 | 0 | 1
- 2| 60-120 | 1 | 0 | 0  
- 3| 120-180 | 1 | 1 | 0
- 4| 180-240 | 0 | 1 | 0 
- 5| 240-300 | 0 | 1 | 1  
- 3| 300-360 | 0 | 0 | 1
 
-The main benefit of these sensors is that they are really cheap and they can be added on just about any BLDC motor. But nowdays, with emergence of magnetic sensors they are less and less used. One of the main disadvantages of these sensors is that the low speed operation is not smooth due to the relatively high quantization of the angle measurement. 
+# 霍尔传感器
 
-The main area of application of these senors are electrical motors in all kinds of transportation vehicles. Their motors are often very high-power and relaying on any kind of communication (I2C, SPI, SSI ... ) with such high currents and magnetic fieds is just not an option. Another reason why use hall sensors is if you cannot access the shaft of the motor, or if you cannot mount the sensor coaxial to the motor shaft. Hall sensors are mounted around the motor rotor, which makes them very non-intrusive and easy to integrate. 
+由于霍尔传感器通讯方式简单，因此过去已被广泛用于FOC控制。电机通常装有3个霍尔传感器，读取转子磁铁位置，并能以60度的分辨率确定电机的电角度。
 
-Hall sensors ICs you can find at any electronics supplier, all the way from Ebay and Aliexpress to Mouser and Digikey but also in most of local electronics shops.
+| 情况 | 电角度  | Hall A | Hall B | Hall C |
+| ---- | ------- | ------ | ------ | ------ |
+| 1    | 0-60    | 1      | 0      | 1      |
+| 2    | 60-120  | 1      | 0      | 0      |
+| 3    | 120-180 | 1      | 1      | 0      |
+| 4    | 180-240 | 0      | 1      | 0      |
+| 5    | 240-300 | 0      | 1      | 1      |
+| 3    | 300-360 | 0      | 0      | 1      |
 
-Examples  | Description | Link | Price
----- | ---- | ---- | ----
-[<img src="extras/Images/hall.png"  style="height:100px">](https://fr.aliexpress.com/item/32590021901.html?spm=a2g0o.productlist.0.0.6eec671cZA32JT&algo_pvid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a&algo_expid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a-58&btsid=0b8b035915993735716435630eb78b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) |  49E Hall Sensor (10x) |  [Aliexpress](https://fr.aliexpress.com/item/32590021901.html?spm=a2g0o.productlist.0.0.6eec671cZA32JT&algo_pvid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a&algo_expid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a-58&btsid=0b8b035915993735716435630eb78b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 1$
+这些传感器的主要优点是它们非常便宜，而且可以安装在任何无刷直流电机上。如今，随着磁传感器的出现，它们被使用得越来越少。而这类传感器的主要缺点是因角度测量的步进值太高导致低速运行不平稳。
 
-You can also consider buying a BLDC motor with integrated Hall effect sensors if this suites your application. 
 
-Examples  | Description | Link | Price
----- | ---- | ---- | ----
-[<img src="extras/Images/hall1.png"  style="height:100px">](https://fr.aliexpress.com/item/4000086664014.html?spm=a2g0o.productlist.0.0.338073065g29WW&s=p&ad_pvid=20200905233621305169369584280003211148_6&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-29&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) |  BLDC motor <br> hall sensors integrated <br> 100W |  [Aliexpress](https://fr.aliexpress.com/item/4000086664014.html?spm=a2g0o.productlist.0.0.338073065g29WW&s=p&ad_pvid=20200905233621305169369584280003211148_6&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-29&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 40$
-[<img src="extras/Images/hallw.png"  style="height:100px">](https://fr.aliexpress.com/item/4000242695485.html?spm=a2g0o.productlist.0.0.338073065g29WW&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-17&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) |  BLDC motor <br> hall sensors integrated <br> 30W |  [Aliexpress](https://fr.aliexpress.com/item/4000242695485.html?spm=a2g0o.productlist.0.0.338073065g29WW&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-17&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 25$
+这类传感器的主要应用领域是各种运输车辆上的电动机。他们支持的电机通常功率很高，而可以依赖于任一类型通信方式(12C, SPI, SSI ...)并且支持如此高的电流和磁场的传感器仅此一种。此外，使用霍尔传感器的另一个原因是，如果你不能操作电机轴或者不能将传感器同轴安装到电机轴。霍尔传感器可以安装在电机转子周围，这使得它们无需插入且易于集成。
 
-<blockquote class="warning"><p class="heading">Motor choice</p>
-Make sure to read <a href="motors">supported motor docs</a> before you buy your BLDC motor.
+你可以在任何电子产品供应商中找到霍尔传感器，从淘宝、Ebay、Aliexpress到Mouser、Digikey。
+
+| 选型示例                                                     | 描述                  | 链接                                                         | 价格 |
+| ------------------------------------------------------------ | --------------------- | ------------------------------------------------------------ | ---- |
+| [<img src="extras/Images/hall.png"  style="height:100px">](https://fr.aliexpress.com/item/32590021901.html?spm=a2g0o.productlist.0.0.6eec671cZA32JT&algo_pvid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a&algo_expid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a-58&btsid=0b8b035915993735716435630eb78b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 49E Hall Sensor (10x) | [Aliexpress](https://fr.aliexpress.com/item/32590021901.html?spm=a2g0o.productlist.0.0.6eec671cZA32JT&algo_pvid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a&algo_expid=5729f98b-72a0-4cf8-b80a-adac9ecbbd2a-58&btsid=0b8b035915993735716435630eb78b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 1$   |
+
+如果这与你的应用程序相匹配，你可以考虑购买带集成霍尔传感器的电机。
+
+| 选型示例                                                     | 描述                                 | 链接                                                         | 价格 |
+| ------------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------ | ---- |
+| [<img src="extras/Images/hall1.png"  style="height:100px">](https://fr.aliexpress.com/item/4000086664014.html?spm=a2g0o.productlist.0.0.338073065g29WW&s=p&ad_pvid=20200905233621305169369584280003211148_6&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-29&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 无刷电机 <br>带霍尔传感器款<br> 100W | [Aliexpress](https://fr.aliexpress.com/item/4000086664014.html?spm=a2g0o.productlist.0.0.338073065g29WW&s=p&ad_pvid=20200905233621305169369584280003211148_6&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-29&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 40$  |
+| [<img src="extras/Images/hallw.png"  style="height:100px">](https://fr.aliexpress.com/item/4000242695485.html?spm=a2g0o.productlist.0.0.338073065g29WW&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-17&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 无刷电机 <br>带霍尔传感器款<br> 30W  | [Aliexpress](https://fr.aliexpress.com/item/4000242695485.html?spm=a2g0o.productlist.0.0.338073065g29WW&algo_pvid=e2271fc5-6c48-4ca9-9961-ed620ada16d6&algo_expid=e2271fc5-6c48-4ca9-9961-ed620ada16d6-17&btsid=0b8b034515993741819075226e8e8e&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) | 25$  |
+
+<blockquote class="warning"><p class="heading">选择电机</p>
+在购买BLDC电机之前，请务必阅读<a href="motors">支持的电机</a>
 </blockquote>
-      
+

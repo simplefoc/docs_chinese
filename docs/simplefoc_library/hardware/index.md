@@ -44,6 +44,6 @@ Arduino SimpleFOClibrary的目标是使FOC算法能够普及到爱好者的日�
 
 有关如何连接BLDC电机、驱动器、单片机和传感器的更多信息，请查看[设置示例](setup_examples) 页面。
 
-<a href="arduino_simplefoc_shield"><img src="C:\Users\hp\Documents\GitHub\sfoc_docs\simplefoc_library\hardware\extras\Images\foc_shield_v13.jpg" class="img200 img_third"> </a>
-<a href="arduino_l6234"> <img src="C:\Users\hp\Documents\GitHub\sfoc_docs\simplefoc_library\hardware\extras\Images\uno_l6234.jpg" class="img200 img_third"> </a>
-<a href="hmbgc"><img src="C:\Users\hp\Documents\GitHub\sfoc_docs\simplefoc_library\hardware\extras\Images\hmbgc_v22.jpg" class="img200 img_third"> </a>
+<a href="arduino_simplefoc_shield"><img src="extras/Images/foc_shield_v13.jpg" class="img200 img_third"> </a>
+<a href="arduino_l6234"> <img src="extras/Images/uno_l6234.jpg" class="img200 img_third"> </a>
+<a href="hmbgc"><img src="extras/Images/hmbgc_v22.jpg" class="img200 img_third"> </a>
