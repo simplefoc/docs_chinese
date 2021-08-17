@@ -11,6 +11,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
 # Arduino UNO + L6234 driver
 [Drotek's L6234 breakout board](https://store-drotek.com/212-brushless-gimbal-controller-l6234.html) is a very minimalistic 3-phase BLDC motor driver and is very suitable for jump-starting your FOC experience. Here we show two example connections using this board and Arduino UNO:
+
 - [Arduino UNO + Drotek L6134 + Encoder](#encoder-example)
 - [Arduino UNO + Drotek L6234 + Margentic sensor AS5048A](#magnetic-sensor-as5048-example)
 
