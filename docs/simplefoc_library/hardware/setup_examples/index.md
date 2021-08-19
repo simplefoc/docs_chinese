@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Setup examples
+title: 设置实例
 parent: Supported Hardware
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 5
@@ -10,7 +10,7 @@ has_toc: false
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-#  <span class="simple">Simple<span class="foc">FOC</span>library</span> setup examples
+#  <span class="simple">Simple<span class="foc">FOC</span>library</span> 设置示例
 <div class="image_icon">
     <a href="arduino_simplefoc_shield">
         <img src="extras/Images/foc_shield_v13.jpg">
