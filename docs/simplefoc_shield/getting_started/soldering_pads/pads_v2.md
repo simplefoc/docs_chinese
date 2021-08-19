@@ -8,78 +8,79 @@ nav_order: 2
 permalink: /pads_soldering_v2
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 ---
-# Hardware configuration using soldering pads <br> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v2</small>
-One of the very important features of the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> is the hardware configuration. 
+# Hardware configuration using soldering pads （使用焊盘配置硬件）<br> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v2</small>
+ Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个重要的特性是硬件配置
 
 <img src="extras/Images/shield_bot_v201_pinout.gif" class="width40">
 
-Each board has a set of solder pads on the bottom side which are used for configuration. These solder pads enable board to:
+每个板的底部有一组用于配置的锡盘。这些焊盘使电路板能够：
 
-- Configure BLDC driver pinout (PWM pins A,B,C and enable pin)
-- Enable / Disable pull-up resistors for encoder A,B and Index channel
-- Configure encoder/hall sensor connections
-- Enable / Disable the linear regulator
-- Configure the range of the ADC 
-- Configure the pinout of current sensing 
+- 配置无刷直流驱动引脚（PWM引脚A，B，C和使能引脚）
+- 启用/禁用编码器A,B,I通道的上拉电阻
+- 配置编码器/霍尔传感器的连接
+- 启用/禁用线性调节器
+- 配置 ADC 的采样范围
+- 配置电流检测的引脚
 
-<blockquote class="info"> <p class="heading">BEWARE 📢: Conductive ink </p>
-Many Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> boards will be initially tested and they will be shipped with initial configuration. The testing configuration will be done with use of conductive ink instead of soldering connections. Therefore once you have the board, if you wish to change configuration all you need to do is remove the ink with some wet paper wipe.
+<blockquote class="info"> <p class="heading">注意 📢: 导电墨水 </p>
+ Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 板子只进行初步的测试，发货的时候是初始配置（空板子）。我们测试配置的时候使用导电墨水而不是焊接连接。因此，当你拿到板子的时候，如果你想改变配置，你可以用一些湿纸巾擦去墨水然后根据自己的需求焊接焊盘完成硬件配置。
 </blockquote>
 
-## Enabling encoder/hall sensor pull-up resistors
+## Enabling encoder/hall sensor pull-up resistors（启用编码器/霍尔传感器上拉电阻）
 
 <img src="extras/Images/v2_hall.jpg" class="width30">
 
-Each board has integrated set of three 3.3KOhm pull-up resistors for encoder channels A,B and Index (or Hall sensor U, V, W). The picture above shows how solder the pads in order to enable the Pull-up resistors.
-Not all encoders need the pull-up resistors, or better said, in general, most of them don't need them.  For those of us who are looking for price optimization :slight_smile: , a lot of cheap Ebay/Aliexpress encoders will need them such as [600P ebay encoder <i class="fa fa-external-link"></i>](https://www.ebay.com/itm/360-600P-R-Photoelectric-Incremental-Rotary-Encoder-5V-24V-AB-Two-Phases-Shaft/254214673272?hash=item3b30601378:g:AZsAAOSwu~lcxosc) and similar.
+每块板集成了 3个3.3kΩ 的上拉电阻，用于编码器通道编码器通道A，B，I（或霍尔传感器U，V，W）。上面的图片显示了如何焊接背面焊盘而使编码器接上上拉电阻。不是所有的编码器都需要上拉电阻。一般来说，大多数编码器不需要上拉电阻。而对于寻求性价比的人来说，在 Ebay/Aliexpress 上销售的很多便宜的编码器都需要上拉电阻，比如 [600P ebay encoder <i class="fa fa-external-link"></i>](https://www.ebay.com/itm/360-600P-R-Photoelectric-Incremental-Rotary-Encoder-5V-24V-AB-Two-Phases-Shaft/254214673272?hash=item3b30601378:g:AZsAAOSwu~lcxosc) 编码器和一些类似的编码器。
 
-## Enabling I2C pull-up resistors
+## Enabling I2C pull-up resistors（使能I2C上拉电阻）
 
 <img src="extras/Images/v2_i2c.jpg" class="width30">
 
-From the shield [<i class="fa fa-tag"></i>version 1.3.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) the boards come with with 4.7KOhm pull-up resistors for I2C communication pins. The picture above shows how solder the pads in order to enable the Pull-up resistors.
-Not all I2C devices (especially Magnetic sensors) need the pull-up resistors, or better said, in general, most of them don't need them, especially with Arduino UNO. But it is very common to have problems interfacing these sensors with STM32 boards such as Nucleo-64. There you will need to enable the pullups or provide them yourself externally.  
-<blockquote class="warning"><p class="heading">BEWARE: Stacking</p>
-If you are stacking the shields and you wish to use the I2C pull-ups, make sure you solder these pads on only board at a time!
+ shield [<i class="fa fa-tag"></i>version 1.3.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 板上带有 4.7kΩ  上拉电阻的 I2C 通信引脚。上面的图片展示了如何焊接背面焊盘而使I2C引脚接上上拉电阻。并不是所有的 I2C 设备（尤其是磁性传感器）都需要上拉电阻。更确切地说，大多数 I2C 设备不需要上拉电阻，特别是当处理器是Arduino UNO时。但是，这些I2C传感器连接 STM32 板（如 Nucleo-64）时出现问题很常见，这时候就需要启用这些上拉电阻，或者自行外接。 
+<blockquote class="warning"><p class="heading">注意：叠板</p>
+如果你正在堆叠两块或以上的SFOC板，并且希望使用I2C的上拉时，请确保只在其中一块板上焊接这些焊盘！
 </blockquote>
 
-## Enabling on-board voltage regulator to power the MCU
+
+## Enabling on-board voltage regulator to power the MCU（使板载电压调节器为MCU供电）
 
 <img src="extras/Images/v2_ldo.jpg" class="width30">
 
-The boards from  [<i class="fa fa-tag"></i>version 2.0](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) have integrated linear regulator in order to provide a way to power the MCU on which the board has been stacked on with power combing form boards terminals. Board version v2.0.1 has 5V regulator integrated connected directly to the 5V pin of the board which will work without any problem with all Arduino boards. But stm32 Nucleo does not support this type of power transfer therefore version v2.0.1 will not be able to power-up the Nucleo-64 board just by soldering the pad on the image above. Version v2.0.2 of the <span class="simple">Simple<span class="foc">FOC</span>Shield</span> has 8V regulator on-board connected to the VIN pin of the shield which will enable powering up the Nucleo-64 boards. 
+  [<i class="fa fa-tag"></i>version 2.0 （2.0 版本）](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases)  的电路板集成了线性稳压器为MCU供电，在该电路板上还有电源的端子。 v2.0.1 版本集成了 5V 的稳压器，直接连接到板的 5V 引脚上，所有 Arduino 板都可以由这个5V正常供电。但是 stm32 Nucleo 并不适用，因此 v2.0.1 版本不能通过焊接上图的焊盘来为 Nucleo-64 板供电。SimpleFOCShield 的 v2.0.2 版本有8V的稳压器，连接到 shield 的 VIN 引脚，可以为 Nucleo-64 板供电。
 
-<blockquote class="warning"><p class="heading">BEWARE: Stacking</p>
-If you are stacking the shields and you wish to use the linear regulator, make sure to enable it on only one board!
+<blockquote class="warning"><p class="heading">注意：叠板</p>
+如果你正在堆叠两块或以上的SFOC板，并且要使用线性稳压器的话，请确保只用其中一块板的稳压器！
 </blockquote>
 
-## Configuring the current sensing ADC range
+
+## Configuring the current sensing ADC range（配置 ADC 的电流检测范围）
 
 <img src="extras/Images/v2_adc.gif" class="width30">
 
-If your microcontroller has 5V logic the chances are that its ADC operates in 5V range nad if your mcu works on 3.3V it will most probably have a 3.3V ADC range. Please check the datasheet before soldering this pad. If the ADC range has been choses to be 3.3V the maximal current that can be measured will be 3.3A bidirectional and if the rage is 5V the maximal current will be 5V bidirectional.
+如果你的MCU是5V逻辑电平，那么它的 ADC 的采样范围在5V内 。同理如果MCU是3.3V逻辑电平，则为3.3V的ADC采样范围。焊接此焊盘前请检查数据书册。如果 ADC 范围选择为 3.3V，则可测量的最大电流为 3.3A 双向，如果电压为5V，则最大电流为 5V 双向。
 
-<blockquote class="info"><p class="heading">RULE OF THUMB: 3.3V or 5V</p>
-Arduino UNO - 5V range<br>
-stm32 (nucleo, bluepill) and esp32 chips - 3.3V range
+<blockquote class="info"><p class="heading">经验法则： 3.3V 或者 5V</p>
+Arduino UNO - 5V<br>
+stm32 (nucleo, bluepill) 和 esp32 chips - 3.3V
 </blockquote>
 
-## Configuring the current sensing pinout
-The pinout of current sensing is very simple and the only real important thing is that we do not use the same pins for something else. Therefore if stacking multiple boards make sure to configure the each board in a way to use the pair of pins that the other one does not use. 
 
-Signal | Possible pins
+## Configuring the current sensing pinout（配置电流检测引脚）
+电流检测的引脚非常简单，主要注意不要使用其他的功能引脚。因此，如果堆叠多个SFOC板，确保使用每块板的引脚配置不与其他板的引脚重复。
+
+Signal（信号） | Possible pins（可用的引脚） 
 --- | ---
-Current phase A | A0, A1
-Current phase B | A2, A3
+Current phase A（A相电流） | A0, A1
+Current phase B（B相电流） | A2, A3
 
 
-## Customizing pinout
+## Customizing pinout（定制引脚）
 
-Pinout customization of the <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  enables the board to be very flexible with using different sensors and additional arduino modules. But more importantly it enables the board to be stackable. 
+定制引脚的 SimpleFOCShield 使板子非常灵活地使用不同的传感器和额外的 arduino 模块。但更重要的是，它使得板子可以堆叠。
 
-Here is a table of the configurable signals and their possible pin assignments:
+下面是可配置信号及其可能的引脚分配表：
 
-Signal | Possible pins
+Signal（信号） | Possible pins（可用的引脚） 
 --- | ---
 Pwm A | 9, 10
 Pwm B | 3, 5
@@ -89,68 +90,69 @@ Encoder A | 3, 12, A5
 Encoder B | 2, A4 
 Encoder I | 4, 11, 13
 
-Now, there is a lot of possible pin configurations and not all of them are possible depending on the microcontroller and sensor you are using. 
-For example, Arduino UNO only has 2 external interrupt pins, and they are pin  `2` and `3`. Therefore when using the board with Arduino UNO and Encoder we will try to use pin `3` for encoder channel A and not for pwm A. 
+尽管有很多可能的引脚配置，但基于您使用的微控制器和传感器，并非所有引脚配置都可行 。例如，Arduino UNO 只有 2个外部中断引脚，分别是引脚 `2` 和`3` 。因此，在用 Arduino UNO和编码器时，我们会将UNO的引脚`3`用于编码器通道 A，而不是用于 pwm A。
 
-Another example is when stacking two boards with the STM32 Nucleo. Nucleo board cannot have pwm generation on pins `11` and `6` therefore you cannot combine those pins at the same time. Therefore whn using Nucleo board, the rule of thumb is to avoid using pin `11` but use pin `13` instead.
+另一个例子是用 STM32 Nucleo 叠两块板。Nucleo 板的引脚`11`和 `6`上不能输出 pwm，因此您不能同时使用这些引脚。当使用 Nucleo 板时，我们的经验是避免使用引脚`11`，而使用引脚`13`。
 
-<blockquote class="info"><p class="heading">Pin 13 or pin 11</p> We advise you to try first with the  pin 13 configured and then with pin 11 if this does not work. Tested boards are Nucleo-F401RE - pin 13 works / pin 11 doesn't and  Nucleo-F466RE pin 11 works/ pin 13 doesn't.</blockquote>
+<blockquote class="info"><p class="heading">引脚 13 or 引脚 11</p> 我们建议您先尝试配置引脚13，如果引脚13不行的话再试试引脚11。我们测试的时候是 Nucleo-F401RE - 引脚13有效/引脚11无效，Nucleo-F466RE 引脚11有效/引脚13无效。</blockquote>
 
-Therefore in the following text you can find the suggested pinout configuration based on the stacking necessity and the microcontroller used.
+因此在下文中，您可以根据堆叠的必要性和所使用的微控制器找到推荐的引脚配置。
 
-### Suggested pinout: Single board
-When using only one board with only one motor, it is much easier to choose the pinout. Basically you only need to be careful if you are using the encoder to use pin `3` with encoder channel A and not withe the driver's pin pwm A. And as well, if you are using the SPI magnetic sensor you should avoid using pins `10` and `11` because they are used with the SPI communication.  
+### Suggested pinout: Single board（建议的引脚：单板）
+当只用一块板，只有一个电机时，选择引脚要容易得多。基本上你只需要注意不要将Pin`3`同时用于编码器的通道A和输入信号的PWM A。而且，如果你使用 的是SPI 磁传感器，你应该避免使用引脚`10`和`11`，因为它们是用于 SPI 通信的。
 
 <img src="extras/Images/v2_single.jpg" class="width30">
 
-With all of this in mind, probably the best pinout you can have when using one board will be:
+考虑上述因素，在使用一个板的时候推荐的引脚配置是：
 
-Signal | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I
+Signal（信号） | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I
 --- | --- | ---- | --- | --- | --- | --- | ---
-Pin number | 9 | 5 | 6 | 8 | 3 | 2 | 4 
+Pin number （引脚号码） | 9 | 5 | 6 | 8 | 3 | 2 | 4 
 
-On the image above you can see which soldering pads you would need to solder in order to obtain this configuration.
+在上面的图片中，你可以看到你需要焊接哪些焊盘来得到这个配置。
 ```cpp
 // driver instance configuration based on pinout above
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 ```
 
-### Suggested pinout: Stacking with Arduino UNO
+### Suggested pinout: Stacking with Arduino UNO（建议的引脚 ：基于 Arduino UNO 叠板）
 
-Arduino UNO has only 6 pwm pins which means when we stack two boards we do not have much choice which ones to use, we need all of them. It is nto important how we organize the pwm A,B,C,enable and encoder A,B,I signals as log as we use pin `3` for pwm A and as long as we don't use pin `13` for pwm C.
+Arduino UNO 只有6个 pwm 引脚，这意味着当我们堆叠两块板时，我们就需要所有的引脚。重要的是我们如何组织 pwm A，B，C，使能和编码器的ABI信号， pwm A 使用引脚`3`，pwm C 不使用引脚 `13` 。 
 
 <img src="extras/Images/v2_ard1.jpg" class="width30">
 <img src="extras/Images/v2_ard2.jpg" class="width30">
 
-Here is one example of a pin assignment compatible with Arduino UNO:
- 
-Signal | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I | 
---- | --- | ---- | --- | --- | --- | --- | ---
-Board #1 | 10 | 5 | 6 | 8 | 12 | 2 | 4 
-Board #2 | 9 | 3 | 11 | 7 | A5 | A4 | 13 
+下面是兼容 Arduino UNO 的一个引脚分配示例：
 
-The figure above shows how to solder the pads on both boards to obtain the desired pinout.  
+Signal（信号） | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I | 
+--- | --- | ---- | --- | --- | --- | --- | --- | --- 
+Board #1（板子1） | 10 | 5 | 6 | 8 | 12 | 2 | 4 |
+Board #2（板子2） | 9 | 3 | 11 | 7 | A5 | A4 | 13 |
+
+上图显示了如何焊接两个板上的焊盘，以获得所需的引脚。 
 ```cpp
 // motor instances configuration based on pinout above
 BLDCDriver3PWM driver1 = BLDCDriver3PWM(10, 5, 6, 8);
 BLDCDriver3PWM driver2 = BLDCDriver3PWM(9, 3, 11, 7);
 ```
 
-### Suggested pinout: Stacking with Stm32 Nucleo
+### Suggested pinout: Stacking with Stm32 Nucleo（建议的引脚：基于 Stm32 Nucleo 叠板）
 
-When using stacked <span class="simple">Simple<span class="foc">FOC</span>Shield</span> with stm32 Nucleo board, we just have to make sure not to use pin `11` for pwm C, but to use pin `13` instead. And as for Arduino UNO, we should not use pin `3` for encoder A, but for pwm A. But if we respect these constraints we can choose the other pins as we wish.
+堆叠 SimpleFOCShield 与 stm32 Nucleo 板时，pwm C 不使用引脚`11`，而是使用引脚13代替。对于 Arduino UNO，我们不应该在编码器A上使用引脚 `3`，而应该在 pwm A 上使用。但是如果我们尊重这些约束条件，我们可以选择我们希望的其他引脚。
 
 <img src="extras/Images/v2_nuc1.jpg" class="width30">
 <img src="extras/Images/v2_nuc2.jpg" class="width30">
 
 Here is an example of chosen pinout configuration valid for stacking with Nucleo board.
 
-Signal | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I
---- | --- | ---- | --- | --- | --- | --- | ---
-Board #1 | 10 | 5 | 6 | 8 | 12 | 2 | 4 
-Board #2 | 9 | 3 | 13 | 7 | A5 | A4 | 11 
+基于Nucleo叠板的推荐引脚：
 
-See the figure above to find how to solder the pads to obtain this configuration.
+Signal（信号） | Pwm A | Pwm B | Pwm C | Enable | Encoder A | Encoder B | Encoder I
+--- | --- | ---- | --- | --- | --- | --- | ---
+Board #1（板子1） | 10 | 5 | 6 | 8 | 12 | 2 | 4 
+Board #2（板子2） | 9 | 3 | 13 | 7 | A5 | A4 | 11 
+
+参见上图，了解如何焊接焊盘以获得这种配置。
 
 ```cpp
 // motor instances configuration based on pinout above

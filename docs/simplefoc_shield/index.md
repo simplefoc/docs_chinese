@@ -11,73 +11,73 @@ has_toc: false
 
 # Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  <small><i>v2.0.3</i></small>
 
-This is an open-source low-cost Brushless DC (BLDC) motor driver board intended primarily for low-power FOC applications up to 5Amps. The board is fully compatible with the Arduino UNO and all the boards with the standard Arduino headers.
-The <span class="simple">Simple<span class="foc">FOC</span>Shield</span>, in combination with  the <span class="simple">Simple<span class="foc">FOC</span>library</span> provides *user-friendly* way to control BLDC motors both in hardware and software.    
+这是一个开源的低成本无刷直流(BLDC)电机驱动板，主要用于低功率高达5安培的FOC应用。该板完全兼容于Arduino UNO和所有标准Arduino接口的板。SimpleFOCShield结合SimpleFOClibrary提供了友好的方式来控制无刷直流电机的硬件和软件。
 
-## YouTube demonstration video
+
+
+## YouTube演示视频
+
 <iframe class="youtube" src="https://www.youtube.com/embed/G5pbo0C6ujE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### Features
-- **Plug & play**: In combination with Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
-- **Low-cost**: Price of €15 - [Check the pricing](https://www.simplefoc.com/shop) 
-- **In-line current sensing**: Up to 3Amps/5Amps bidirectional
-   - configurable: 3.3Amps - 3.3V adc, 5Amps - 5V adc
-- **Integrated 8V regulator**: 
-   - Enable/disable by soldering pads
-- **Max power 120W** - max current 5A, power-supply 12-24V
-   - Designed for Gimbal motors with the internal resistance >10 Ωs. 
-- **Stackable**: running 2 motors in the same time
-- **Encoder/Hall sensors interface**: Integrated 3.3kΩ pullups (configurable)
-- **I2C interface**: Integrated 4.7kΩ pullups (configurable)
-- **Configurable pinout**: Hardware configuration - soldering connections
-- **Arduino headers**: Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
-- **Open Source**: Fully available fabrication files - [how to make it yourself](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
-
+### 特性
+- **即插即用**：结合 Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
+- **低成本**: 15 欧元的价格 - [查看价格](https://www.simplefoc.com/shop) 
+- **在线电流传感**: 双向可达 3Amps/5Amps
+   - 可配置：3.3Amps - 3.3V adc, 5Amps - 5V adc
+- **集成 8V 调节器**: 
+   - 通过焊盘启用/禁用
+- **最大功率 120W** - 最大电流 5A, 电源 12-24V
+   - 适用于 >10Ωs 的云台电机. 
+- **可堆叠**：同时运行2个电机
+- **编码器/霍尔传感器接口**：集成的3.3kΩ上拉（可配置）
+- **I2C 接口**：集成的4.7kΩ上拉（可配置）
+- **可配置的引出线**：硬件配置 - 焊接连接
+- **Arduino headers**：Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
+- **开源**：完全可用的制造文件 - [如何自己制作它](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
 
 <blockquote class="warning"> 
-<p class="heading">BEWARE</p>
-This BLDC driver board is primarily designed for gimbal motors with the internal resistance of R >10 Ω. Please make sure that your motor fits in this category before deciding to use the <span class="simple">Simple<span class="foc">FOC</span>Shield</span>.
+<p class="heading">注意</p>
+该无刷直流驱动板主要用于内阻为R >10 Ω的云台电机。使用 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 之前，请确保您的电机符合这个参数。
 </blockquote>
 
 <img src="https://simplefoc.com/assets/img/v1.jpg" class="img300 img_half"><img src="https://simplefoc.com/assets/img/v2.jpg" class="img300  img_half">
 
-### Connection schematic
-An electrical connection example of a BLDC motor with an encoder as position sensor. 
+### 连接示意图
+以编码器作为位置传感器的无刷直流电动机的电路连接示例。
 <p><img src="extras/Images/foc_shield_v13.jpg" class="width60"></p>
-For more information about how to connect you hardware to your shield, check the full [connection example](arduino_simplefoc_shield).
+有关如何将硬件连接到 shield 的更多信息，请查看完整的 [连接实例](arduino_simplefoc_shield)。
 
-## Project example : Reaction wheel inverted pendulum
+## 项目实例：倒立摆（Reaction wheel inverted pendulum）
 <iframe class="youtube"  src="https://www.youtube.com/embed/Ih-izQyXJCI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-This is a project of designing and controlling the reaction wheel inverted pendulum based entirely on Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> and <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+这是一个完全基于 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 和 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 设计和控制倒立摆的项目。
 
-This is a very fun project in many ways, and it is intended:
-- Students in search for a good testing platform for their advanced algorithms
-- Everyone with a bit of free time and a motivation to create something cool :D
+从很多方面来看，这都是一个非常有趣的项目：
 
-For full documentation of necessary components, design choices and the code please visit the [project docs](simplefoc_pendulum).
+- 学生们可以为他们的高级算法寻找一个好的测试平台
+- 每个人都有一点空闲时间和动机去创造一些很酷的东西 :D
+
+有关必要的组件、设计选择和代码的完整文档，请访问 [项目文档](simplefoc_pendulum)。
 
 
-## Project example : Steer by wire - bidirectional haptic control examples 
+## 项目实例：线控-电机互控实例（Steer by wire - bidirectional haptic control examples）
 <iframe class="youtube" src="https://www.youtube.com/embed/xTlv1rPEqv4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+这个视频演示了 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 支持与 Arudino UNO 和 STM32 Nucleo-64 板堆叠。以及支持不同的具有较大精度跨度的磁编码器。
 
-This video demonstrates <span class="simple">Simple<span class="foc">FOC</span>Shield</span> support for stacking with Arudino UNO and STM32 Nucleo-64 board. As well as support for different sensors magnetic and encoders with relatively large precision span.
-
-The control algorithms implemented in this project are :
-- **Steer by wire** (force feedback): two motors with virtually coupled positions
-- **Interactive gauge** (haptic velocity control): two motors with virtually coupled position and velocity
-
-
-For full documentation of the projects setup and the code please visit the [project docs](haptics_examples).
+本项目所实现的控制算法为：
+- **线控** （力反馈） ：两个电机的位置几乎耦合
+- **交互测试 Interactive gauge** （触碰速度控制 haptic velocity control）：两个电机的位置和速度几乎耦合
 
 
-## Getting started
-
-You already have your own <span class="simple">Simple<span class="foc">FOC</span>Shield</span>? <br>
-[Here is a simple guide how to start preparing your setup](arduino_simplefoc_shield_installation)
+有关项目设置和代码的完整文档，请访问 [项目文档](haptics_examples)。
 
 
+## 入门指南
 
-## How to get hold of the <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
-- **Fabricate the board yourself**:  Please visit the [board fabrication](arduino_simplefoc_shield_fabrication) to find out how to manufacture the board yourself!<br>
-- **Order the finished and tested board**:  Check out our [shop](https://simplefoc.com/simplefoc_shield_product).
+你拥有自己的 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 了吗？ <br>
+[这里是一个简单的指南，如何开始您的设置](arduino_simplefoc_shield_installation)
+
+
+
+## 如何获得 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
+- **自己制作板子**：请访问 [板的制造](arduino_simplefoc_shield_fabrication) 了解如何制造自己的板子！<br>
+- **订购已完成的测试板**：看看我们的 [商店](https://simplefoc.com/simplefoc_shield_product).
 

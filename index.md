@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: 首页
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) project documentation."
 permalink: /
@@ -11,86 +11,90 @@ permalink: /
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)
 
-We live in very exciting times 😃! BLDC motors are entering the hobby community more and more and many great projects have already emerged leveraging their far superior dynamics and power capabilities. BLDC motors have numerous advantages over regular DC motors but they have one big disadvantage, the complexity of control. Even though it has become relatively easy to design and manufacture PCBs and create our own hardware solutions for driving BLDC motors the proper low-cost solutions are yet to come. One of the reasons for this is the apparent complexity of writing the BLDC driving algorithms, Field oriented control (FOC) being an example of one of the most efficient ones.
-The solutions that can be found on-line are almost exclusively very specific for certain hardware configuration and the microcontroller architecture used.
-Additionally, most of the efforts at this moment are still channeled towards the high-power applications of the BLDC motors and proper low-cost and low-power FOC supporting boards are very hard to find today and even may not exist. <br>
-Therefore this is an attempt to: 
+时代的进步通常令人激动。现今，无刷电机已经进入各种爱好者DIY社区，并且出现了很多高质量且拥有优异性能的无刷电机驱动方案。
 
-- 🎯 Demystify FOC algorithm and make a robust but simple Arduino library: [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> ](#arduino-simplefoclibrary-v160)
-  - <i>Support as many <b>motor + sensor + current sense + driver + mcu</b> combinations out there</i>
-- 🎯 Develop a modular FOC supporting BLDC driver boards:
-   - *Low-power* gimbal driver (<5Amps) :   [Arduino <span class="simple">Simple<b>FOC</b>Shield</span> ](arduino_simplefoc_shield_showcase).
-   - ***NEW*** 📢: *Medium-power* BLDC driver (<30Amps): [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
-   - See also [@byDagor](https://github.com/byDagor)'s *fully-integrated* ESP32 based board: [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
+相比于直流电机，无刷电机的有点可谓数不胜数，但同时它也拥有巨大的不足，那就是控制过于复杂。尽管身处工具链和PCB制造设计技术发达，设计自己的PCB变得很容易的年代，但一个低成本的无刷电机驱动方案却尚未出现。其中一个原因就是自行编写无刷电机的驱动方案太过复杂，尽管我们可以在网上找到很多成熟的FOC代码方案，但他们大部分都针对特定的硬件配置、特定的单片机；同时，现在很多的FOC算法和硬件开发尝试都是围绕着高功率无刷电机应用，低成本低功率的FOC硬件十分难找，甚至根本就找不到。
 
+<br>
+
+基于以上痛点，本项目尝试：
+
+- 🎯 揭开 FOC 算法的神秘面纱，制作一个强大而简单的 Arduino 库： [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> ](#arduino-simplefoclibrary-v160)
+  - <i>此库要支持尽可能多的**电机+传感器+电流检测+驱动器+单片机 **，做到通用性</i>
+- 🎯 建立几套适应不同应用情况的低成本FOC驱动板：
+   - 支持*小功率* 云台设备的板子（<5A）：   [Arduino <span class="simple">Simple<b>FOC</b>Shield</span> ](arduino_simplefoc_shield_showcase).
+   - ***新*** 📢: 支持*中功率* 无刷直流电驱动器的板子（<30A）： [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
+   - 另外 [@byDagor](https://github.com/byDagor) *也做了完全集成的* 基于ESP32 的板子，大家可以一看： [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
 
 <blockquote class="info">
-   <p class="heading">NEW RELEASE 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.1.1 - <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.1.1">see release</a></p>
+   <p class="heading">新版本 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.1.1 - <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.1.1">请参阅版本</a></p>
    <ul>
-      <li>Raspberry pi Pico initial support  - <a href="rpi_mcu">see in docs</a></li>
-      <li>SAMD51 support  - <a href="samd_mcu">see in docs</a></li>
-      <li>full support of the <a href="studio">Simple<b>FOC</b>Studio</a> - <a href="studio">see in docs</a></li>
-      <li>added initial support for <code class="highlighter-rouge">MagneticSensorPWM</code> <a href="magnetic_sensor_pwm">see in docs</a></li>
-      <li>improved esp32 implementation to avoid the need for <code class="highlighter-rouge">mcpwm.h</code> changes by @tschundler</li>
-      <li>added examples fot the PowerShield</li>
-      <li>added examples to find the raw max and min of the analog and pwm sensor</li>
-      <li>extension of the Commander interface EOL character + additional commands  - <a href="commander_interface">see in docs</a></li>
+      <li>初步支持 Raspberry pi Pico  - <a href="rpi_mcu">请参阅文档</a></li>
+      <li>支持 SAMD51  - <a href="samd_mcu">请参阅文档</a></li>
+      <li>完全支持 <a href="studio">Simple<b>FOC</b>Studio</a>  - <a href="studio">具体请参阅文档</a></li>
+      <li>增加了对  <code class="highlighter-rouge">PWM制式磁编码器</code> 的初始支持 <a href="magnetic_sensor_pwm">请参阅文档</a></li>
+      <li>改进了 esp32 的实现，新版本不用修改 @tschundler 对 <code class="highlighter-rouge">mcpwm.h</code> </li>
+      <li>增加了 PowerShield 的实例 </li>
+      <li>增加的 PowerShield 实例，能找出模拟信号和 PWM 制式传感器的最大值和最小值</li>
+      <li>在库里增加了 commander 方法+附加的命令  - <a href="commander_interface">请参阅文档</a></li>
    </ul>
 </blockquote>
 
 
+
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.1.1</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-This video demonstrates the Simple FOC library basic usage, electronic connections and shows its capabilities.
+这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
 ### 特性
-- **Arduino compatible**: 
-   - Arduino library code
-  - Arduino Library Manager integration
-- **Open-Source**: Full code and documentation available on github
-- **Easy to setup and configure**: 
-  - Easy hardware configuration
-  - Easy [tuning the control loops](motion_control)
-- **Modular**:
-  - Supports as many [sensors,  BLDC motors  and  driver boards](supported_hardware) as possible
-  - Supports multiple [MCU architectures](microcontrollers):
-     - Arduino: UNO, MEGA, any board with ATMega328 chips
-     - STM32 boards: [Nucleo](https://www.st.com/en/evaluation-tools/stm32-nucleo-boards.html), [Bluepill](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html) ...
+- **兼容 Arduino**：
+   - Arduino 库代码
+  - Arduino 库管理器集成
+- **开源**：在github上可以获得完整的代码和文档
+- **易于设置和配置**：
+  - 硬件连接安装简单
+  - 易于 [调整控制模式，如 开环/闭环等](motion_control)
+- **模块化**：
+  - 支持尽可能多的  [传感器，无刷直流电机和驱动器板](supported_hardware) 组合
+  - 支持多种 [MCU架构](microcontrollers)：
+     - Arduino: UNO, MEGA, 任何带有 ATMega328 芯片的电路板
+     - STM32 板子： [Nucleo](https://www.st.com/en/evaluation-tools/stm32-nucleo-boards.html), [Bluepill](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html) ...
      - ESP32
-     - Teensy boards
-- **Plug & play**: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
+     - Teensy 板子
+- **即插即用**：Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
 
 
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <i><small>v2.0.3</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/G5pbo0C6ujE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 ### 特性
-- **Plug & play**: In combination with Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
-- **Low-cost**: Price of €15 - [Check the pricing](https://www.simplefoc.com/shop) 
-- **In-line current sensing**: Up to 3Amps/5Amps bidirectional
-   - configurable: 3.3Amps - 3.3V adc, 5Amps - 5V adc
-- **Integrated 8V regulator**: 
-   - Enable/disable by soldering pads
-- **Max power 120W** - max current 5A, power-supply 12-24V
-   - Designed for Gimbal motors with the internal resistance >10 Ωs. 
-- **Stackable**: running 2 motors in the same time
-- **Encoder/Hall sensors interface**: Integrated 3.3kΩ pullups (configurable)
-- **I2C interface**: Integrated 4.7kΩ pullups (configurable)
-- **Configurable pinout**: Hardware configuration - soldering connections
-- **Arduino headers**: Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
-- **Open Source**: Fully available fabrication files - [how to make it yourself](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
+- **即插即用**：通过库 Arduino *Simple**FOC**library* 实现- [github](https://github.com/simplefoc/Arduino-FOC)
+- **低成本**: 15 欧元的价格 - [查看价格](https://www.simplefoc.com/shop) 
+- **在线电流传感**: 双向可达 3A/5A
+   - 可配置：3.3A - 3.3V adc, 5A - 5V adc
+- **集成 8种 调节器**: 
+   - 通过焊盘启用/禁用
+- **最大功率 120W** - 最大电流 5A, 电源 12-24V
+   - 适用于 >10Ωs 的云台电机. 
+- **可堆叠接插**：同时运行2个电机
+- **编码器/霍尔传感器接口**：集成的3.3kΩ上拉（可配置）
+- **I2C 接口**：集成的4.7kΩ上拉（可配置）
+- **引脚配置**：见 硬件配置 - 焊接连接 章节
+- **支持的Arduino 型号**: Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
+- **开源**：开源全部DIY文件 - [如何自己制作它](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
 
-##### If you are interested in this board as a product, find more information on this link: [Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>](https://simplefoc.com/simplefoc_shield_product)
+##### 如果你对这个产品感兴趣，可以在这个链接上找到更多信息： [Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>](https://simplefoc.com/simplefoc_shield_product)
 
 
 <p><img src="extras/Images/simple_foc_shield_v13_small.gif" class="img200" ><img src="https://simplefoc.com/assets/img/v1.jpg" class="img200 img_half" ><img src="https://simplefoc.com/assets/img/v2.jpg" class="img200 img_half" ></p>
-## Alternative FOC supporting projects
-These are just a few of the alternative FOC supporting projects which provide hardware and software solutions. 
+## 其他的可代用FOC方案
 
-<a href="https://odriverobotics.com/" >Odrive</a> | <a href="https://www.youtube.com/watch?v=g2BHEdvW9bU">Trinamic</a> | <a href="https://www.infineon.com/cms/en/product/evaluation-boards/bldc_shield_tle9879/" >Infineon</a> | <a href="https://github.com/gouldpa/FOC-Arduino-Brushless">FOC-Arduino-Brushless</a>
------------- | ------------- | ------------ | -------------
-<img src="https://static1.squarespace.com/static/58aff26de4fcb53b5efd2f02/t/5c2c766921c67c143049cbd3/1546417803031/?format=1200w" style="width:100%;max-width:250px"  > | <img src="https://i3.ytimg.com/vi/g2BHEdvW9bU/maxresdefault.jpg" style="width:100%;max-width:250px"  > | <img src="https://www.infineon.com/export/sites/default/_images/product/evaluation-boards/BLDC_Motor_Shild_with_TLE9879QXA40.jpg_1711722916.jpg" style="width:100%;max-width:250px"  >| <img src="https://hackster.imgix.net/uploads/attachments/998086/dev_kit_89eygMekks.jpg?auto=compress%2Cformat&w=1280&h=960&fit=max" style="width:100%;max-width:250px"  >
-✔️ Open Source | ❌ Open Source | ✔️ Open Source(recently) | ✔️ Open Source
-✔️Simple to use | ✔️ Simple to use | ✔️Simple to use | ❌ Simple to use
-❌ Low cost ($100) | ❌ Low cost ($100) | ✔️Low cost ($40) | ✔️ Low cost
-❌ Low power (>50A) | ✔️ Low power  | ✔️  Low power | ✔️ Low power
-❌ Stepper support | ❌ Stepper support | ❌ Stepper support | ❌ Stepper support
+列出几个可代用的FOC方案以供参考
+
+ <a href="https://odriverobotics.com/" >Odrive</a>            | <a href="https://www.youtube.com/watch?v=g2BHEdvW9bU">Trinamic</a> | <a href="https://www.infineon.com/cms/en/product/evaluation-boards/bldc_shield_tle9879/" >Infineon</a> | <a href="https://github.com/gouldpa/FOC-Arduino-Brushless">FOC-Arduino-Brushless</a> 
+ ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ 
+ <img src="https://static1.squarespace.com/static/58aff26de4fcb53b5efd2f02/t/5c2c766921c67c143049cbd3/1546417803031/?format=1200w" style="width:100%;max-width:250px"  > | <img src="https://i3.ytimg.com/vi/g2BHEdvW9bU/maxresdefault.jpg" style="width:100%;max-width:250px"  > | <img src="https://www.infineon.com/export/sites/default/_images/product/evaluation-boards/BLDC_Motor_Shild_with_TLE9879QXA40.jpg_1711722916.jpg" style="width:100%;max-width:250px"  > | <img src="https://hackster.imgix.net/uploads/attachments/998086/dev_kit_89eygMekks.jpg?auto=compress%2Cformat&w=1280&h=960&fit=max" style="width:100%;max-width:250px"  > 
+ ✔️开源                                                        | ❌ 开源                                                       | ✔️ 开源                                                       | ✔️ 开源                                                       
+ ✔️易用                                                        | ✔️ 易用                                                       | ✔️易用                                                        | ❌ 易用                                                       
+ ❌ 低成本 ($100)                                              | ❌ 低成本 ($100)                                              | ✔️低成本 ($40)                                                | ✔️ 低成本                                                     
+ ❌ 低功率 (>50A)                                              | ✔️ 低功率                                                     | ✔️  低功率                                                    | ✔️ 低功率                                                     
+ ❌ 支持步进电机                                               | ❌ 支持步进电机                                               | ❌ 支持步进电机                                               | ❌ 支持步进电机                                               

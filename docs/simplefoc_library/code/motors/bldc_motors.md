@@ -8,20 +8,20 @@ grand_parent: Writing the Code
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# BLDC Motor configuration
+# BLDC Motor configuration（配置无刷直流电机）
 
 <div class="width60">
 <img src="extras/Images/mot2.jpg" style="width:30%;display:inline"><img src="extras/Images/bigger.jpg" style="width:30%;display:inline"><img src="extras/Images/mot.jpg" style="width:30%;display:inline">
 </div>
 
-All BLDC motors are handled with the `BLDCMotor` class. This class implements:
-- BLDC FOC algorithm
-- Motion control loops
-- Monitoring
-- User communication interface
+用 `BLDCMotor` 类可以完成所有直流无刷电机的控制。这个类可以实现：
+- 直流无刷电机 FOC 算法
+- 运动控制主循环
+- 监控
+- 用户通信接口
 
-## Step 1. Creating the instance of the BLDC motor
-To instantiate the BLDC motor we need to create an instance of the `BLDCMotor` class and provide it the number of `pole pairs` of the motor.
+## Step 1. Creating the instance of the BLDC motor（步骤1. 创建无刷直流电机的实例）
+为了举例说明无刷直流电机的使用，我们需要创建 `BLDCMotor` 类的一个实例和提供电机的极对数 `pole pairs` 。
 ```cpp
 //  BLDCMotor(int pp, (optional R))
 //  - pp  - pole pair number
@@ -29,56 +29,54 @@ To instantiate the BLDC motor we need to create an instance of the `BLDCMotor` c
 BLDCMotor motor = BLDCMotor(11 , 10.5);
 ```
 
-<blockquote class="info"><p class="heading">Pole pair number </p>
-If you are not sure what your <code class="highlighter-rouge">pole_paris</code> number is. The library provides an example code to estimate your <code class="highlighter-rouge">pole_paris</code> number in the examples <code class="highlighter-rouge">find_pole_pairs_number.ino</code>.
+<blockquote class="info"><p class="heading">极对数 </p>
+如果你不确定电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number ）。library 库提供了一个 实例 <code class="highlighter-rouge">find_pole_pairs_number.ino</code> 来计算你电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number）。
  </blockquote>
-<blockquote class="info"><p class="heading">Phase resisatnce </p>
-If you know in advance your motor's phase resistance value <code class="highlighter-rouge">R</code>, we suggest you to provide it to the library. The library will then calculate the voltage values internally and  the user will be dealing only with currents. But this is an optional feature.
+<blockquote class="info"><p class="heading">相位电阻 </p>
+如果你提前知道你的电机的相位电阻值 <code class="highlighter-rouge">R</code>，我们建议你把它提供给 library 库。然后 library 库会计算内部电压值，用户只需要处理电流。不过这算是一个可选的功能。
  </blockquote>
 
-## Step 2. Linking the sensor 
-Once when you have the `motor` defined and the sensor initialized you need to link the `motor` and the `sensor` by executing:    
+## Step 2. Linking the sensor （步骤2. 连接传感器）
+定义好 `motor` 和初始化 sensor 之后，执行以下代码来连接 `motor` 和 `sensor` ：
 ```cpp
 // link the sensor to the motor
 motor.linkSensor(&sensor);
 ```
-Method `linkSensor` is able to link the motor to any sensor implemented in this library. The `sensor` will be used to determine electrical position of the motor for the FOC algorithm as well as for the motion control loops of velocity and position. See the [position sensor docs](sensors) for more info!
+方法 `linkSensor` 能够将电机连接到本库的任何传感器。 `sensor` 将用于确定电机的 FOC 算法中的电路位置，以及速度和位置的运动控制主循环。更多信息请参阅 [位置传感器文档](sensors) 。
 
-<blockquote class="info">Linking is not necessary when using the openloop motion control.</blockquote>
-
-## Step 3. Linking the driver 
-Once when you have the `motor` defined and the driver initialized you need to link the `motor` and the `driver` by executing:    
+<blockquote class="info">当使用开环运动控制时，不需要进行连接。</blockquote>
+## Step 3. Linking the driver  （步骤3. 连接驱动程序）
+定义好 `motor` 和初始化 driver 之后，执行以下代码来连接 `motor` 和 `driver` ：
 ```cpp
 // link the driver to the motor
 motor.linkDriver(&driver);
 ```
 
-The `BLDCMotor` class expect to receive a `BLDCDriver` class instance, implemented by default with classes `BLDCDriver3PWM` and `BLDCDriver6PWM`. The `driver` deals with all the hardware specific operations related to specific microcontroller architecture and driver hardware. See the [bldc driver docs](bldcdriver) for more info!
+ `BLDCMotor` 类期望接收到一个 `BLDCDriver` 类实例，通过，默认的 `BLDCDriver3PWM` 和 `BLDCDriver6PWM` 类来实现。 `driver`  能够实现所有涉及到微控制器架构和驱动硬件的具体操作。 更多信息请参阅 [直流无刷电机驱动文档](bldcdriver) ！
 
 
-## Step 4. Linking the current sense 
-If you have a current sensor `current_sense` you can link it to the `motor` using:
+## Step 4. Linking the current sense  （步骤4.连接电流传感器）
+如果你有电流传感器 `current_sense` ，你可以使用以下代码连接到电机：
 ```cpp
 // link the current sensor to the motor
 motor.linkCurrentSense(&current_sense);
 ```
-This linking step is only necessary if you have a current sense supported by this library. See the [current sense docs](current_sense) for more info!
+如果你有 Library 库支持的电流传感器，才需要进行这个连接操作。 更多信息请参阅 [电流传感器文档](current_sense) ！
 
-## Step 5. Configuration paramters
+## Step 5. Configuration paramters （步骤5. 配置参数）
 
-If you choose not to set some of the configuration parameters they will take values defined in the `defaults.h` file.
-Check the [library source code](source_code) to dig deeper.
+如果你选择不设置某些配置参数，它们将会使用`defaults.h` 文件中定义的默认值，查看 [library 库源代码](source_code) 来进行更深入的挖掘。
 
-### Step 5.1 PWM Modulation type
+### Step 5.1 PWM Modulation type （步骤5.1 PWM 调制方式）
 
-There are four types of Field Oriented Control modulation types implemented for BLDC motors:
-- Sinusoidal PWM modulation
-- Space Vector PWM modulation
-- Block commutation - *beneficial for current control applications*
+无刷直流电机有四种 FOC 调制方式：
+- 正弦 PWM 调制
+- 空间矢量 PWM 调制
+- 块换向 - *有利于电流控制应用*
     - Trapesoidal 120
     - Trapesoidal 150
 
-You can set them by changing the `motor.foc_modulation` variable:
+可以改变 `motor.foc_modulation` 变量来传输：
 ```cpp
 // choose FOC modulation
 // FOCModulationType::SinePWM; (default)
@@ -87,57 +85,56 @@ You can set them by changing the `motor.foc_modulation` variable:
 // FOCModulationType::Trapezoid_150;
 motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 ```
-Sinusoidal PWM and Space vector commutation patters will produce sinusoidal currents and smooth operation but block commutation will be faster to execute, therefore more suitable for higher velocities. It is suggested to use the Trapesoidal 120 commutation with Hall sensors. Other commutation patterns will work as well but this one will have the best performance.
+正弦PWM和空间矢量换向模式将产生正弦电流和平稳运行，但块换向执行得更快，因此更适合于较高的速度。建议使用带有霍尔传感器的梯形 120 （Trapesoidal 120）换向。其他的交换模式也可以工作，但这个性能最好。
 
-<blockquote class="info"> <p class="heading">FOC currents torque control requirements</p> FOC torque control requires sinusoidal currents therefore please use either Sinusoidal PWM or Space vector PWM</blockquote>
+<blockquote class="info"> <p class="heading">FOC 电流力矩控制要求</p> FOC 力矩控制需要正弦电流，因此请使用正弦 PWM 或空间矢量 PWM</blockquote>
+有关这些方法的理论和源代码实现的更多信息，请查看 [FOC实现文档](foc_implementation) 或访问 [深入挖掘部分](digging_deeper) 。
 
-For more information about the theory of these approaches please and source code implementation check the [FOC implementation docs](foc_implementation) or visit the [digging deeper section](digging_deeper).
 
-
-### Step 5.2 Sensor and motor aligning parameters
-The voltage used for the motor and sensor alignment set the variable `motor.voltage_sensor_align`:
+### Step 5.2 Sensor and motor aligning parameters （步骤5.2 传感器和电机调整参数）
+用于电机和传感器校准的电压设置变量 `motor.voltage_sensor_align` ：
 ```cpp
 // aligning voltage [V]
 motor.voltage_sensor_align = 3; // default 3V
 ```
 
-If your sensor is an encoder and if it has an index pin, you can set the index search velocity value by set the variable `motor.velocity_index_search`:
+如果你的传感器是一个编码器，如果它有一个 I 引脚，你可以通过设置变量来设置 I 搜索速度的值 `motor.velocity_index_search` ：
 ```cpp
 // incremental encoder index search velocity [rad/s]
 motor.velocity_index_search = 3; // default 1 rad/s
 ```
 
-### Step 5.3 Position sensor offset
-For some applications it is convenient to specify the sensor absolute zero offset, you can define it by changing the parameter  `motor.sensor_offset`:
+### Step 5.3 Position sensor offset （步骤5.3 位置传感器偏置）
+在某些应用中，可以方便地指定传感器的绝对零偏移量，您可以通过改变参数来定义它  `motor.sensor_offset`:
 ```cpp
 // sensor offset [rad]
 motor.sensor_offset = 0; // default 0 rad
 ```
-This parameter can be changed in real-time.
+这个参数可实时修改。
 
-### Step 5.3 Motor phase resistance
-Motor phase resistance is an optional parameter which is not very important for current based torque modes, but if the voltage mode is used and if user specifies the `motor.phase_resistance` (either in constructor or in the `setup()` function) the library will allow user to work with current value and it will calculate the necessary voltages automatically. In the setup function you can change this parameter by setting:
+### Step 5.3 Motor phase resistance （步骤5.3 电机相位电阻）
+电机相电阻是一个可选参数，它对于基于电流的力矩模式不是很重要，但如果使用电压模式并且用户指定了 `motor.phase_resistance` （无论是在构造函数中，还是在 `setup()` 函数中）该library 库将允许用户使用电流值工作，它将自动计算所需的电压。在setup函数中，你可以设置以下值来改变这个参数：
 ```cpp
 // motor phase resistance [Ohms]
 motor.phase_resistance = 2.54; // Ohms - default not set
 ```
-Working with currents instead of voltages is better in may ways, since the torque of the BLDC motor is proportional to the current and not voltages and especially since the same voltage value will produce very different currents for different motors (due to the different phase resistance). Once when the phase resistance is provided the user will be able to set current limit for its BLDC motor instead of voltage limit which is much easier to understand. 
+在许多方面来说，用电流工作比电压更好。因为无刷直流电机的力矩与电流成比例，而不是与电压成比例，特别是相同的电压值会对不同的电机产生非常不同的电流（由于相电阻不同）。知道相电阻之后，用户就可以设置其无刷直流电机的电流限制，而不是电压限制。
 
-It is important to say that once you specify the phase resistance value, you will most probably have to retune the [velocity motion control](velocity_loop) and [angle motion control](angle_loop) parameters, due to the reason that the voltages and currents values are in different orders of magnitude. The rule of thumb is to divide all the `P`, `I` and `D` gains with the `motor.phase_resistance` value. That will be a good staring point.
+重要的是，一旦你指定了相位电阻值，因为电压和电流的值在不同的数量级，你很可能要重新调 [velocity motion control](velocity_loop) 和 [angle motion control](angle_loop) 参数。经验法则是用`motor.phase_resistance` 值除以所有的 `P`, `I` 和 `D` 增益。这会是一个很好的起点。
 
-Finally, this parameter is suggested to be used if one whats to switch in real time in between voltage ([voltage mode](voltage_mode)) and current based ([DC current](dc_current_torque_mode) and [FOC current](foc_current_torque_mode)) torque control strategies. Since in this way all the torque control loops will have current as input (target value) the user will not have to change the motion control parameters (PID values). 
+最后，建议在电压 ([（电压模式）](voltage_mode)) 和电流（[直流电流](dc_current_torque_mode) 和 [FOC 电流](foc_current_torque_mode)）力矩控制策略之间实时切换的时候使用该参数。通过这种方式，所有的力矩控制电路都将以电流作为输入（目标值），用户将不必改变运动控制参数（PID值）。
 
-Phase resistance can be changed in real-time if needed.
+如果需要，相位电阻可以实时改变。
 
-### Step 5.4 Torque control mode
-There are 3 different torque control modes implemented in the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>: 
-- [Voltage mode](voltage_mode)
-- [DC current](dc_current_torque_mode)
-- [FOC current](foc_current_torque_mode)
+### Step 5.4 Torque control mode （步骤 5.4 力矩控制模式）
+在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的力矩控制模式：
+- [Voltage mode（电压模式）](voltage_mode)
+- [DC current（直流电流）](dc_current_torque_mode)
+- [FOC current（FOC 电流）](foc_current_torque_mode)
 
-[DC current](dc_current_torque_mode) and [FOC current](foc_current_torque_mode) require current sensing and are controlling current and limiting the real current the motor is drawing, whereas [voltage mode](voltage_mode) approximates the motor current and does not use any current sensing. Read more in [torque control docs](torque_mode).
+[DC current（直流电流）](dc_current_torque_mode) 和 [FOC current（FOC 电流）](foc_current_torque_mode) 需要电流检测和控制电流，并限制电机的实际电流。而 [voltage mode（电压模式）](voltage_mode) 近似于电机电流，不使用任何电流检测。 更多信息请查阅 [力矩控制文档](torque_mode) 。
 
-The torque mode can be set by changing the motor attribute `torque_controller`.
+力矩模式可以通过改变电机属性 `torque_controller` 来设置。
 ```cpp
 // set torque mode to be used
 // TorqueControlType::voltage    ( default )
@@ -146,18 +143,18 @@ The torque mode can be set by changing the motor attribute `torque_controller`.
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-### Step 5.5 Motion control parameters  
+### Step 5.5 Motion control parameters （步骤5.5. 电机控制参数）  
 
-There are 3 different closed loop control strategies implemented in the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>: 
-- [Torque control loop](voltage_loop)
-- [Velocity motion control](velocity_loop)
-- [Position/angle motion control](angle_loop)
+在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的闭环控制策略：
+- [Torque control loop（力矩控制）](voltage_loop)
+- [Velocity motion control（速度运动控制）](velocity_loop)
+- [Position/angle motion control（位置/角度运动控制）](angle_loop)
 
-Additionally <span class="simple">Simple<span class="foc">FOC</span>library</span> implements two open loop control strategies as well:
-- [Velocity open-loop control](velocity_openloop)
-- [Position open-loop control](angle_openloop)
+另外 <span class="simple">Simple<span class="foc">FOC</span>library</span> 也有两种开环控制策略：
+- [Velocity open-loop control（速度开环控制）](velocity_openloop)
+- [Position open-loop control（位置开环控制）](angle_openloop)
 
-You set it by changing the `motor.controller` variable. 
+通过改变 `motor.controller` 变量来设置它：
 ```cpp
 // set motion control loop to be used
 // MotionControlType::torque      - torque control 
@@ -167,11 +164,10 @@ You set it by changing the `motor.controller` variable.
 // MotionControlType::angle_openloop       - position open-loop control
 motor.controller = MotionControlType::angle;
 ```
-<blockquote class="warning"><p class="heading"> Important!</p>This parameter doesn't have a default value and it has to be set before real-time execution starts.</blockquote>
+<blockquote class="warning"><p class="heading"> 注意！</p>该参数没有默认值，实时执行之前必须要设置这个值。</blockquote>
+每种运动控制策略都有自己的参数，更多信息请参阅 [运动控制文档](motion_control) 。
 
-Each motion control strategy has its own parameters and you can find more about them on [motion control docs](motion_control). 
-
-Here is the list of all the motion control configuration parameters:
+下面是所有运动控制配置参数的列表：
 ```cpp
 // set control loop type to be used
 motor.controller = MotionControlType::angle;
@@ -201,68 +197,68 @@ motor.velocity_limit = 50;
 motor.voltage_limit = 12; // Volts -  default driver.voltage_limit
 // or current limit - if phase_resistance set
 motor.current_limit = 12; // Amps -  default 0.5 Amps
-```  
+```
 
-### Step 5.6 Configuration done - `motor.init()`
-Finally the configuration is terminated by running `init()` function which prepares all the hardware and software motor components using the configured values.
+### Step 5.6 Configuration done - `motor.init()` （步骤5.6 完成配置）
+最后，通过运行 `init()` 函数完成配置，该函数使用配置值完成所有的硬件和软件电机组件。
 ```cpp
 // initialize motor
 motor.init();
 ```
 
-## Step 6. Align motor and all the sensors - Field Oriented Control init
+## Step 6. Align motor and all the sensors - Field Oriented Control init （步骤6. 调整电机和所有传感器）
 
-After the position sensor, current sense, driver and the motor are configured, and before we can start the motion control we need to align all  hardware components in order to initialize the FOC algorithm. This is done in the scope of the funciton `motor.initFOC()`
+在配置好位置传感器、电流传感器、驱动器和电机之后，在控制运动之前，我们需要对所有硬件部件进行校准，以便初始化 FOC 算法。这是在函数 `motor.initFOC()` 内完成的。
 ```cpp
 // align sensor and start FOC
 motor.initFOC();
 ```
-<blockquote class="info"><p class="heading"> Can be skipped for openloop control!</p>If no sensor is attached this function will not really do anything, but you can still call it if necessary or more convenient. </blockquote>
+<blockquote class="info"><p class="heading"> 开环控制时可以跳过它！</p>如果没有附加传感器，这个功能实际上不会做任何事情，不过如果有必要的话你仍然可以调用它。 </blockquote>
+这个功能可以做几件事：
+- 根据电机的方向检查/修改位置传感器的方向
+- 如有必要，搜索编码器的索引
+- 找到电机相对于位置传感器的电位移
+- 检查/修改电流传感的引脚和增益信号，如果存在的话确保它与驱动器对齐
 
-This function does several things:
-- Checks/modifies position sensor direction in respect to the motor's direction
-- Searches for encoder index if necessary
-- Finds the motor electrical offset in respect to the position sensor
-- Checks/modifies current sense pinout and gains signs if one available to make sure it aligned with the driver 
+这个功能是最后的检查功能，它将禁用你的电机，并显示你的信息是什么错误（使用 [监控](monitoring) 时）。如果一切都配置好了，在调用这个函数之后，FOC就准备就绪，我们的设置也就完成了！
 
-This function is a final check function and it will disable your motor and display you a message what is wrong. (when using the [monitoring](monitoring) ). If everything is well configured, after the call of this function FOC is ready and our setup is done!  
+校准程序将必须移动你的电机几次，可能不是理想的行为，因此，对于大多数位置传感器（编码除外）和电流传感器，可以通过遵循步骤 6.1 和 6.2 跳过这个校准过程。 
 
-The alignment procedure will have to move your motor several times and might not be desirable behavior, therefore for most of the position sensors (except encodes) and current senses, this alignment procedure can be skipped by following the steps 6.1 an 6.2. 
+### Step 6.1 Skip alignment - position sensor （步骤6.1 跳过校准 - 位置传感器）
 
-### Step 6.1 Skip alignment - position sensor
-
-If you are using absolute sensors such as magnetic sensors or hall sensors, once you have done the alignment procedure and once you have the motor's zero electrical offset sensor direction you no longer need the full calibration sequence. Therefore, to the `motor.initFOC()` you can provide the sensor offset `zero_electric_offset` and sensor direction `sensor_direction` to avoid alignment procedure:
+如果你使用绝对传感器，如磁传感器或霍尔传感器，一旦你做了校准程序和有电机的零电位移传感器方向，你就不再需要完整的校准序列。因此，对于 `motor.initFOC()` ，你可以提供传感器偏移 `zero_electric_offset` 和传感器方向 `sensor_direction` ，来避免校准程序：
 ```cpp
 // align sensor and start FOC
 //motor.initFOC(zero_electric_offset, sensor_direction);
 motor.initFOC(2.15, Direction::CW);
 ```
-The same can be done by using the motor parameters:
+同样地，可以通过使用电机参数来完成：
 ```cpp
 // align sensor and start FOC
 motor.zero_electric_offset  = 2.15; // rad
 motor.sensor_direction = Direction::CW; // CW or CCW
 motor.initFOC();
 ```
-You can find these values by running the `find_sensor_offset_and_direction.ino` example.
+可以运行 `find_sensor_offset_and_direction.ino` 实例来找到这些值。
 
-More generally, if you know any of these two values make sure to provide and the `iniFOC` will skip that part of the calibration. For example, for encoder sensors the zero electrical offset changes all the time but the sensor direction will stay the same so you can provide it and skip a large part of the calibration sequence.
-### Step 6.2 Skip alignment - current sense
+一般地说，如果你知道这两个值中的任何一个，请务必提供它。 `iniFOC` 会跳过这部分校准。例如，对于编码器传感器，零电偏移一直在变化，但传感器方向会保持不变，因此你可以提供它，并跳过大部分校准程序。
 
-For the current sensors it is as well possible to avoid the calibration procedure an that is done by specifying the curren sense flag called `skip_align`:
+### Step 6.2 Skip alignment - current sense （步骤6.2 跳过校准 - 电流检测）
+
+对于电流传感器，最好避免通过指定的电流检测标志 `skip_align` 来完成的校准过程：
 ```cpp
 current_sense.skip_align  = true; // default false
 ```
-But make sure that all of your gains are well set and all of your ADC pins are aligned to the driver/motor phases. For more information about the alignment please visit the [current sense docs](current_sense).
+但要确保设置好所有增益，所有 ADC 引脚都校准到驱动器/电机相位。更多信息请参阅 [电流检测文档](current_sense)。
 
-## Step 7. Real-time motion control
+## Step 7. Real-time motion control （步骤7. 实时运动控制）
 
-The real-time motion control of theArduino <span class="simple">Simple<span class="foc">FOC</span>library</span> is realized with two functions: 
-- `motor.loopFOC()` - low level torque control 
-- `motor.move(float target)` - high level motion control
+用两个功能来完成 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 的实时运动控制：
+- `motor.loopFOC()` - 低力矩控制
+- `motor.move(float target)` - 高力矩控制
 
 
-The function `loopFOC()` behavior directly depends of the torque control mode usd. If used in volatge mode it  gets the current motor angle from the sensor, turns it into the electrical angle and transforms the q-axis <i>U<sub>q</sub></i> voltage command  `motor.voltage_q` to the appropriate phase voltages <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> which are set then set to the motor. Whereas if it is used in DC of FOC current modes it additionally reads the current sensor and runs the closed loop current control.
+函数 `loopFOC()` 的行为直接依赖于力矩控制模式。如果是使用电压模式，它从传感器得到当前的电机角度，转变为电的角度。转换 `motor.voltage_q` 电压命令的 q 轴 <i>U<sub>q</sub></i> 到设置好的适当的相位电压 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> ，把它们设置到电机上。 而如果它用于 FOC 电流模式的直流情况下，它还会读取电流传感器并运行闭环电流控制。
 
 ```cpp
 // Function running the low level torque control loop
@@ -272,18 +268,17 @@ The function `loopFOC()` behavior directly depends of the torque control mode us
 motor.loopFOC();
 ```
 
-<blockquote class="info"><p class="heading"> Can be skipped for openloop control!</p>This function will have no effect if the motor is run in open loop! </blockquote>
+<blockquote class="info"><p class="heading"> 开环控制时可以跳过它！</p>如果电机是开环控制的，此功能将不起作用！ </blockquote>
+在电压模式和电流控制模式下，执行时间都是很关键的。因此，尽可能快地执行 `motor.loopFOC()` 函数是非常重要的。
 
-This function is execution time is critical both in the voltage mode and in current control modes. Therefore it is very important that the `motor.loopFOC()` function is executed as fast as possible.
-
-<blockquote class="warning"><p class="heading">Rule od thumb: execution time</p>
-The faster you can run this function the better, here is approximative loops execution time using different torque modes.
+<blockquote class="warning"><p class="heading">经验法则：执行时间</p>
+运行这个函数时，越快越好，这里是使用不同力矩模式的近似循环执行时间。
 <table>
 <tr>
 <td>MCU</td>
-<td><a href="voltage_mode">Voltage mode</a></td>
-<td><a href="dc_current_torque_mode">DC current</a></td>
-<td><a href="foc_current_torque_mode">FOC current</a></td>
+<td><a href="voltage_mode">Voltage mode（电压模式）</a></td>
+<td><a href="dc_current_torque_mode">DC current（直流电流）</a></td>
+<td><a href="foc_current_torque_mode">FOC current（FOC 电流）</a></td>
 </tr>
 <tr>
 <td>Arduino UNO</td>
@@ -312,7 +307,7 @@ The faster you can run this function the better, here is approximative loops exe
 </table>
 </blockquote>
 
-Finally, once we have a way to set the torque command (current <i>i<sub>q</sub></i> or voltage <i>u<sub>q</sub></i>) to the motor using the FOC algorithm we can proceed to the motion control. And this is done with `motor.move()` function.
+最后，当我们使用FOC算法设置了电机的力矩命令（电流 <i>i<sub>q</sub></i> 或电压 <i>u<sub>q</sub></i>）电机之后，我们就可以进行运动控制了。这是通过 `motor.move()` 函数完成的。
 ```cpp
 // Function executing the motion control loops configured by the motor.controller parameter of the motor. 
 // - This function doesn't need to be run upon each loop execution - depends of the use case
@@ -322,45 +317,46 @@ Finally, once we have a way to set the torque command (current <i>i<sub>q</sub><
 motor.move(target);
 ```
 
-The `move()` method executes the motion control loops of the algorithm. If is governed by the `motor.controller` variable. It executes either pure torque loop, velocity loop or angle loop.
+ `move()` 方法执行算法的运动控制循环。如果是由 `motor.controller` 变量控制的，它会执行纯力矩回路、速度回路或角度回路。
 
-It receives one parameter `float target` which is current user defined target value.
-- If the user runs [velocity loop](velocity_loop) or [velocity open-loop](velocity_openloop), `move` function will interpret `target` as the target velocity.
-- If the user runs [angle loop](angle_loop) or [angle open-loop](angle_openloop), `move` will interpret `target` parameter as the target angle. 
-- If the user runs the [torque loop](voltage_loop), `move` function will interpret the `target` parameter as either voltage <i>u<sub>q</sub></i> or current <i>i<sub>q</sub></i> (if phase resistance provided). 
+它得到一个当前用户定义的目标值参数 `float target` 。
+- 如果用户运行 [速度环](velocity_loop) 或 [速度开环](velocity_openloop)， `move` 函数把 `target` 作为目标速度来解释。
+- 如果用户运行 [角度环](angle_loop) or [角度开环](angle_openloop), `move` 函数把 `target` 作为目标角度来解释。
+- 如果用户运行 [力矩环](voltage_loop), `move` 函数把 `target` 作为电压 <i>u<sub>q</sub></i> 或电流 <i>i<sub>q</sub></i> （如果提供了相位电阻）。
 
-The `target` parameter is optional and if it is not set, the target value will be set by the public motor variable `motor.target`. The equivalent code would be:
+ `target` 参数是可选的，如果未设置，则由公用的电机变量 `motor.target` 设置目标值，代码是：
 
 ```cpp
 motor.target = 2;
 motor.move();
 ```
 
-## Step 7.1 Motion control downsampling
-For many motion control applications it will make sense run multiple torque control loops for each motion control loop. This can have a great impact on the smoothness and can provide better high-speed performance. Therefore this library enables a very simple downsampling strategy for the `move()` function which is set using the parameter `motor.motion_downsample`:
+## Step 7.1 Motion control downsampling （步骤7.1 降采样运动控制）
+对于许多运动控制应用来说，为每个运动控制回路运行多个力矩控制回路是有意义的。这对平滑度有很大的影响，可以提供更好的高速性能。因此， library 库支持非常简单的使用  `motor.motion_downsample` 参数设置  `move()` 函数进行降采样：
 ```cpp
 // downsampling value
 motor.motion_downsample = 5; // - times (default 0 - disabled)
 ```
-The downsampling strategy works in a very simple way, even though the `motor.move()` is called in each arduino `loop` it will only be executed each `motor.motion_downsample` calls. This parameter si optional and can be configured in real time. 
+降采样以一种非常简单的方式工作，即使在每个arduino `loop` 中调用 `motor.move()` ，它只执行 `motor.motion_downsample` ，这个是可选参数，可实时配置。
 
-<blockquote class="warning"><p class="heading">BEWARE: Motion control impact</p>
-Different values of the downsampling might require a bit of tuning of motion parameters.</blockquote>  
-
-
-And that is it, you have your complete Field Oriented Controlled BLDC motor with motion control. 
-## User interaction
-
-<span class="simple">Simple<span class="foc">FOC</span>library</span> implements two types of real-time user interaction:
-- [Monitoring functionality](monitoring)
-- [Motor commands](communication)
+<blockquote class="warning"><p class="heading">注意：运动控制的影响</p>
+降采样的不同值可能需要对运动参数进行一些调整。</blockquote>  
 
 
-## Digging deeper
-For more theoretical explanations and source code implementations of the FOC algorithm and the motion control approaches check out the [digging deeper section](digging_deeper).
+这就是它，你有了完整运动控制的 FOC 无刷直流电机。
+## 用户界面
 
-## Example code
-A simple BLDC motor torque control using voltage based on the FOC algorithm.
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 有2种实时用户接口：
+
+- [Monitoring functionality（监控功能）](monitoring)
+- [Motor commands（用户指令）](communication)
+
+
+## 深入挖掘
+更多 FOC 算法和运动控制方法的理论解释和源代码实现，查看 [挖掘更深的部分](digging_deeper)。
+
+## 实例代码
+基于 FOC 算法的简单的用电压控制无刷直流电机力矩的实例。
 ```cpp
 /**
  * Torque control example using voltage control loop.

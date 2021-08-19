@@ -9,28 +9,28 @@ has_toc: False
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Getting to know the <span class="simple">Simple<span class="foc">FOC</span>library</span> code
+# Getting to know the <span class="simple">Simple<span class="foc">FOC</span>library</span> code<span class="simple">（Simple<span class="foc">FOC</span>库使用教程）</span> 
 
-Once when you have your <span class="simple">Simple<span class="foc">FOC</span>library</span> [installed](installation) and you have all the necessary [hardware](supported_hardware), we can finally start to get to know with the Arduino code that will run your motor. Here are all the most important steps when writing the code!
+安装好 [SimpleFOC库](installation) ，准备好所有必须的 [硬件](supported_hardware) 后, 我们就要开始了解驱动电机的Arduino代码。以下是编写程序时的所有重要步骤。
 
-## Step 0. Include the library
-Let's start by including the library header file:
+## 第0步 引入库
+在开始前，先引入库中的头文件：
 ```cpp
 #include <SimpleFOC.h>
 ```
 
-## Step 1. <a href="sensors" class="remove_dec">Position sensor setup</a>
+## 第1步 <a href="sensors" class="remove_dec">设置位置传感器</a>
 
-First step when writing the code is initializing and configuring the position sensor.
-The library supports these position sensors:
+编写程序的第一步是初始化和配置位置传感器。
+该库支持以下位置传感器：
 
- - [Encoders](encoder): Optical, Capacitive, Magnetic encoders (ABI)
- - [Magnetic sensors](magnetic_sensor): SPI, I2C, Analog or PWM
- - [Hall sensors](hall_sensors): 3xHall sonde, Magnetic sensor (UVW interface) 
+ - [编码器](encoder): 支持光学、电容式、磁编码器 （ABI方式）
+ - [磁性传感器](magnetic_sensor): 支持SPI, I2C, PWM以及Analog （模拟输出）
+ - [霍尔传感器](hall_sensors): 3x霍尔探头, 磁性传感器 （UVW 接口）
 
-Choose position sensor to use with this example:
+选择恰当的位置传感器运行以下例程：
 
-<a href ="javascript:showMagnetic();" id="mag" class="btn btn-primary">Magnetic sensor</a> <a href="javascript:showEncoder();" id="enc" class="btn">Encoder</a> 
+<a href ="javascript:showMagnetic();" id="mag" class="btn btn-primary">磁性传感器</a> <a href="javascript:showEncoder();" id="enc" class="btn">编码器</a> 
 
 ```c
 #include <SimpleFOC.h>
@@ -73,37 +73,39 @@ void loop() {
 ```
 
 <div id="enc_p" class="hide_p">
-Encoders as position sensors are implemented in the class <code class="highlighter-rouge">Encoder</code> and are defined by its:
+例程中以编码器作为位置传感器在类 <code class="highlighter-rouge">Encoder</code> 中的实现与定义如下：
   <ul>
-    <li> <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code> channel pin numbers: <code class="highlighter-rouge">2</code> and <code class="highlighter-rouge">3</code></li>
-    <li> Encoder  <code class="highlighter-rouge">PPR</code> (impulses per revolution number): <code class="highlighter-rouge">2048</code></li>
-    <li> <code class="highlighter-rouge">Index</code> pin number <i>(optional)</i> </li>
+    <li> <code class="highlighter-rouge">A</code> 和 <code class="highlighter-rouge">B</code> 通道的引脚编号: <code class="highlighter-rouge">2</code> 和 <code class="highlighter-rouge">3</code></li>
+    <li> 编码器  <code class="highlighter-rouge">PPR</code> (每转脉冲数): <code class="highlighter-rouge">2048</code></li>
+    <li> <code class="highlighter-rouge">Index</code> 引脚编号 <i>（可选）</i> </li>
   </ul> 
 </div>
 
 <div id="mag_p" class="hide_p">
-In this example we will be using teh setup of a 14 bit magnetic sensor such as <a href="https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D">AS5047u <i class="fa fa-external-link"></i></a>, connected to the pin <code class="highlighter-rouge">10</code>.<br>
-Magnetic sensors using the SPI communication are implemented in the class <code class="highlighter-rouge">MagneticSensorSPI</code>and are defined by its
+在例程中，我们使用了14 位磁性传感器进行设置，比如：<a href="https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D">AS5047u<i class="fa fa-external-link"></i></a>, 并将其与引脚<code class="highlighter-rouge">10</code>连接。<br>
+磁性传感器使用SPI方式通讯，在类<code class="highlighter-rouge">MagneticSensorSPI</code>中的实现与定义如下：
   <ul>
-    <li><code class="highlighter-rouge">chip_select</code> pin: <code class="highlighter-rouge">10</code> </li>
-    <li> the overall <code class="highlighter-rouge">CPR</code> of the sensor:   <code class="highlighter-rouge">CPR = 2^14bit =16384</code></li>
-    <li> <code class="highlighter-rouge">angle</code> SPI register: <code class="highlighter-rouge">0x3FFF</code></li> 
+    <li><code class="highlighter-rouge">chip_select</code> 引脚: <code class="highlighter-rouge">10</code> </li>
+    <li> 传感器总 <code class="highlighter-rouge">CPR</code>（每圈脉冲数）:   <code class="highlighter-rouge">CPR = 2^14bit =16384</code></li>
+    <li> <code class="highlighter-rouge">angle</code> SPI 注册: <code class="highlighter-rouge">0x3FFF</code></li> 
   </ul>
 </div>
 
-Sensor is initialized hardware pins by running `sensor.init()`.
 
-For full documentation of the setup and all configuration parameters please visit the <a href="sensors"> position sensors docs <i class="fa fa-external-link"></i></a>.
+运行 `sensor.init()`，初始化传感器硬件引脚
+
+完整的设置和参数配置文件，请访问<a href="sensors"> 位置传感器 docs <i class="fa fa-external-link"></i></a>。
 
 
-## Step 2. <a href="drivers_config" class="remove_dec"> Driver setup</a>
-After the position sensor we proceed to initializing and configuring the driver. The library supports BLDC drivers handled by `BLDCDriver3PWM` and `BLDCDriver6PWM`  classes as well as the stepper drivers handled by `StepperDriver4PWM` class. 
+## 第2步 <a href="drivers_config" class="remove_dec">设置驱动器</a>
+配置好位置传感器后，我们开始初始化和配置驱动器。该库支持由类`BLDCDriver3PWM` 和 `BLDCDriver6PWM`  控制的无刷直流电机驱动器以及由类`StepperDriver4PWM` 控制的步进电机驱动器。
 
-`BLDCDriver3PWM` class instantiated by providing:
-- phase `A`, `B` and `C` pin number
-- `enable` pin number *(optional)*
+类`BLDCDriver3PWM`的实现需要以下参数 ：
 
-For example:
+-  `A`, `B` 和 `C` 相对应的引脚编号
+- `enable` 的引脚编号 *（可选）*
+
+例如：
 ```cpp
 #include <SimpleFOC.h>
 
@@ -129,18 +131,18 @@ void loop() {
 ```
 
 
-For full documentation of the setup and all configuration parameters please visit the <a href="drivers_config"> driver docs <i class="fa fa-external-link"></i></a>.
+完整的设置和参数配置文件，请访问 <a href="drivers_config"> 驱动器 docs <i class="fa fa-external-link"></i></a>。
 
 
-## Step 3. <a href="current_sense" class="remove_dec"> Current sense setup</a>
-After the position sensor and the driver we can proceed to initializing and configuring the current sense, if available of course. If current sense is not available you can skip this step. The library supports one type of current sense architecture and that is in-line current sensing `InlineCurrentSense`. 
+## 第3步 <a href="current_sense" class="remove_dec">设置电流检测</a>
+配置好位置传感器及驱动器后，如果驱动器支持电流检测的话，我们开始初始化和配置电流检测。如果不支持的话，可以跳过这一步。 该库仅支持in-line电流检测 `InlineCurrentSense`这一种电流检测方式。 
 
-`InlineCurrentSense` class instantiated by providing:
-- shunt resistor value `shunt_resistance`
-- amplifier gain `gain`
-- `phase A, B (and optionally C) pin number 
+类`InlineCurrentSense` 的实现需要以下参数：
+- 分流电阻器值 `shunt_resistance`
+- 放大器增益 `gain`
+-  A, B （以及可选C）相对应的引脚编号
 
-For example:
+例如：
 ```cpp
 #include <SimpleFOC.h>
 
@@ -168,12 +170,12 @@ void loop() {
 ```
 
 
-For full documentation of the setup and all configuration parameters please visit the <a href="current_sense"> current sense docs <i class="fa fa-external-link"></i></a>.
+完整的设置和参数配置文件，请访问<a href="current_sense"> 电流检测 docs <i class="fa fa-external-link"></i></a>。
 
 
 
-## Step 4. <a href="motors_config" class="remove_dec"> Motor setup </a>
-After the position sensor and the driver we proceed to initializing and configuring the motor. The library supports BLDC motors handled by `BLDCMotor` class as well as the stepper motors handled by `StepperMotor` class. Both classes are instantiated by providing just the `pole_pairs` number of the motor
+## 第4步 <a href="motors_config" class="remove_dec">设置电机</a>
+配置好位置传感器及驱动器后，我们开始初始化和配置电机。 该库支持由 `BLDCMotor` 类控制的无刷直流电机以及由 `StepperMotor` 类控制的步进电机。仅需填入电机极对数就能实现这两个类的控制。
 
 ```cpp
 // StepperMotor(int pole_pairs)
@@ -185,7 +187,7 @@ BLDCMotor motor = BLDCMotor(11);
 ```
 
 
-In this example we will use BLDC motor:
+在这一例程，我们使用了无刷直流电机：
 ```cpp
 #include <SimpleFOC.h>
 
@@ -221,26 +223,26 @@ void loop() {
 }
 ```
 
-After the instance of the motor `motor` has been created we need to link the motor with the sensor `motor.linkSensor()` and link the motor class to the driver it is connected to `motor.linkDriver()`.  <br>
-The next step is the configuration step, for the sake of this example we will configure only the motion control loop we will be using:
+在电机实例 `motor` 创建后，我们需要用`motor.linkSensor()` 连接电机与传感器，用 `motor.linkDriver()`连接电机与驱动器。  <br>下一步是配置电机。在这个配置例子中，我们仅用到了位置控制环：
+
 ```cpp
 // set control loop type to be used
 motor.controller = MotionControlType::velocity;
 ```
-And to finish the `motor` setup we run the `motor.init()` function.
+最后，我们运行  `motor.init()` 功能，结束电机 `motor` 的设置。
 
-For full documentation of the setup and all configuration parameters please visit the <a href="motors_config"> motor docs <i class="fa fa-external-link"></i></a>.
+完整的设置和参数配置文件，请访问 <a href="motors_config"> 电机 docs <i class="fa fa-external-link"></i></a>.
 
 
-## Step 5. [FOC routine and real-time motion control](motion_control)
-Once when we have initialized the position sensor, driver and the motor, and before we can run the FOC algorithm we need to align the motor and sensor. This is done by calling `motor.initFOC()`. 
-After this step we have a functional position sensor, we have configured motor and our FOC algorithm knows how to set the appropriate voltages based on position sensor measurements.
+## 第5步 [FOC 例程及实时位置控制](motion_control)
+在初始化位置传感器、驱动器和电机之后，运行FOC算法之前，我们需要校准电机和传感器。这个过程被称为 `motor.initFOC()`. 
+在这一步之后，我们将拥有一个能够正常工作的位置传感器以及配置好的电机，我们的FOC算法将知道怎样基于位置传感器的测量设定合适的电压。
 
-For the real-time routine of the FOC algorithm we need to add the `motor.loopFOC()` and `motor.move(target)` functions in the Arduino `loop()`.
-- `motor.loopFOC()`:  FOC algorithm execution - should be executed as fast as possible `> 1kHz`
-- `motor.move(target)`: motion control routine - depends of the `motor.controller` parameter
+在FOC算法的实时例程里，我们需要在Arduino `loop()`加入功能模块 `motor.loopFOC()` 和 `motor.move(target)` 。
+- `motor.loopFOC()`：FOC 算法执行——应该尽可能快地被执行 `> 1kHz`。
+- `motor.move(target)`： 位置控制例程——取决于`motor.controller` 参数。
 
-下面是它在代码中的样子：
+下面是其在代码中的呈现：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -278,14 +280,14 @@ void loop() {
 }
 ```
 
-For full documentation of the setup and all configuration parameters for BLDC motors please visit the <a href="bldcmotor"> BLDCMotor docs  <i class="fa fa-external-link"></i></a>, and for Stepper motors please visit the <a href="steppermotor"> StepperMotor docs  <i class="fa fa-external-link"></i></a>
+无刷直流电机完整的设置和参数配置文件，请访问 <a href="bldcmotor"> 无刷直流电机 docs  <i class="fa fa-external-link"></i></a>， 步进电机的完整文件，请访问 <a href="steppermotor"> 步进电机 docs  <i class="fa fa-external-link"></i></a>。
 
 
-## Step 6. <a href="monitoring" class="remove_dec"> Monitoring</a>
+## 第6步 <a href="monitoring" class="remove_dec"> 监测 </a>
 
-`BLDCMotor` and `StepperMotor` classes provide monitoring functionality. For enabling the monitoring feature make sure you call `motor.useMonitoring()` with the `Serial` port instance you want to output to. It uses `Serial` class to output motor initialization status during the `motor.init()` function, as well as in `motor.initFOC()` function.
+类 `BLDCMotor` 和 `StepperMotor` 提供监测功能。为了使其拥有监测的特性，你需要确保你想要输出的串口例程 `Serial` 激活了`motor.useMonitoring()` 。 在  `motor.init()` 和 `motor.initFOC()` 的运作下，类 `Serial` 将输出电机初始化状态。 
 
-If you are interested to output motors state variables in real-time (even though it will impact the performance - writing the Serial port is slow!) add the `motor.monitor()` function call to the Arduino `loop()` function. 
+如果你对实时输出电机状态变量感兴趣（即使这样会影响它的性能——编写串口的速度会很慢！），你可以添加功能模块 `motor.monitor()` 唤起 Arduino`loop()`的运作 。
 
 ```cpp
 #include <SimpleFOC.h>
@@ -325,14 +327,14 @@ void loop() {
   motor.monitor();
 }
 ```
-For full documentation of the setup and all configuration parameters please visit the <a href="monitoring"> Monitoring docs</a>.
+完整的设置和参数配置文件，请访问 <a href="monitoring"> 监测 docs</a>。
 
 
-## Step 7. <a href="communication" class="remove_dec"> Commander Interface</a>
+## 第7步 <a href="communication" class="remove_dec"> 命令接口</a>
 
-Finally in order to configure the control algorithm, set the target values and get the state variables in the user-friendly way (not just dumping as using `motor.monitor()`)  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>  provides you with the g-code like communication interface in a form of `Commander` class. 
+最后，为了配置控制算法，设定目标值，以用户友好的方式获得状态变量（不仅仅是像使用`motor.monitor()`那样的跳变）。Arduino <span class="simple">Simple<span class="foc">FOC</span>库</span>  为你提供像通信接口一样的 G 代码，组成类 `Commander` 。
 
-The following code is one basic implementations of the full communication interface with the user:
+以下代码是用户使用接口进行通信的基础实现方式：
 
 ```cpp
 #include <SimpleFOC.h>
@@ -375,7 +377,7 @@ void loop() {
   commander.run();
 }
 ```
-For full documentation of the setup and all configuration parameters please visit the <a href="communication"> Communication docs</a>. 
+完整的设置和参数配置文件，请访问 <a href="communication"> 通信 docs</a>。
 
 
 <script type="text/javascript">
@@ -421,13 +423,13 @@ For full documentation of the setup and all configuration parameters please visi
 </script>
 
 
-## Step 8. [Getting started step by step guide](example_from_scratch)
+## 第8步 [分步使用教程](example_from_scratch)
 
-Now when you are familiar with the structure of the <span class="simple">Simple<span class="foc">FOC</span>library</span> code you can finally start writing your own application. In order to make this step less complicated we have provided you a detailed step by step guide. Make sure to go through our step by step getting started guide when first time dealing with the library.  
+现在你应该已经熟悉SimpleFOC库的代码框架并且能够开始编写自己的应用程序了。为了使这一过程更加简单易懂，我们为你提供了详细的分步使用教程以确保你能够在初次接触这个库时一步一步的顺利进行。
 
-## 🎨 Full Arduino code of the example 
+## 🎨 完整的Arduino代码例程
 
-Now when you have learned what are all the parts of the Arduino program and what are they for, here is the full code example with some additional configuration. Please go through the code to better understand how to integrate all previously introduced parts together. This is the code of the library example `motor_full_control_serial_examples/magnetic_sensor/full_control_serial.ino`. 
+现在你已经学习完Arduino项目的所有部分了，这是一些额外配置的完整代码例程，请浏览这些代码以便更好地将先前介绍的所有部分内容融会贯通。这就是该库的代码例程： `motor_full_control_serial_examples/magnetic_sensor/full_control_serial.ino`。
 
 ```cpp
 #include <SimpleFOC.h>
@@ -513,5 +515,5 @@ void loop() {
 }
 ```
 
-## Library source code
-If you are interested in extending and adapting the <span class="simple">Simple<span class="foc">FOC</span>library</span> source code you can find full documentation on <a href="source_code">library source docs</a>
+## 开源代码库
+对扩展和调整SimpleFOC库源代码有兴趣的朋友，可以在 <a href="source_code">SimpleFOC库源代码 docs</a> 中找到完整文档。

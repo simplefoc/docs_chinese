@@ -7,66 +7,65 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shi
 nav_order: 1
 permalink: /arduino_simplefoc_shield_fabrication_v1
 ---
-# Fabrication guide for <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v1.3.3</i></small> 
-Here is a quick guide how to fabricate the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V1.3.3](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
+# Fabrication guide for <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v1.3.3</i></small> （SimpleFOCShield v1.3.3的制作指南）
+下面是一个如何制作 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V1.3.3](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 的快速指南
 
 
 <p align="">
 <img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v1.3.3/images/top.png"  class="width30"><img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v1.3.3/images/bottom.png"  class="width30">
 </p>
 
-## Board releases
-To check the release timeline, click [here](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
+## Board releases（板子的版本）
+查看发布的时间表，点击 [这里](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
 
-Version  | link | Release date | Comment
+Version（版本）  | link（链接） | Release date（发布日期） | Comment（版本描述） 
 ----- | ----- | ---- | ----
 *Simple**FOC**Shield* v1.3 |[release v1.3](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v1.3) | 04/20 | Inital release
 *Simple**FOC**Shield* v1.3.1 | [release v1.3.1](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v1.3.1) | 07/20 | added Nucleo stacking support
 *Simple**FOC**Shield* v1.3.2 |[release v1.3.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v1.3.2) | 09/20 | added I2C pullups
 *Simple**FOC**Shield* v1.3.3 |[release v1.3.3](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v1.3.3) | 12/20 | adapted L6234 circuit + full Arduino header
 
+[<i class="fa fa-github"></i> Github](https://github.com/simplefoc/Arduino-SimpleFOCShield) 仓库包含：
 
-[<i class="fa fa-github"></i> Github](https://github.com/simplefoc/Arduino-SimpleFOCShield) repository contains: 
-- <b><i class="fa fa-file"></i> Schematics</b> - PDF file
-- <b><i class="fa fa-file"></i> Gerber</b> - Gerber, NC Drill & Assembly files
-- <b><i class="fa fa-file"></i> Bill Of Materials (BOM)</b> - Excel sheet
-- <b><i class="fa fa-file"></i> 3D model</b> -  3D PDF & STEP file
-- <b><i class="fa fa-file"></i> PCB design project</b> - Altium Designer 2019
+- <b><i class="fa fa-file"></i> Schematics（原理图）</b> - PDF 文件
+- <b><i class="fa fa-file"></i> Gerber</b> - Gerber, NC Drill & 装配文件
+- <b><i class="fa fa-file"></i> Bill Of Materials (BOM)（物料清单）</b> - Excel 表格
+- <b><i class="fa fa-file"></i> 3D model（3D模型）</b> -  3D PDF & STEP 文件
+- <b><i class="fa fa-file"></i> PCB design project（PCB设计项目）</b> - Altium Designer 2019
 
 
-## Fabrication procedure and cost
-The price of the fabrication will highly depend of the number of boards and the companies you decide to use both as PCB manufacturers and the component suppliers. Here are two nice articles explaining how to approach the problem choosing the PCB manufacturer form [electronics-notes.com](https://www.electronics-notes.com/articles/constructional_techniques/printed-circuit-board-pcb/how-to-choose-right-best-pcb-manufacturer.php) and component supplier from [pcbonline.com](https://www.pcbonline.com/blog/How_to_Choose_a_PCB_Component_Supplier_165.html). 
-But in most of cases it will always boil down to the price :)
+## Fabrication procedure and cost（制造工艺及成本）
+制造的价格将由板的数量和PCB制造商和组件供应商决定。这里有两篇很好的文章，解释了如何从 [electronics-notes.com](https://www.electronics-notes.com/articles/constructional_techniques/printed-circuit-board-pcb/how-to-choose-right-best-pcb-manufacturer.php) 网站选择 PCB 制造商和从 [pcbonline.com](https://www.pcbonline.com/blog/How_to_Choose_a_PCB_Component_Supplier_165.html) 网站选择组件供应商。但在大多数情况下人们选择的重点考虑因素是价格。 :)
 
-## PCB fabrication + Self assembly  - **preferred choice** 📢
-This is probably the proffered choice for making this board in lower quantities. You can order the PCBs from your manufacturer, buy the components from your supplier of choice and solder the boards yourself. The board has been designed to be relatively easy to solder.
+## PCB fabrication + Self assembly  - **preferred choice** 📢（制造 PCB +自行装配 - 首选）
+当你只做少数的板子时，这是一个选择。你可以从 PCB 制造商那里订购 PCB，从供应商那里购买组件，然后自己焊接电路板。这个电路板是比较容易焊接的。
 
-### PCB fabrication
-Download the [<i class="fa fa-file"></i> gerber files](https://github.com/simplefoc/Arduino-SimpleFOCShield) and provide them to your PCB manufacturer of choice. So far I have used [seeedstrudio](https://www.seeedstudio.com/) and [JLCPCB](https://jlcpcb.com/). The price of 10 PCBs is around 5\$ but the shipping was around 20\$. 
+### PCB 制造
+下载 [<i class="fa fa-file"></i> gerber files](https://github.com/simplefoc/Arduino-SimpleFOCShield) 提供给 PCB 制造商。目前，我使用了 [seeedstrudio](https://www.seeedstudio.com/) 和 [JLCPCB](https://jlcpcb.com/)。 10 个 PCB 的价格约是 5\$，但运输费用大约用了 20\$。
 
-Quantity | SeedStudio |  JLCPCB
----- | ---- | ---- | ---
+Quantity（数量） | SeedStudio |  JLCPCB
+---- | ---- | ---- 
  5 | 5€ | 2€
  10 | 5€ |2€
  30 | 30€ | 15€
  50 | 50€ | 30€
- 
-<i class="fa fa-info-circle"></i> <i><small>On top of these prices you will have to pay shipping of approximately  20€.</small></i>
 
-### Component purchase
-Here is a complete list of all the components you will need to make the board:
+<i class="fa fa-info-circle"></i> <i><small>除此之外，你还需要支付大约  20€ （20欧元）的运费。</small></i>
+
+### 采购元器件
+这里你制造板子需要的所有组件的完整的列表：
 <table>
       <thead>
          <tr>
-            <th>Component</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Manufacturer Number</th>
+            <th>Component（组件）</th>
+            <th>Description（说明）</th>
+            <th>Quantity（数量）</th>
+            <th>Manufacturer Number（商品编号）</th>
          </tr>
       </thead>
       <tbody>
          <tr>
-            <td colspan="4"><b>L6234 circuit:</b> <a href="https://www.st.com/resource/en/datasheet/l6234.pdf"><i class="fa fa-file"></i> Datasheet</a></td>
+            <td colspan="4"><b>L6234 circuit:</b> <a href="https://www.st.com/resource/en/datasheet/l6234.pdf"><i class="fa fa-file"></i> Datasheet（数据表）</a></td>
          </tr>
          <tr>
             <td>C1</td>
@@ -111,7 +110,7 @@ Here is a complete list of all the components you will need to make the board:
             <td><a href="https://www.mouser.fr/ProductDetail/STMicroelectronics/L6234PD?qs=lgHKUCmDFtgFRXXnpwFpNg%3D%3D">L6234PD</a></td>
          </tr>
          <tr>
-            <td colspan="4"><b>Pull Up and Pull Down resistors</b></td>
+            <td colspan="4"><b>上拉和下拉电阻</b></td>
          </tr>
          <tr>
             <td>PULL_SCL, PULL_SDA, R2</td>
@@ -126,7 +125,7 @@ Here is a complete list of all the components you will need to make the board:
             <td><a href="https://www.mouser.fr/ProductDetail/KOA-Speer/RN73H2ETTD3001F50?qs=%2Fha2pyFadugz1PN4m8q5QBmmNYUlMOzQI3k%2FT%252B8vFrn5l%2FvB8B97FQ%3D%3D">RN73H2ETTD3001F50</a></td>
          </tr>
          <tr>
-            <td colspan="4"><b>LED circuit</b></td>
+            <td colspan="4"><b>LED 电路</b></td>
          </tr>
          <tr>
             <td>D1</td>
@@ -141,7 +140,7 @@ Here is a complete list of all the components you will need to make the board:
             <td><a href="https://www.mouser.fr/ProductDetail/KOA-Speer/RN73H2ETTD6200F50?qs=%2Fha2pyFadugz1PN4m8q5QKhCzpicGijTcn6N2kk6lgXhcYi6JSLlrg%3D%3D">RN73H2ETTD6200F50</a></td>
          </tr>
          <tr>
-            <td colspan="4"><b>Terminal connectors</b></td>
+            <td colspan="4"><b>终端连接</b></td>
          </tr>
          <tr>
             <td>TB_M1</td>
@@ -156,7 +155,7 @@ Here is a complete list of all the components you will need to make the board:
             <td><a href="https://www.mouser.fr/ProductDetail/CUI-Devices/TB002-500-02BE?qs=%2Fha2pyFadujMo%2F8XIx7GL%2F8B4TM%252BUPJvcyODkgPPYDPGTjOBZNS5pw%3D%3D">TB002-500-02BE</a></td>
          </tr>
          <tr>
-            <td colspan="4"><b>Header connectors</b></td>
+            <td colspan="4"><b>接口连接</b></td>
          </tr>
          <tr>
             <td>P1, P4</td>
@@ -185,25 +184,23 @@ Here is a complete list of all the components you will need to make the board:
       </tbody>
    </table>
 
-The same list ( a bit optimized for PCB manufacturers ) you can download on link [<i class="fa fa-file"></i> Bill of Materials](https://github.com/simplefoc/Arduino-SimpleFOCShield). In my case I have used [Mouser](https://www.mouser.com/) as my component supplier but the components of this board should be easy to find with any other supplier. The price of the components was around 10\$ per board and the shipping was again around 20\$ (for orders under 50\$).    
-<blockquote class="warning"> <p class="heading">Note</p>
-The components with the manufacturers numbers I have chosen are not really set in stone, feel free to optimize them both in terms of prices and values if necessary. </blockquote>
+同样的列表（为PCB制造商做了一点优化）可以从 [<i class="fa fa-file"></i> 材料清单](https://github.com/simplefoc/Arduino-SimpleFOCShield)。我制造板子时，在 [Mouser](https://www.mouser.com/) 供应商那里采购。但这个板的组件应该很容易找到任何其他供应商。组件的价格大约是每个板子 10\$ ，运费大约是 20\$ （订单低于 50\$）。   
+<blockquote class="warning"> <p class="heading">注意</p>
+我选择的带有商品编号的组件并不是唯一的，如果有必要可以在价格和价值方面优化它们。 </blockquote>
 
-### Board assembly and soldering
-Once when you have all the components and the PCBs the fun begins. All the components are relatively easy to solder. All the capacitors are `1206`, all the resistors are `1210`, the connectors are all through-hole and there is no real small SMD components. Therefore with some patience and you should have no problems soldering this board with a regular soldering iron and a bit of time. Therefore take a coffee and one deep breath and you are ready for 20 minutes of fun.
+### 板子的装配和焊接
+当你有了所有的组件和 PCB，乐趣就开始了。所有部件都挺容易焊接的。所有电容都是 `1206`封装，所有电阻都是 `1210`封装，连接器都是通孔的，没有小 SMD 组件。所以耐心地用一个常规的烙铁，花一点时间来焊接这个板是没有问题的。因此，喝杯咖啡，深吸一口气，你就可以享受 20 分钟的乐趣了。
 
 <blockquote class="info"> <p class="heading">Note</p>
-The board itself already has the descriptor names of the components on it so it should be easy to determine which component goes where. There is also an assembly drawing in the Pick and Place folder of the <a href="https://github.com/simplefoc/Arduino-SimpleFOCShield"><i class="fa fa-file"></i> gerber files</a> if you prefer to have a printed version. 
+板子本身已经有了组件的描述符号，所以应该很容易确定哪个组件在哪里。如果您想要打印版本，在 <a href="https://github.com/simplefoc/Arduino-SimpleFOCShield"><i class="fa fa-file"></i> gerber 文件</a> 的 Pick 和 Place 文件夹中还有一个组装图。
 </blockquote>
 
 
-## PCB fabrication and assembly service
-This option is a lot simpler and produces much better results. It is also even cheaper for larger quantities > 50pcs.
-To order the boards, download the [<i class="fa fa-file"></i> Gerber files](https://github.com/simplefoc/Arduino-SimpleFOCShield) and [<i class="fa fa-file"></i> Bill of Materials](https://github.com/simplefoc/Arduino-SimpleFOCShield) and supply it to your manufacturer of choice. In my case, I'm using the [JLCPCB](https://jlcpcb.com/).
+## PCB 制造和装配服务
+这个选项更简单，并且产生更好的结果。如果数量大的话，价格会更便宜，比如 > 50 个。要订购电路板，请下载 [<i class="fa fa-file"></i> Gerber 文件](https://github.com/simplefoc/Arduino-SimpleFOCShield) 和 [<i class="fa fa-file"></i> 材料清单](https://github.com/simplefoc/Arduino-SimpleFOCShield) ，并将其提供给您选择的制造商。在我的例子中，我使用 [JLCPCB](https://jlcpcb.com/)。
 
 <iframe class="youtube"  src="https://www.youtube.com/embed/sax_9sUgBuk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-
-## Fully assembled versions
-Order your own fully tested and assembled Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  from our [shop](https://simplefoc.com/simplefoc_shield_product).
+## 完成装配好的版本
+从我们的 [商店](https://simplefoc.com/simplefoc_shield_product) 中购买完成测试好装配好的 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 。
 

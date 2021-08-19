@@ -8,13 +8,13 @@ parent: Writing the Code
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Let's get started
+# Let's get started（让我们开始吧） 
 
-Once when you have your <span class="simple">Simple<span class="foc">FOC</span>library</span> [installed](installation) and you have all the necessary [hardware](supported_hardware), we can finally start the fun part, let's white the code and move the motor!
+当你的 <span class="simple">Simple<span class="foc">FOC</span>library</span> [安装](installation) 完成和准备好必要的 [硬件](supported_hardware) 之后，我们就可以开始有趣的部分了，编写代码让电机动起来！
 
-## Step 1. Testing the sensor
-The first sign that tells us that everything is well connected is if the sensor readings are good. To test the sensor please browse the library examples `examples/utils/sensor_test` and find the example for your sensor. 
-The example will have a structure something like this:
+## Step 1. Testing the sensor（第1步. 测试传感器）
+一切都连接良好的第一个信号是传感器读数良好。要测试传感器，请浏览库实例 `examples/utils/sensor_test` ，并找到您的传感器实例。这个实例的结构是这样的：
+
 ```cpp
 #include <SimpleFOC.h>
 
@@ -43,15 +43,15 @@ void loop() {
   Serial.println(sensor.getVelocity());
 }
 ```
-Make sure to change the sensor parameters to suite your application, such as pin numbers, impulses per revolution, bus addresses and similar. Make sure to go through the [sensor docs](sensors) if you are not sure in some of the parameters.  
+请确保更改传感器参数来适应你的应用程序，如引脚编号、每转的脉冲、总线地址等。如果不确定某些参数，请务必查看 [传感器文档](sensors) 。
 
 
-If your sensor is well connected and if everything works well, you should have in your serial terminal an output of your sensor angle and velocity. 
+如果您的传感器连接良好并且一切正常运行，那么你的串行终端应该有传感器角度和速度的输出。
 
-<blockquote class="info"> <p class="heading">☑️ Simple test</p> Make sure to test that one rotation of the motor gives you <b>6.28</b> radians of sensor angle.</blockquote>
+<blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 确保测试电机时，电机的一个旋转输出的传感器角度是  <b>6.28 </b>弧度。</blockquote>
 
-## Step 2. Testing the driver
-Once your sensor is working you can proceed to the driver test. The simplest way to test the driver is to use the library examples. If you have a luxury of time you can test the driver using the examples in `examples/utils/driver_standalone_test` folder. These examples test the driver as a standalone module and with them you can set any voltage value to any of the driver phases. 
+## Step 2. Testing the driver（第2步. 测试驱动程序）
+当传感器在运行时，你可以继续进行测试。测试驱动程序的最简单方法是使用库的实例。如果你有充裕的时间，你可以使用 `examples/utils/driver_standalone_test` 文件夹中的实例来测试驱动程序。这些实例将驱动程序作为一个独立的模块进行测试，你可以将任何电压值设置到驱动器的任何相位。
 ```cpp
 #include <SimpleFOC.h>
 // BLDC driver instance
@@ -79,13 +79,13 @@ void loop() {
     driver.setPwm(3,1,5);
 }
 ```
-<blockquote class="info"> <p class="heading">☑️ Simple tests</p>
-Make sure that all phases output PWM signals, you can try to connect a small led light in between each phase and ground or just measure it with the multimeter.</blockquote>
+<blockquote class="info"> <p class="heading">☑️ 简单的测试</p>
+确保所有相位输出的是 PWM 信号，可以尝试在每个相位和地之间连接一个小的led 灯或者使用万用表测量它。</blockquote>
 
-## Step 2. Testing the driver + motor combination - open-loop
-If you already have your motor connected and if you are sure your driver works well we advise you to test the motor+driver combination using the open-loop motion control examples in the `examples/motion_control/open_loop_motion_control`. If your driver is not the same as the ones provided in the examples go though the [driver docs](drivers_config) and find the driver and the code that will work for you. Additionally you can browse through the examples in teh `examples/utils/driver_standalone_test` folder and see the used in there.
+## Step 2. Testing the driver + motor combination - open-loop（第2步. 测试驱动器+电机组合-开环）
+如果你已经连接了电机，而且驱动器工作良好，我们建议你使用实例 `examples/motion_control/open_loop_motion_control`中的开环运动控制实例来测试电机+驱动器组合。如果你的驱动程序与实例中提供的不一样，请浏览 [驱动程序文档](drivers_config) ，并查找你需要的驱动程序和代码。此外，你可以浏览在 `examples/utils/driver_standalone_test` 文件夹中的实例，并查看如何使用。
 
-Now here is an example of the open-loop velocity control for the `BLDCDriver3PWM`:
+下面是 `BLDCDriver3PWM` 开环速度控制的一个实例：
 ```cpp
 // Open loop motor control example
 #include <SimpleFOC.h>
@@ -139,17 +139,18 @@ void loop() {
   command.run();
 }
 ```
-This example code has few very important rules. 
-1. Make sure you use the right driver class and right pwm pins, this one is usually very simple and you can find a lot of docs about these things in our [driver docs](drivers_config). If you are not sure and cannot seem to make it work please do not hesitate to ask in our [community forum](https://community.simplefoc.com).
-2. Make sure to use proper voltage limit. `motor.voltage_limit` will directly determine the current passing through the motor: `current = phase_resistance*motor.voltage_limit`. So to avoid too high currents please try to find what is the phase resistance of your motor and set the `motor.voltage_limit` such that the current does not surpass 2 Amps for example: `motor.voltage_limit = 2*phase_resistance`. The best option would be to provide your phase resistance value to the motor by setting the parameter `motor.phase_resistance` and then you can use `motor.current_limit` instead of the `motor.voltage_limit` making this issue much simpler. If you cannot find the phase resistance of your motor and cannot measure it with your multimeter start small: `motor.voltage_limit < 1;`
-3. Make sure to put the right pole pair number. This you can find in most data-sheets, if you are not sure what is the true number don't worry this step in intended to test exactly this value. 😄
+这个实例代码有一些非常重要的规则。
+1. 确保你使用正确的驱动的类和正确的 pwm 引脚，这个通常是很简单的，你可以在我们的 [驱动文档](drivers_config) 中找到很多关于这个方面的的文档。如果你不确定，也不能正常运行，请毫不犹豫地到我们的 [社区论坛](https://community.simplefoc.com) 上提问。
+2. 确保使用适当的电压限制。 `motor.voltage_limit` 将直接确定通过电机的电流： `current = phase_resistance*motor.voltage_limit` 。所以，为了避免过高的电流，请设法找到你电机的相位电阻。设置  `motor.voltage_limit` 使电流不超过 2 Amps ，例如： `motor.voltage_limit = 2*phase_resistance` 。最好的选择是通过设置参数 `motor.phase_resistance` 来提供电机的相位电阻值，然后你可以用 `motor.current_limit` 而不是 `motor.voltage_limit` 使这个问题变得简单。 如果你找不到你的电机的相位电阻，当他开始变小的时候 `motor.voltage_limit < 1;`也不能用你的万用表测量它。
+3. 确保正确输入极对数。很多数据表中找到极对数，如果你不确定，不要担心这一步就是为了准确地测出这个值。 😄
 
-<blockquote class="info"> <p class="heading">☑️ Simple tests</p> 1. In velocity mode, set your target velocity of your motor to <b>6.28 rad/s</b>, this should be exactly one rotation per second.<br>2. In position mode, set the target position of <b>6.28 rad</b>, it should be exactly one rotation <br> If it is not that means your pole pairs number is probably not good,, try changing it until you get exactly one rotation (or one rotation per second in velocity mode)</blockquote>
+<blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 1. 在速度模式下，将你的目标速度设置为 <b>6.28 rad/s</b>，这应该正好是每秒旋转一周。<br>2. 在位置模式下，设置目标位置为 <b>6.28 rad</b>，应该正好旋转一周。 <br> 如果不是，这意味着你的极对数可能不是很对，试着改变它，直到你恰好旋转一周（或在速度模式下每秒旋转一周）</blockquote>
 
-## Step 3. Closed-loop control - torque using voltage
+## Step 3. Closed-loop control - torque using voltage（第3步. 闭环控制 - 使用电压控制力矩）
 
-Once you have a working sensor, working motor and driver you can proceed to the closed-loop motion control testing. The first one to test is the torque control mode using voltage, this one is the simplest form of the closed loop control that is available in the <span class="simple">Simple<span class="foc">FOC</span>library</span>. You can find the examples of this torque mode for different sensors in the library examples folder `examples/motion_control/torque_control`.
-Here is an example of the `BLDCMotor3PWM` driver and `Encoder` as position sensor:
+当你有一个工作传感器、工作电机和驱动器的时候，你就可以继续进行闭环运动控制测试。第一个要测试的是使用电压控制力矩控制的模式，这是 <span class="simple">Simple<span class="foc">FOC</span>library</span> 中闭环控制的最简单形式。你可以在库实例的文件夹中找到不同传感器的该模式实例： `examples/motion_control/torque_control` 。
+下面是 `BLDCMotor3PWM` 驱动器和 `Encoder` 作为位置传感器的一个实例：
+
 ```cpp
 #include <SimpleFOC.h>
 
@@ -227,21 +228,21 @@ void loop() {
   command.run();
 }
 ```
-Until now, you already know the good configuration of your sensor, your driver and your motor. If everything worked until this point you most probably will not have any issues with this step as well. 
+到目前为止，您已经知道了传感器、驱动器和电机如何配置好。如果之前的运行都是正常的，那这一步也不会有太大的问题。
 
-There are only two important steps to be taken here, make sure you use not too high `motor.voltage_sensor_align` value to prevent too high currents. The rule is the same as for the `motor.voltage_limit` for the open loop. If you are not sure what is your phase resistance, start small: `motor.voltage_sensor_align < 1`. Additionally, you can define the motor phase resistance as well and then use the `motor.current_limit` variable, this variable will limit the `motor.voltage_sensor_align` and you will not have to worry about it any more. But if you specify the phase resistance value you will no longer be setting voltage command to the motor but current command, see [torque control docs](voltage_torque_mode) for more info.
+这里要采取两个重要的步骤，确保你的电机没有使用过高的 `motor.voltage_sensor_align` 值，以防止电流过大。这条规则和开环的 `motor.voltage_limit` 是一样的。如果你不确定你的相位电阻是多少，从小的值开始测： `motor.voltage_sensor_align < 1` 。此外，您还可以定义电机的相位电阻，然后使用 `motor.current_limit` 值，这个变量将限制 `motor.voltage_sensor_align` 所以你不用再为它担心了。但如果你指定了相位电阻值，你就不用为电机设置电压命令，但要设置电流命令，更多信息请参阅 [力矩控制文件](voltage_torque_mode) for more info 。
 
-Second important tip is to use [monitoring](monitoring) functionality. This will help you to debug the possible issues that might arise and it will output the motor status during the initialization and the alignment. If the initialisation fails the motor will be disabled you will be able to move the motor by hand without any resistance, if the code works your motor will start spinning and you will be abele to set the voltage (current if `motor.phase_resistance` set) through the serial terminal.
+第二个重要的技巧是使用 [监控](monitoring) 功能。这将帮助您调试可能出现的问题，在初始化和校准时会输出电机的状态。如果初始化失败，电机将被禁用，你可以用手毫无阻力地移动电机，如果代码可以运行，你的电机会开始旋转，你就可以通过串行终端设置电压（/电流，如果设置了`motor.phase_resistance` set）。 
 
-<blockquote class="info"> <p class="heading">☑️ Simple test</p> 
-Make sure that the motor intialisation has finished well. Monitoring will tell you the sensnor offset, direciton, pole pairs check and it will tell you if it has been successful or if it failed. </blockquote>
+<blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 
+确保电机的初始化完成得很好。监控会输出你传感器的偏移，方向，极对数的检查，它会告诉你它是成功的或者是失败的。 </blockquote>
 
-## Step 5. Testing the current sense - if available
-If your setup has current sensing that is supported by the <span class="simple">Simple<span class="foc">FOC</span>library</span> then we would suggest you to still make sure that you can run at least closed-loop torque control using voltage (Step 3.) before doing this step. 
+## Step 5. Testing the current sense - if available（第5步. 测试电流传感器 - 如果可用）
+如果你的设置里具有 SimpleFOClibrary 支持的电流传感器，那么我们建议在执行此步骤之前，确保你至少可以使用电压控制闭环力矩（第3步）。
 
-The best way to start is to add the current sensing to the code of the torque control using voltage (step 3.) and output the d and q currents to the serial terminal using monitoring.
+最好的开始方式是使用电压将电流传感器添加到力矩控制代码中（第3步）。并通过监控将d、q电流输出到串行终端。
 
-Here is the an example of a such code:
+下面是一个代码实例：
 ```cpp
 #include <SimpleFOC.h>
 
@@ -332,18 +333,18 @@ void loop() {
   command.run();
 }
 ```
-This example code is almost exactly the same as the step 3. code so you should not have much troubles configuring motor, sensor and driver. In this step you will be testing if your current sense is working well. In the call of the `motor.monitor()` function the current sense will be read and the current d and q are going to be outputted to the serial terminal. You can open the Serial Plotter to visualise them. 
+这个实例的代码几乎与第3步的代码完全相同。所以你配置电机，传感器和驱动器的时候应该没有太大的问题。在这一步，将测试你的电流传感器是否工作良好。在调用这个实例的代码几乎与第3步的代码完全相同。所以你配置电机，传感器和驱动器的时候应该没有太大的问题。在这一步，将测试你的电流传感器是否工作良好。在调用 `motor.monitor()` 函数时，将读取电流传感器，并将当前的 d 和 q 输出到串行终端。你可以打开串口绘图仪来可视化它们。
 
-<blockquote class="info"> <p class="heading">☑️ Simple tests</p> 
-1. Hold the motor with your hand and chaneg different target voltage/current values. Make sure that the current d is very close to 0 when the motor is static. And make sure that the current q is proportional to the voltage you are setting to the motor. <br>
-2. Leave the motor to rotate. See that your currents d and q drop to a lower level then for static motor. Also try to see that the current d is almost 0 for low velocities and starts rising proportionally to the motor velocity. 
+<blockquote class="info"> <p class="heading">☑️ 简单的测试 </p> 
+1. 用手握住电机，改变不同的目标电压/电流值。确保电机静止时电流  d 非常接近0。确保电流 q  与你设置的电机电压成比例。 <br>
+2. 让电机旋转。注意你的电流 d 和 q 下降到一个较低的水平，然后是静态电机。观察一下在低速时电流 d 几乎为0，之后就与电机速度成比例上升。 
 </blockquote>
 
-Please go through the [current sense docs](current_sense) to see the supported sensors and all the configuration parameters.
+请浏览 [电流传感器文档](current_sense) ，查看支持的传感器和所有配置参数。
 
 
-## Step 6. Full FOC motion control using current sensing - if available
-Once you have your motor, position sensor, driver and current sense configured and tested you can got proceed to the true foc control. 
+## Step 6. Full FOC motion control using current sensing - if available（第6步. 使用电流传感器控制全 FOC 运行-如果可用）
+当你配置和测试好你的电机、位置传感器、驱动器和电流传感器之后，你就可以进行真正的 FOC 控制。
 ```cpp
 #include <SimpleFOC.h>
 
@@ -440,10 +441,11 @@ void loop() {
 }
 ```
 
-To see all of the FOC torque control parameters please visit the [torque control docs](torque_mode). The goon news is that if you have set the phase resistance during the tuning the velocity and position motion control loops in step 4. you will most probably not need to retune them. 
+要查看所有的 FOC 力矩控制参数，请访问 [力矩控制文档](torque_mode)。在第4步中，如果你在调整速度和位置的过程中设置了相位电阻。你很可能不需要再重新调整它们。
 
-However the most important tip is still to use the [commander interface](commander_interface) to tune hte torque control PID controller and Low pas filter parameters, this way you will be able to test quickly and change the parameters of controllers in real-time and see what will happen. One time you are satisfied you can write these values in code and quit using the commander. 
+然而，最重要的事情还是使用 [命令界面](commander_interface) 来调整力矩控制的 PID 控制器和低 pas 滤波器的参数，通过这种方式，你将能够快速测试，实时更改控制器的参数，并且看到结果。一旦达到你满意的情况，你就可以在代码中写入这些值，然后停止使用命令。
 
-<blockquote class="info"> <p class="heading">☑️ Simple test</p> 
-Set your target current to <b>0Amps</b> and try to move the motor by hand, make sure it feels like there is absolutely no resistance, like the motor is disabled. Then try to set a small current (<b><0.5A</b>) value and see if you can feel the motor force acting on your hand. If you can feel it you should be ready to go! 
+<blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 
+将目标电流设置为 <b>0Amps</b> ，并尝试用手移动电机，确保像电机失灵一样地没有任何阻力。然后尝试设置小的电流值 (<b><0.5A</b>) ，看看你是否能感觉到电机的力量作用在你的手上。如果你能感觉到，那么这一步就成功了！ 
 </blockquote>
+
