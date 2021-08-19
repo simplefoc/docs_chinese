@@ -9,28 +9,29 @@ grand_parent: Supported Hardware
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Arduino<span class="simple">Simple<span class="foc">FOC</span>Shield </span>
 
-SimpleFOC Shield是一个基于Arduino UNO开发的板子，兼容与Arduino UNO引脚排列一致的开发板直接插入使用。
+# Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> example
+The <span class="simple">Simple<span class="foc">FOC</span>Shield</span>, being Arduino UNO shield, is compatible with any type of board with the same headers.
+Essentially, it is a L6234 chip breakout board made in a form of Arduino Shield.
 
 <p><img src="extras/Images/foc_shield_v13.png" class="img400"></p>
 
-## 接线柱描述
- - 电机和编码器接线柱
-    - 电机相位为`a`、`b` 和 `c`
-    - 电源线（12V ~ 24V）
- - 编码器接线柱
-    - 集成上拉电阻
+## Connector types
+ - Terminal connectors 
+    - motor phase lines `a`,`b` and `c`
+    - power supply cables (12V to 24V)
+ - Encoder connector
+    - Integrated configurable pull-ups
 
-更多信息请点击此链接：[Arduino Simple FOC Shield](arduino_simplefoc_shield_showcase)。
+More information on this link: [Arduino Simple FOC Shield](arduino_simplefoc_shield_showcase).
 
-## 编码器
--  `A` 和 `B`连接到编码器接线柱`P_ENC`，`A` 和 `B`位置 。
-- 如果你的编码器有`index`（基准） 信号，你也可以将它连接到编码器接线柱 `I`位置。
+## Encoder 
+- Channels `A` and `B` are connected to the encoder connector `P_ENC`, terminals `A` and `B`. 
+- If your encoder has `index` signal you can connect it to the encoder connector as well, terminal `I`.
 
-## 电机
-- 电机`a`相, `b`相和 `c`相直接连接电机接线柱 `TB_M1`
+## Motor
+- Motor phases `a`, `b` and `c` are connected directly the motor terminal connector `TB_M1`
 
 
-## 连接示例
+## Example connection
 <p><img src="extras/Images/foc_shield_v13.jpg" class="width60"></p>
