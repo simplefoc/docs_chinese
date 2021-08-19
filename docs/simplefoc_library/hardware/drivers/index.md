@@ -8,7 +8,6 @@ permalink: /drivers
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: true
 has_toc: false
-
 ---
 
 # 支持的驱动板
@@ -16,16 +15,15 @@ has_toc: false
 <div class="width60">
 <img src="extras/Images/drv8302.png" style="width:25%;display:inline"><img src="extras/Images/bgc_30.jpg" style="width:25%;display:inline"><img src="extras/Images/l6234.jpg" style="width:25%;display:inline"><img src="extras/Images/l298n.jpg" style="width:25%;display:inline">
 </div>
-
 Arduino <span>Simple<span>FOC</span>library</span>的目标是支持尽可能多的无刷直流电机和步进电机驱动器。到目前为止，这个库支持两种驱动器类型:
 
 - [无刷直流电机驱动器 <i class="fa fa-external-link"></i>](bldc_drivers)
-  - **3路PWM信号**（3相）
-  - **6路PWM信号**（3相）
-  - 云台电机驱动器或高性能驱动器
+    - **3路PWM信号**（3相）
+    - **6路PWM信号**（3相）
+    - 云台电机驱动器或高性能驱动器
 - [步进电机驱动器 <i class="fa fa-external-link"></i>](stepper_drivers)
-  - **4路PWM信号**（2相）
-  - 步进驱动器或双直流电机驱动器
+    - **4路PWM信号**（2相）
+    - 步进驱动器或双直流电机驱动器
 
 # 📢在确定使用何种类型驱动之前一定要读一下这篇文章!
 
@@ -36,11 +34,9 @@ Arduino <span>Simple<span>FOC</span>library</span>的目标是支持尽可能多
 ```cpp
 I_max = V_dc/R
 ```
-
 最后，根据驱动板数据表检查最大电流 `I_max` 值。如果 `I_max` 过高，可以降低电源电压`V_dc` ，以防止电流峰值过高。如果你不能改变你的供电电压，可以在软件中限制电机的电压设置。
 
 <blockquote class="warning">
     <p class="heading">注意</p>
    由上式可以计算出最坏情况下的最大电流<code class="highlighter-rouge">I_max</code>，而大多数情况下计算出的<code class="highlighter-rouge">I_max</code>会大于实际值。实际最大电流取决于电机硬件，如绕组配置和控制算法。
 </blockquote>
-
