@@ -1,39 +1,39 @@
 ---
 layout: default
 title: HMBGC V2.2
-parent: Setup examples
+parent: 设置实例
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 3
 permalink: /hmbgc
-grand_parent: Supported Hardware
+grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
 
-# HMBGC V2.2 example
-To use HMBGC controller for vector control (FOC) you need to connect motor to one of the motor terminals and connect the encoder to the analog pins. Following pictures show the schematic of the HMBGC board necessary connections and the one real example of the connection.
+# HMBGC V2.2 
+使用HMBGC控制器进行FOC控制，需要将电机连接到其中一个电机接线柱，并将编码器连接到开发板的模拟信号引脚。下图为其接线实例：
 
 <p>	<img src="extras/Images/hmbgc_connection.png" class="width50"> </p>
- 
- 
-## Encoder
-<blockquote class="warning"> <p class="heading">Pinout restriction</p>
-HMBGC doesn't have access to the Arduino's external interrupt pins <code class="highlighter-rouge">2</code> and <code class="highlighter-rouge">3</code>, moreover the only pins we have access to are analog pins <code class="highlighter-rouge">A0-A7</code>. 
-Therefore we need to read the encoder channels using the software interrupt library, please check the  encoder <a href="encoder">code implementation </a> for more information. </blockquote>
-
-Please see the HMBGC code example (`HMBGC_example.ino`) to test all the functionalities.
-
-- Encoder channels `A` and `B` are connected to the pins `A0` and `A1`.
-- Optionally if your encoder has `index` signal you can connect it to any available pin, figure shows pin `A2`.  
-
-## Motor
-- Motor phases `a`,`b` and `c` are connected directly to the driver outputs
-- Motor terminal `M1` uses Arduino pins `9`,`10`,`11` and `M2` uses `3`,`5`,`6`
+## 编码器
+<blockquote class="warning"> <p class="heading">引脚限制</p>
+HMBGC不能访问Arduino的外部中断引脚<code class="highlighter-rouge">2</code>和 <code class="highlighter-rouge">3</code>，我们唯一可以访问的引脚是模拟引脚<code class="highlighter-rouge">A0-A7</code>. 
+因此我们需要使用软件中断库来读取编码器，请查看编码器<a href="encoder">代码实现</a> 获得更多信息。</blockquote>
 
 
+请参考HMBGC代码例程(`HMBGC_example.ino`')来测试所有功能。
 
-<blockquote class="danger"> HMBGC board doesn't support magnetic sensors because it doesn't have necessary SPI infrastructure.</blockquote>
+- 编码器A` 和 `B`连接到引脚`A0` 和 `A1`。  
+- 如果你的编码器有`index`（索引）信号，可以将它连接到任何可用的引脚，上图连接的是引脚 `A2`。
 
-## Example connection
+## 电机
+- 电机`a`相,`b` 相和`c`相直接连接到驱动器输出
+
+- 电机接线`M1`使用Arduino引脚`9`、`10`、`11` ，接线 `M2`使用 `3`、`5`、`6`
+
+  
+
+<blockquote class="danger"> HMBGC板不支持磁传感器，因为它没有必需的SPI基础设施</blockquote>
+## 连接实例
+
 <p><img src="extras/Images/hmbgc_v22.jpg" class="width60">
 </p>

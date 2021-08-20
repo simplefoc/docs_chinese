@@ -1,35 +1,38 @@
 ---
 layout: default
-title: Raspberry Pi Pico boards
+title: 树莓派 Pico 板
 nav_order: 7
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /rpi_mcu
-parent: Microcontrollers
-grand_parent: Supported Hardware
+parent: 单片机
+grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Rapspberry Pi Pico  (rp2040) boards support
 
-MCU | 2 PWM mode | 4PWM mode | 3 PWM mode | 6 PWM mode | pwm frequency config 
+
+# 支持 Rapspberry Pi Pico (rp2040) 板
+
+MCU | 2路PWM模式 | 4路PWM模式 | 3路PWM模式 | 6路PWM模式 | pwm频率配置 
 --- | --- |--- |--- |--- |--- 
 (RP2040) RPI Pico | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ 
 
-Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> recently started supporting the Raspberry pi Pico board due to a lot of effort put in by [@runger1101001](https://github.com/runger1101001). The support is stil in its intial stage but most of the PWM related features are already implemented. 
+由于[@runger1101001](https://github.com/runger1101001)投入了大量的努力，Arduino <span>Simple<span>FOC</span></span>library现已开始支持Raspberry pi Pico板。虽然这种支持仍处于初始阶段，但大多数PWM相关功能已经实现。
 
- Board | Name | Specifications | Link | Price
----- | --- | --- | --- | --- | ---
+ 板子示意图 | 名称 | 规格 | 链接 | 价格 
+---- | --- | --- | --- | --- 
 [<img src="extras/Images/pico.jpg" class="imgtable150">](https://www.adafruit.com/product/4883) | Raspberry Pi Pico RP2040 | Dual ARM Cortex-M0+  <br>- 3.3V logic<br> - 16 PWMs<br> - DMA controller <br>- 4 adc pins<br>- 133MHz |[Adafruit Store](https://www.adafruit.com/product/4883) | 5€ 
 
-
-<blockquote class="warning"> <p class="heading">BEWARE: limitations of the current implementation ⚠️</p>
-Raspberry Pi Pico has only the early stage of support. The PWM features work well and have been tested and most of the sensors will work well, but SPI magnetic sensors are for now not supported! 
+<blockquote class="warning"> <p class="heading">注意：当前实现的局限性⚠️</p>
+Raspberry Pi Pico只得到了早期阶段的支持。PWM功能工作得很好，并已经过测试，大多数传感器将工作得很好，但SPI磁传感器目前不支持!
 </blockquote>
 
-## Arduino IDE support package
-In order to use the Pico boards in the Arduino IDE please install the Arduino MBED OS RP2040 boards support package using Arduino IDE board manager.
+# Arduino IDE支持包
 
-If using windows you might have to do a bit of acrobatics with the USB driver, but the soluion is reasonably fast and straingth forward. Here is [the link](https://arduino-pico.readthedocs.io/en/latest/install.html#uploading-sketches) with a bit of info how to do it.
+为了在 Arduino IDE 中使用 Pico 板，请使用 Arduino IDE 板子管理器安装 Arduino MBED OS RP2040 板支持包。
 
-Here is quick video showing how to do it:
+如果使用 windows，你可能必须设置下USB驱动程序，但过程是相当快速和简单的。更多如何做到这一点的信息在此[链接](https://arduino-pico.readthedocs.io/en/latest/install.html#uploading-sketches)。
+
+下面是一个简短的视频，告诉你该怎么做：
+
 <iframe class="youtube" src="https://www.youtube.com/embed/5YOEauk9bLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
