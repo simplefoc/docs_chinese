@@ -1,14 +1,14 @@
 ---
 layout: default
 title: v2.0.2
-parent: Soldering pads
+parent: 焊盘部分
 grand_parent: Getting Started
 description: "Configuring your SimpleFOCShield by soldering the pads."
 nav_order: 2
 permalink: /pads_soldering_v2
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 ---
-# Hardware configuration using soldering pads （使用焊盘配置硬件）<br> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v2</small>
+# 使用焊盘配置硬件<br> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v2.0.2</small>
  Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个重要的特性是硬件配置
 
 <img src="extras/Images/shield_bot_v201_pinout.gif" class="width40">
@@ -95,7 +95,6 @@ Encoder I | 4, 11, 13
 另一个例子是用 STM32 Nucleo 叠两块板。Nucleo 板的引脚`11`和 `6`上不能输出 pwm，因此您不能同时使用这些引脚。当使用 Nucleo 板时，我们的经验是避免使用引脚`11`，而使用引脚`13`。
 
 <blockquote class="info"><p class="heading">引脚 13 or 引脚 11</p> 我们建议您先尝试配置引脚13，如果引脚13不行的话再试试引脚11。我们测试的时候是 Nucleo-F401RE - 引脚13有效/引脚11无效，Nucleo-F466RE 引脚11有效/引脚13无效。</blockquote>
-
 因此在下文中，您可以根据堆叠的必要性和所使用的微控制器找到推荐的引脚配置。
 
 ### Suggested pinout: Single board（建议的引脚：单板）
@@ -111,7 +110,7 @@ Pin number （引脚号码） | 9 | 5 | 6 | 8 | 3 | 2 | 4
 
 在上面的图片中，你可以看到你需要焊接哪些焊盘来得到这个配置。
 ```cpp
-// driver instance configuration based on pinout above
+// 基于以上引脚的驱动器实例配置
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 ```
 
@@ -131,7 +130,7 @@ Board #2（板子2） | 9 | 3 | 11 | 7 | A5 | A4 | 13 |
 
 上图显示了如何焊接两个板上的焊盘，以获得所需的引脚。 
 ```cpp
-// motor instances configuration based on pinout above
+// 基于以上引脚的电机实例配置
 BLDCDriver3PWM driver1 = BLDCDriver3PWM(10, 5, 6, 8);
 BLDCDriver3PWM driver2 = BLDCDriver3PWM(9, 3, 11, 7);
 ```
@@ -155,7 +154,7 @@ Board #2（板子2） | 9 | 3 | 13 | 7 | A5 | A4 | 11
 参见上图，了解如何焊接焊盘以获得这种配置。
 
 ```cpp
-// motor instances configuration based on pinout above
+// 基于以上引脚的电机实例配置
 BLDCDriver3PWM driver1 = BLDCDriver3PWM(10, 5, 6, 8);
 BLDCDriver3PWM driver2 = BLDCDriver3PWM(9, 3, 13, 7);
 ```

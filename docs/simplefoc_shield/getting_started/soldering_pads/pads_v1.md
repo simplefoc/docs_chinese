@@ -1,14 +1,14 @@
 ---
 layout: default
 title: v1.3.3
-parent: Soldering pads
+parent: 焊盘部分
 grand_parent: Getting Started
 description: "Configuring your SimpleFOCShield by soldering the pads."
 nav_order: 1
 permalink: /pads_soldering_v1
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 ---
-# Hardware configuration using soldering pads （使用焊盘进行硬件配置） <br> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v1</small>
+# 使用焊盘进行硬件配置 <br><span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small>v1.3.3</small>
  Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个非常重要的特性是硬件配置。
 
 <img src="extras/Images/shield_bot_v131_pinout.gif" class="width40">
@@ -77,7 +77,7 @@ Pin number （引脚号码） | 9 | 5 | 6 | 8 | 3 | 2 | A0
 
 在上面的图片中，你可以看到你需要焊接哪些焊盘来得到这个配置。
 ```cpp
-// driver instance configuration based on pinout above
+// 基于以上引脚的驱动器实例配置
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 ```
 
@@ -97,7 +97,7 @@ Board #2（板子2） | 3 | 5 | 11 | 7 | A3 | 2 | 4
 
 上图显示了如何焊接两个板上的焊盘，以获得所需的引脚。 
 ```cpp
-// motor instances configuration based on pinout above
+// 基于以上引脚的电机实例配置
 BLDCDriver3PWM driver1 = BLDCDriver3PWM(9, 10, 11, 8);
 BLDCDriver3PWM driver2 = BLDCDriver3PWM(3, 5, 6, 7);
 ```
@@ -119,7 +119,7 @@ Board #2（板子2） | 3 | 5 | 13 | 7 | A3 | 2 | 4
 参见上图，了解如何焊接焊盘以获得这种配置。
 
 ```cpp
-// motor instances configuration based on pinout above
+// 基于以上引脚的电机实例配置
 BLDCDriver3PWM driver1 = BLDCDriver3PWM(9, 10, 6, 8);
 BLDCDriver3PWM driver2 = BLDCDriver3PWM(3, 5, 13, 7);
 ```

@@ -1,13 +1,13 @@
 ---
 layout: default
-title: v2.0.2
+title: v2.0.2版本
 description: "Arduino SimpleFOCShield board fabrication"
 parent: 制作指南
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 nav_order: 2
 permalink: /arduino_simplefoc_shield_fabrication_v2
 ---
-# Fabrication guide for <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v2.0.2</i></small> 
+# <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v2.0.2</i></small> 的制作指南
 Here is a quick guide how to fabricate the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V2.0.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
 
 

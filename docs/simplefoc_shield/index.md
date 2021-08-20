@@ -11,7 +11,7 @@ has_toc: false
 
 # Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  <small><i>v2.0.3</i></small>
 
-这是一个开源的低成本无刷直流(BLDC)电机驱动板，主要用于低功率高达5安培的FOC应用。该板完全兼容于Arduino UNO和所有标准Arduino接口的板。SimpleFOCShield结合SimpleFOClibrary提供了友好的方式来控制无刷直流电机的硬件和软件。
+这是一个开源的低成本无刷直流(BLDC)电机驱动器项目，主要用于最大5A电流的低功率的FOC应用。该驱动器完全兼容Arduino UNO和所有标准Arduino接口的主控板。SimpleFOCShield结合SimpleFOClibrary提供了友好的方式来控制无刷直流电机的硬件和软件。
 
 
 
@@ -21,22 +21,22 @@ has_toc: false
 ### 特性
 - **即插即用**：结合 Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
 - **低成本**: 15 欧元的价格 - [查看价格](https://www.simplefoc.com/shop) 
-- **在线电流传感**: 双向可达 3Amps/5Amps
-   - 可配置：3.3Amps - 3.3V adc, 5Amps - 5V adc
+- **在线电流传感**: 双向电流可达 3A/5Amps
+   - 可选配置：3.3A - 3.3V adc, 5A - 5V adc
 - **集成 8V 调节器**: 
    - 通过焊盘启用/禁用
-- **最大功率 120W** - 最大电流 5A, 电源 12-24V
-   - 适用于 >10Ωs 的云台电机. 
-- **可堆叠**：同时运行2个电机
-- **编码器/霍尔传感器接口**：集成的3.3kΩ上拉（可配置）
-- **I2C 接口**：集成的4.7kΩ上拉（可配置）
-- **可配置的引出线**：硬件配置 - 焊接连接
+- **最大功率 120W** - 最大电流 5A, 输入电源 12-24V
+   - 适用于内阻 >10Ω 的云台电机. 
+- **可叠板**：同时叠加两块SimpleFOCShield，运行2个电机
+- **编码器/霍尔传感器接口**：集成的3.3kΩ上拉电阻（可选）
+- **I2C 接口**：集成的4.7kΩ上拉电阻（可选）
+- **可配置的引脚**：硬件配置 - 通过焊接连接
 - **Arduino headers**：Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
-- **开源**：完全可用的制造文件 - [如何自己制作它](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
+- **开源**：完全可用的制造文件 - [如何自制](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
 
 <blockquote class="warning"> 
 <p class="heading">注意</p>
-该无刷直流驱动板主要用于内阻为R >10 Ω的云台电机。使用 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 之前，请确保您的电机符合这个参数。
+该无刷直流驱动器主要用于内阻为 >10 Ω的云台电机。使用 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 之前，请确保您的电机符合这个参数。
 </blockquote>
 
 <img src="https://simplefoc.com/assets/img/v1.jpg" class="img300 img_half"><img src="https://simplefoc.com/assets/img/v2.jpg" class="img300  img_half">
@@ -46,24 +46,24 @@ has_toc: false
 <p><img src="extras/Images/foc_shield_v13.jpg" class="width60"></p>
 有关如何将硬件连接到 shield 的更多信息，请查看完整的 [连接实例](arduino_simplefoc_shield)。
 
-## 项目实例：倒立摆（Reaction wheel inverted pendulum）
+## 项目实例：倒立摆
 <iframe class="youtube"  src="https://www.youtube.com/embed/Ih-izQyXJCI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-这是一个完全基于 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 和 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 设计和控制倒立摆的项目。
+这是一个完全基于Arduino [SimpleFOC library 和 SimpleFOC shield](https://github.com/simplefoc/Arduino-FOC)设计和控制的，基于无刷电机的倒立摆
 
-从很多方面来看，这都是一个非常有趣的项目：
+从许多方面来说，这是一个非常有趣的项目，它主要针对：
 
-- 学生们可以为他们的高级算法寻找一个好的测试平台
-- 每个人都有一点空闲时间和动机去创造一些很酷的东西 :D
+- 需要一个好的平台测试他们先进算法的学生。
+- 有些许空闲时间和动力创造炫酷东西 ：D 的任何人。
 
 有关必要的组件、设计选择和代码的完整文档，请访问 [项目文档](simplefoc_pendulum)。
 
 
-## 项目实例：线控-电机互控实例（Steer by wire - bidirectional haptic control examples）
+## 项目实例：基于SimpleFOCShield和Arduino UNO的线控转向
 <iframe class="youtube" src="https://www.youtube.com/embed/xTlv1rPEqv4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 这个视频演示了 <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 支持与 Arudino UNO 和 STM32 Nucleo-64 板堆叠。以及支持不同的具有较大精度跨度的磁编码器。
 
 本项目所实现的控制算法为：
-- **线控** （力反馈） ：两个电机的位置几乎耦合
+- **线控**转向 （力反馈） ：两个电机的位置几乎耦合
 - **交互测试 Interactive gauge** （触碰速度控制 haptic velocity control）：两个电机的位置和速度几乎耦合
 
 

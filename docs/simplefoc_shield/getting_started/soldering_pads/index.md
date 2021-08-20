@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Soldering pads
+title: 焊盘部分
 parent: Getting Started
 description: "Configuring your SimpleFOCShield by soldering the pads."
 nav_order: 1
@@ -10,7 +10,7 @@ has_children: true
 has_toc: false
 ---
 
-# Hardware configuration using soldering pads 使用焊盘进行硬件配置
+# 使用焊盘进行硬件配置
  Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的一个重要特性是硬件配置。
 
 
