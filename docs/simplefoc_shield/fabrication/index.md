@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Board Fabrication
+title: 制作指南
 description: "Arduino SimpleFOCShield board fabrication"
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 nav_order: 2

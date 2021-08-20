@@ -2,7 +2,7 @@
 layout: default
 title: v1.3.3
 description: "Arduino SimpleFOCShield board fabrication"
-parent: Board Fabrication
+parent: 制作指南
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 nav_order: 1
 permalink: /arduino_simplefoc_shield_fabrication_v1
@@ -200,7 +200,6 @@ Quantity（数量） | SeedStudio |  JLCPCB
 这个选项更简单，并且产生更好的结果。如果数量大的话，价格会更便宜，比如 > 50 个。要订购电路板，请下载 [<i class="fa fa-file"></i> Gerber 文件](https://github.com/simplefoc/Arduino-SimpleFOCShield) 和 [<i class="fa fa-file"></i> 材料清单](https://github.com/simplefoc/Arduino-SimpleFOCShield) ，并将其提供给您选择的制造商。在我的例子中，我使用 [JLCPCB](https://jlcpcb.com/)。
 
 <iframe class="youtube"  src="https://www.youtube.com/embed/sax_9sUgBuk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 ## 完成装配好的版本
 从我们的 [商店](https://simplefoc.com/simplefoc_shield_product) 中购买完成测试好装配好的 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 。
 
