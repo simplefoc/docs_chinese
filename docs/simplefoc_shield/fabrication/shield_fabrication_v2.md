@@ -2,7 +2,7 @@
 layout: default
 title: v2.0.2
 description: "Arduino SimpleFOCShield board fabrication"
-parent: Board Fabrication
+parent: 制作指南
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
 nav_order: 2
 permalink: /arduino_simplefoc_shield_fabrication_v2
@@ -51,7 +51,7 @@ Quantity | SeedStudio |  JLCPCB
  10 | 5€ |2€
  30 | 30€ | 15€
  50 | 50€ | 30€
- 
+
 <i class="fa fa-info-circle"></i> <i><small>On top of these prices you will have to pay shipping of approximately  20€.</small></i>
 
 ### Component purchase
@@ -239,7 +239,6 @@ This option is a lot simpler and produces much better results. It is also even c
 To order the boards, download the [<i class="fa fa-file"></i> Gerber files](https://github.com/simplefoc/Arduino-SimpleFOCShield) and [<i class="fa fa-file"></i> Bill of Materials](https://github.com/simplefoc/Arduino-SimpleFOCShield) and supply it to your manufacturer of choice. In my case, I'm using the [JLCPCB](https://jlcpcb.com/).
 
 <iframe class="youtube"  src="https://www.youtube.com/embed/sax_9sUgBuk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 ## Fully assembled versions
 Order your own fully tested and assembled Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  from our [shop](https://simplefoc.com/simplefoc_shield_product).
 
