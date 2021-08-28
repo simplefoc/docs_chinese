@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Step-Dir Interface
+title: 步进方向接口
 nav_order: 2
 permalink: /step_dir_interface
 parent: Communication
@@ -9,91 +9,98 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 ---
 
 
-# Step-direction interface
+# 步进-方向监听器接口
 
-Step/direction communication is one of the most common communication interface for running stepper motors. It is very basic, it uses two digital signals, `step` and `direction`.  `step` signal produces and short impulse which signals that the motor should do a step with predefined length and `direction` signal determines the direction of the movement (ex. `HIGH` forward, `LOW` backward). 
+步进/方向通信是运行步进电机最常用最基本的通信接口之一。它使用的是两个数字信号——`step` 和`direction`。`step`步进信号产生短脉冲，以表示电机将按设定的步长进行步进，`step` 信号确定运动方向（例如,`HIGH`向前，`LOW`向后）。
 
-As stated before this interface is particularly well suited for stepper motors because their motion is designed to be characterised by steps. But this interface can be used in many different ways that have nothing to do with stepper motors. In general step/dir interface can be described as a counter where `direction` signal determines the counting direction and `step` provides the impulses to be counted:
+如上所述，该接口因其运动是以步进为特征的设计而特别使用于步进电机。但同时这个接口也能用于很多与步进电机无关的不同方式中。 通常step/dir接口可以作为一个双向计数器，其中`direction`信号为计数方向，`step`为要计数的脉冲数：
+
 ```cpp
-// on rising edge of step signal 
+// 阶跃信号
 if(direction == HIGH) counter++;
 else counter--; 
 ```
- Finally to obtain the value you are interested in you just need to multiplied the current counter value with your step value:
+最后，只需将当前计数器值乘以步长即可获得你想要的值：
 ```cpp
 received_value = counter*my_step;
 ```
 
-## How to use Step-direction listener
-In order to do this in a more concise manner <span class="simple">Simple<span class="foc">FOC</span>library</span> implements an interrupt based version of this interface based on the `StepDirListener` class:
-```cpp
-// StepDirListener(step, dir, counter_to_value)
-// - step              - step pin number
-// - dir               - dir pin number
-// - step_per_rotation - transformation variable from step count to your variable (ex. motor angle in radians)
-StepDirListener step_dir = StepDirListener( 2, 5, _2PI/200.0 );
-```
-Once the `StepDirListener` class has been defined its hardware pins will be configured in the `init()` funciton which  needs to be added to the `setup()` function.
+## 如何使用步进-方向监听器
+为了以更简洁的方式执行此操作，<span class="simple">Simple<span class="foc">FOC</span>library</span>基于 `StepDirListener` 实现了基于中断的接口的版本：
 
 ```cpp
-// init step and dir pins
+// StepDirListener(step, dir, counter_to_value)
+// - step              - step 引脚编号
+// - dir               - dir 引脚编号
+// - step_per_rotation - 采用步进计数法进行变量变换（电机角度（弧度））
+StepDirListener step_dir = StepDirListener( 2, 5, _2PI/200.0 );
+```
+一旦定义了`StepDirListener`，则会在`init()`函数中配置引脚。`init()`函数需要添加到`setup()` 函数中。
+
+```cpp
+// 初始化 step 和 dir 引脚
 step_dir.init();
 ```
-Furthermore, in order to do the actual counting this library uses the interrupt based approach, therefore the `StepDirListener` provides you the `handle()` function that you just need to wrap for example:
+此外，该库用中断的方法来进行实际计数，因此`StepDirListener`提供了只需封装的 `handle()` 函数，例如：
+
 ```cpp
-// static wrapper function
+// 静态封装函数
 void onStep() { step_dir.handle(); }
 ```
-and finally you can enable the counter by providing the wrapper function to the `enableInterrupt()` function:
+你可以往`enableInterrupt()`函数传入封装函数来启用计数器：
+
 ```cpp
-// enable interrupts 
+// 启用中断 
 step_dir.enableInterrupt(onStep);
 ```
 
-Finally, the user has two ways to get the received value. It can be read by calling the `getValue()` function:
+有两种方法来获取接收到的值。既可以通过getValue()`函数来读取：
 ```cpp
 float my_variable = step_dir.getValue();
 ```
-The second way to get the value is to attach the variable you wish the `StepDirListener` updates each time it updates the counter:
+也可以绑定希望`StepDirListener`每次更新计数器时更新的变量。
+
 ```cpp
-// some variable user wants to update 
+// 用户可以更新部分变量
 float my_value;
-// attach the variable to be updated on each step (optional) 
+// 可在每步绑定更新变量（可选）
 step_dir.attach(&my_value);
 ```
 
-<blockquote class="warning"><p class="heading">⚠️ BEWARE: Suboptimal performance</p>
-The simplest forms of communication such as step/dir are designed to be handled in hardware and software, interrupt based, implementation of these communication interfaces is usually not the optimal solution. It will provide the user a good base for testing purposes, but it is hard guarantee long-term robustness.  
+<blockquote class="warning"><p class="heading">⚠️ 注意：次优性能</p>
+最简单的通信形式（如step/dir）是在硬件和软件中处理，基于中断的实现通常不是最佳解决方案。它将为用户提供良好的测试基础，但很难保证长期的鲁棒性。 to be translate
 </blockquote>
 
 
-## Example code 
-This is a simple code of step-dir listener. See more examples in library examples `examples/utils/communication_test/step_dir` folder.
+
+## 示例代码
+这是一个简单的step-dir监听器的代码。请参阅示例库`examples/utils/communication_test/step_dir`文件夹中的更多示例。
+
 ```cpp
 /**
- * A simple example of reading step/dir communication 
- *  - this example uses interrupts
+ * 关于读取 step/dir 通信的简单实例 
+ *  - 本实例使用中断
 */
 
 #include <SimpleFOC.h>
 
-// angle 
+// 角度 
 float received_angle = 0;
 
 // StepDirListener( step_pin, dir_pin, counter_to_value)
-StepDirListener step_dir = StepDirListener(2, 3, 360.0/200.0); // receive the angle in degrees
+StepDirListener step_dir = StepDirListener(2, 3, 360.0/200.0); // 接收角度数
 void onStep() { step_dir.handle(); }
 
 void setup() {
 
   Serial.begin(115200);
   
-  // init step and dir pins
+  // 初始化 step 和 dir 引脚
   step_dir.init();
-  // enable interrupts 
+  // 启用中断 
   step_dir.enableInterrupt(onStep);
-  // attach the variable to be updated on each step (optional) 
-  // the same can be done asynchronously by caling step_dir.getValue();
+  // 可在每步附上更新变量（可选）
+  // 调用 step_dir.getValue()，可异步处理同样的更新
   step_dir.attach(&received_angle);
     
   Serial.println(F("Step/Dir listenning."));
@@ -101,9 +108,9 @@ void setup() {
 }
 
 void loop() {
-  Serial.print(received_angle);   // automatically updated by the StepDirListener class
+  Serial.print(received_angle);   // 通过 StepDirListener class 自动更新
   Serial.print("\t");
-  Serial.println(step_dir.getValue()); // getter of the StepDirListener class
+  Serial.println(step_dir.getValue()); // 获取 StepDirListener class
   _delay(500);
 }
 ```
