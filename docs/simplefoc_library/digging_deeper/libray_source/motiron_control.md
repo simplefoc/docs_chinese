@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Motion Control
+title: 运动控制
 parent: Library Source
 nav_order: 2
 permalink: /motion_control_implementation
@@ -9,25 +9,25 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 ---
 
 
-# Motion control implementation [v1.6](https://github.com/simplefoc/Arduino-FOC/releases)
+# 运动控制实现 [v1.6](https://github.com/simplefoc/Arduino-FOC/releases)
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> implements 3 motion control loops:
+<span class="simple">Simple<span class="foc">FOC</span>library</span>实现3个运动控制环：
 
-- Torque control using voltage
-- Velocity motion control
-- Position/angle control
+- 基于电压的力矩控制
+- 速度运动控制
+- 位置/角度控制
 
-The motion control algorithm is chosen by seting the `motor.controller` variables with one of the `ControlType` structure: 
+运动控制算法是通过设置带有 `ControlType` 结构之一的`motor.controller`变量来选择的：
 
 ```cpp
-// Motion control type
+// 运动控制类型
 enum ControlType{
-  voltage,// Torque control using voltage
-  velocity,// Velocity motion control
-  angle// Position/angle motion control
+  voltage,// 电压转矩控制
+  velocity,// 速度运动控制
+  angle// 位置/角度运动控制
 };
 ```
-This will look like:
+如下:
 ```cpp
 motor.controller = ControlType::voltage;
 // or
@@ -35,44 +35,44 @@ motor.controller = ControlType::velocity;
 // or
 motor.controller = ControlType::angle;
 ```
-This variable can be changed in real-time as well!
+这个变量也可以实时更改！
 
 
-## Real-time execution `move()` 
+## 实时执行 `move()` 
 
-The real-time motion control is executed inside `move()` function. Move function receives executes one of the control loops based on the `controller` variable. The parameter `new_target` of the `move()` function is the target value so be set to the control loop. the `new_target` value is optional and doesn't need ot be set. If it is not se the motion control will use `motor.target` variable.  
+实时运动控制在 `move()`函数中执行。Move函数根据 `controller` 变量接收并执行其中一个控制环。`move()`函数的参数`new_target`是目标值，因此必须设置为控制环。`new_target`值是可选的，不是必须要设置。如果不设置的话，运动控制将默认使用 `motor.target` 变量。
 
-Here is the implementation:
+如下:
 ```cpp
-// Iterative function running outer loop of the FOC algorithm
-// Behavior of this function is determined by the motor.controller variable
-// It runs either angle, velocity or voltage loop
-// - needs to be called iteratively it is asynchronous function
-// - if target is not set it uses motor.target value
+// 迭代函数运行外循环的FOC算法
+// 这个功能是由motor.controller的变量决定的
+// 它运行的角度，速度或电压回路
+// - 需要迭代调用，它是异步函数
+// - 如果没有设置目标，则使用 motor.target 的值
 void BLDCMotor::move(float new_target = NOT_SET) {
-  // check if target received through the parameter new_target
-  // if not use the internal target variable (motor.target) 
+  // 检查目标是否通过参数new_target接收
+  // 如果没有，则使用内部目标变量 (motor.target) 
   if( new_target != NOT_SET ) target = new_target;
-  // get angular velocity
+  // 获得角速度
   shaft_velocity = shaftVelocity();
-  // choose control loop
+  // 选择控制回路
   switch (controller) {
     case ControlType::voltage:
-      // set the target voltage for FCO loop
+      // 设置FCO回路的电压
       voltage_q =  target;
       break;
     case ControlType::angle:
-      // angle set point
+      // 角设定值
       shaft_angle_sp = target;
-      // calculate the necessary velocity to achieve target position
+      // 计算达到目标位置所需的速度
       shaft_velocity_sp = positionP( shaft_angle_sp - shaft_angle );
-      // calculate necessary voltage to be set by FOC loop
+      // 计算需要由FOC回路设定的电压
       voltage_q = velocityPI(shaft_velocity_sp - shaft_velocity);
       break;
     case ControlType::velocity:
-      // velocity set point
+      // 速度设定值
       shaft_velocity_sp = target;
-      // calculate necessary voltage to be set by FOC loop
+      // 计算需要由FOC回路设定的电压
       voltage_q = velocityPI(shaft_velocity_sp - shaft_velocity);
       break;
   }
@@ -80,86 +80,86 @@ void BLDCMotor::move(float new_target = NOT_SET) {
 ```
 ## Shaft velocity filtering `shaftVelocity`
 
-The first step for velocity motion control is the getting the velocity value from sensor. Because some sensors are very noisy and especially since in most cases velocity value is calculated by 
-derivating the position value we have implemented a Low Pass filter velocity filter to smooth out the measurement. 
-The velocity calculating function is `shaftVelocity()` with implementation:
+速度运动控制的第一步是从传感器获取速度值。因为有些传感器噪音很大，尤其是在大多数情况下，速度值是通过推导位置值得出，我们实现了一个低通滤波器速度滤波器来平滑测量。
+速度计算函数为`shaftVelocity()`，具体实现如下：
+
 ```cpp
-// shaft velocity calculation
+// 轴速度计算
 float BLDCMotor::shaftVelocity() {
   float Ts = (_micros() - LPF_velocity.timestamp) * 1e-6;
-  // quick fix for strange cases (micros overflow)
+  // 快速修复错误的情况 (micros overflow)
   if(Ts <= 0 || Ts > 0.5) Ts = 1e-3; 
-  // calculate the filtering 
+  // 计算过滤
   float alpha = LPF_velocity.Tf/(LPF_velocity.Tf + Ts);
   float vel = alpha*LPF_velocity.prev + (1-alpha)*sensor->getVelocity();
-  // save the variables
+  // 保存的变量
   LPF_velocity.prev = vel;
   LPF_velocity.timestamp = _micros();
   return vel;
 }
 ```
-The low pass filter is standard first order low pass filter with one time constant `Tf` which is configured with `motor.LPF_velocity`structure:
+低通滤波器为标准一阶低通滤波器，具有一个时间常数`Tf` ，配置有 `motor.LPF_velocity`结构：
+
 ```cpp
-// Low pass filter structure
+// 低通滤波器结构
 struct LPF_s{
-  float Tf; // Low pass filter time constant
-  long timestamp; // Last execution timestamp
-  float prev; // filtered value in previous execution step 
+  float Tf; // 低通滤波器时间常数
+  long timestamp; // 最新执行时间戳
+  float prev; // 在上一个执行步骤中过滤的值
 };
 ```
-### Low-Pass velocity filter theory
-For more info about the theory of the Low pass filter please visit [ theory lovers corner ](low_pass_filter)
+### 低通速度滤波理论
+有关低通滤波器理论的更多信息，请访问 [ theory lovers corner ](low_pass_filter)
 
-## Torque control  using voltage
+## 基于电压的力矩控制
 
-Since for most of the low-cost gimbal motors and drivers current measurement is usually not available then the torque control has to be done using voltage directly. 
+由于大多数低成本云台电机和驱动器的电流测量通常不可用，因此必须直接使用电压进行扭矩控制。
 
 <a name="foc_image"></a><img src="extras/Images/voltage_loop.png">
 
-This control loop makes an assumption that the voltage is proportional to the current which is proportional to the torque. Which is in general correct but not always. But in broad terms, it works pretty well for low current applications (gimbal motors). 
-This is the same assumption we usually make with DC motors.
+该控制回路假设电压与电流成比例，电流与扭矩成比例。这通常是正确的，但并不总是正确的。但从广义上讲，它在小电流应用（云台电机）中运行良好。
+这与我们通常对直流电机所做的假设相同。
 
-The control loop has trivial implementation, basically set the target voltage to the `voltage_q` variable in order to be set to the motor using the FOC algorithm `loopFOC()`.
+控制回路的实现非常简单，基本上将目标电压设置为`voltage_q`变量，以便使用FOC算法`loopFOC()`将其设置为电机。
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="voltage_loop"> voltage loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API使用</p>有关如何使用该控制环的更多信息，请查看<a href="voltage_loop"> voltage loop api docs</a></blockquote>
 
+### 基于电压理论的力矩控制
+有关这类控制理论的更多信息，请访问 [ theory lovers corner ](voltage_torque_control)
 
-### Torque control using voltage theory
-For more info about the theory of the this type of control please visit [ theory lovers corner ](voltage_torque_control)
+## 速度运动控制
 
-## Velocity motion control
-
-Once we have the current velocity value and and the target value we would like to achieve, we need to calculate the appropriate voltage value to be set to the motor in order to follow the target value.
+一旦我们有了电流速度值和我们想要达到的目标值，我们需要计算适当的电压值来设置电机，以便遵循目标值。
 
 <img src="extras/Images/velocity_loop.png" >
 
-
-And that is done by using PI controller in  `velocityPI()` function.
+这是通过在 `velocityPI()` 函数中使用PI控制器来实现的。
 
 ```cpp
-// velocity control loop PI controller
+// 速度控制回路PI控制器
 float BLDCMotor::velocityPI(float tracking_error) {
   return controllerPI(tracking_error, PID_velocity);
 }
 ```
-The `BLDMotor` class has implemented generic PI controller function called `controllerPI()`.
+`BLDMotor` 实现了名为`controllerPI()`的通用PI控制器函数。
+
 ```cpp
-// PI controller function
+// 比例积分控制器功能
 float BLDCMotor::controllerPI(float tracking_error, PI_s& cont){
   float Ts = (_micros() - cont.timestamp) * 1e-6;
 
-  // quick fix for strange cases (micros overflow)
+  // 快速修复错误的情况 (micros overflow)
   if(Ts <= 0 || Ts > 0.5) Ts = 1e-3; 
 
   // u(s) = (P + I/s)e(s)
-  // Tustin transform of the PI controller ( a bit optimized )
+  // PI控制器的Tustin变换 ( a bit optimized )
   // uk = uk_1  + (I*Ts/2 + P)*ek + (I*Ts/2 - P)*ek_1
   float tmp = cont.I*Ts*0.5;
   float voltage = cont.voltage_prev + (tmp + cont.P) * tracking_error + (tmp - cont.P) * cont.tracking_error_prev;
 
-  // antiwindup - limit the output voltage_q
+  // 限制输出电压q
   if (abs(voltage) > cont.voltage_limit) voltage = voltage > 0 ? cont.voltage_limit : -cont.voltage_limit;
-  // limit the acceleration by ramping the the voltage
+  // 通过增加电压来限制加速度
   float d_voltage = voltage - cont.voltage_prev;
   if (abs(d_voltage)/Ts > cont.voltage_ramp) voltage = d_voltage > 0 ? cont.voltage_prev + cont.voltage_ramp*Ts : cont.voltage_prev - cont.voltage_ramp*Ts;
 
@@ -170,52 +170,55 @@ float BLDCMotor::controllerPI(float tracking_error, PI_s& cont){
   return voltage;
 }
 ```
-The PI controller is configured with `motor.PID_velocity` structure:
+PI控制器配置`motor.PID_velocity`结构：
+
 ```cpp
-// PI controller configuration structure
+// PI控制器配置结构
 struct PI_s{
-  float P; // Proportional gain 
-  float I; // Integral gain 
-  float voltage_limit; // Voltage limit of the controller output
-  float voltage_ramp;  // Maximum speed of change of the output value 
-  long timestamp;  // Last execution timestamp
-  float voltage_prev;  // last controller output value 
-  float tracking_error_prev;  // last tracking error value
+  float P; // 成比例增加
+  float I; // 积分增益
+  float voltage_limit; // 控制器输出的电压限制
+  float voltage_ramp;  // 输出值变化的最大速度
+  long timestamp;  // 最新执行时间戳
+  float voltage_prev;  // 最后控制器输出值
+  float tracking_error_prev;  // 跟踪误差值
 };
 ```
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="velocity_loop"> velocity loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API usage</p>有关如何使用该控制环的信息，请查看<a href="velocity_loop"> velocity loop api docs</a></blockquote>
 
-### PI controller theory
+### PI控制器理论
 
-For more info about the theory of hte PI controller implemented in this library please visit [theory lovers corner](pi_controller)
+有关在该库中实现的hte PI控制器理论的更多信息，请访问[theory lovers corner](pi_controller)
 
-## Position motion control
+## 位置运动控制
 
-Now when we have the velocity control loop explained we can build our position control loop in cascade as shown on the image. 
+现在，当我们解释了速度控制回路后，我们可以按照图中所示的顺序构建位置控制回路。
 <img src="extras/Images/angle_loop.png">
 
-When we have target angle we want to achieve, we will use the P controller to calculate necessary velocity we need and then the velocity loop will calculate the necessary voltage `votage_q` to achieve both velocity and angle that we want.  
+当有想要达到的目标角度时，我们将使用P控制器来计算我们需要的必要速度，然后速度回路将计算必要的电压`votage_q` ，以达到我们需要的速度和角度。
 
-The position P controller is implemented in  `positionP()` function:
+位置P控制器在 `positionP()` 函数中实现：
+
 ```cpp
-// P controller for position control loop
+// P控制器用于位置控制回路
 float BLDCMotor::positionP(float ek) {
-  // calculate the target velocity from the position error
+  // 根据位置误差计算目标速度
   float velocity_target = P_angle.P * ek;
-  // constrain velocity target value
+  // 约束速度目标值
   if (abs(velocity_target) > velocity_limit) velocity_target = velocity_target > 0 ? velocity_limit : -velocity_limit;
   return velocity_target;
 }
 ```
-And it is configured with `motor.P_angle` structure:
+配置`motor.P_angle`结构：
+
 ```cpp
-// P controller configuration structure
+// P控制器配置结构
 struct P_s{
-  float P; // Proportional gain 
-  long timestamp; // Last execution timestamp
-  float velocity_limit; // Velocity limit of the controller output
+  float P; // 成比例增加
+  long timestamp; // 最新执行时间戳
+  float velocity_limit; // 控制器输出的速度限制
 };
 ```
 
-<blockquote class="warning"><p class="heading">API usage</p> For more info about how to use this loop look into: <a href="angle_loop"> angle loop api docs</a></blockquote>
+<blockquote class="warning"><p class="heading">API使用</p>有关如何使用该控制环的更多信息，请查看<a href="angle_loop"> angle loop api docs</a></blockquote>

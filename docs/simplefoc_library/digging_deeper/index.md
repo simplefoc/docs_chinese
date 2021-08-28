@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Digging deeper
+title: 深入研究
 nav_order: 7
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 description: "Arduino Simple Field Oriented Control (FOC) library ."
@@ -9,23 +9,24 @@ has_children: True
 has_toc: false
 ---
 
-# Digging deeper in <span class="simple">Simple<span class="foc">FOC</span>library</span>
+# 深入挖掘SimpleFOClibrary
 
-To better understand what is going on under the hood of this algorithm and to get a better idea how to extend this algorithm for your application 
+此部分内容专为帮助你更好地理解底层算法，学会将此算法扩展到你的程序而设。
 <div style="width:100%; display:flex">
     <div style="width:50%;text-align:center;" class="">
         <a href="source_code">
             <i class="fa fa-4x fa-code"></i>
-            <h4 style="color:inherit">Library source</h4>
-        </a>
-        <p> In depth explanation of library implementation choices, sensing, motion control and FOC algorithm. </p>
+            <h4 style="color:inherit">Library库源代码</h4>
+            </a>
+            <p>深入讲解library库的实现方案以及传感、运动控制、FOC算法。</p>
     </div>
     <div style="width:50%;text-align:center;" class="">
         <a href="theory_corner">
             <i class="fa fa-4x fa-graduation-cap"></i>
-            <h4 style="color:inherit">Theory lovers corner</h4>
-        </a>
-        <p> A discussion about the theory of different parts of the FOC algorithm and <span class="simple">Simple<span class="foc">FOC</span>library</span> </p>
+            <h4 style="color:inherit">理论爱好者中心</h4>
+         </a>
+         <p>讨论算法和<span class="simple">Simple<span class="foc">FOC</span>library不同部分的理论知识。</span> </p>
     </div>
 </div>
+
 

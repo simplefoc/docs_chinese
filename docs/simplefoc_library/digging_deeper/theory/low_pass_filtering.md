@@ -1,77 +1,92 @@
 ---
 layout: default
-title: Low Pass Filter
-parent: Theory corner
-grand_parent: Digging deeper
+title: 低通滤波器
+parent: 理论
+grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 4
 permalink: /low_pass_filter
 ---
 
-# Low-Pass velocity filter theory[v2.0.2](https://github.com/simplefoc/Arduino-FOC/releases)
-Transfer function of the Low pass filter is controller is:
+# 低通速度滤波器v2.0.2](https://github.com/simplefoc/Arduino-FOC/releases)
 
-<p><img src="./extras/Images/cont_LPF.png" /></p>
-In it discrete form it becomes:
+控制器的低通滤波器传递函数为:
 
-<p><img src="./extras/Images/dis_LPF.png" /></p>
+$$
+G_f = \frac{1}{1+sT_f}
+$$
 
-where <i>v<sub>f</sub>(k)</i> is filtered velocity value in moment <i>k</i>, <i>v(k)</i> is the measured velocity in the moment <i>k</i>, <i>T<sub>f</sub></i> is the filter time constant and <i>T<sub>s</sub></i> is the sampling time (or time in between executions of the equation).
-This low pass filter can be also written in the form:
+离散化为:
 
-<p><img src="./extras/Images/LPF_alpha.png" /></p>
+$$
+v_f(k)=\frac{T_f}{T_f+T_s}v_f(k-1)+\frac{T_S}{T_f+T_s}v(k)
+$$
 
-where:
 
-<p><img src="./extras/Images/alpha.png" /></p>
+其中<i>v<sub>f</sub>(k)</i>为k时刻的滤波值， <i>v(k)</i>为<i>k</i>时刻的速度测量值， <i>T<sub>f</sub></i>是滤波时间常数，<i>T<sub>s</sub></i>是采样时间（或上述式子的时间间隔）。
+这个低通滤波器也可以写成这样的形式:
+$$
+v_f(k)=\alpha v_f(k-1)+(1-\alpha)v(k)
+$$
+其中：
 
-This makes it a bit more clear what the time constant `Tf` of the Low pass filter stands for. If your sample time is around 1millisecond (for arduino UNO this can be taken as an average) then setting the
-`Tf` value to `Tf = 0.01` will result in:
+$$
+\alpha=\frac{T_f}{T_f+T_s}
+$$
+
+
+
+
+上面的式子更直观地表示了在低通滤波器中常量T<sub>f</sub>的意义。如果你的采样时间大约是1毫秒(对于arduino UNO，这可以作为平均值)，那么设置 `T_f = 0.01` 将得到:
 
 ```cpp
 alpha = 0.01/(0.01 + 0.001) = 0.91
 ```
 
-Which means that your actual velocity measurement <i>v</i> will influence the filtered value <i>v<sub>f</sub><i> with the coefficient `1-alpha = 0.09` which is going to smooth the velocity values considerably (maybe even too much, depends of the application).
+上式表示实际的速度测量值v会通过系数1-alpha = 0.09影响到滤波后的值v<sub>f</sub>，从而令速度的变化更加平滑（平滑程序取决于实际应用）。
 
+# 实现细节
 
-## Implementation details
+要在<span>Simple<span>FOC </span></span>library中是名为`LowPassFilter`的类来实现低通滤波的。
+这个类在构造函数中接收时间常量:
 
-Low pass filtering function implemented in the <span class="simple">Simple<span class="foc">FOC</span>library</span> as a class called `LowPassFilter`. 
-This class receives the time constant in the constructor:
 ```cpp
 LowPassFilter filter = LowPassFilter(0.001); // Tf = 1ms
 ```
-The filtering function is implemented as follows:
+
+
+滤波的实现如下:
+
 ```cpp
-// low pass filtering function
+// 低通滤波函数
 float LowPassFilter::operator(float input){
   unsigned long timestamp = _micros();
   float dt = (timestamp - timestamp_prev)*1e-6f;
-  // quick fix for strange cases (micros overflow)
+  // 快速修复错误的情况 (micros overflow)
   if (dt < 0.0f || dt > 0.5f) dt = 1e-3f;
 
-  // calculate the filtering 
+  // 计算过滤
   float alpha = Tf/(Tf + dt);
   float y = alpha*y_prev + (1.0f - alpha)*x;
 
-  // save the variables
+  // 保存的变量
   y_prev = y;
   timestamp_prev = timestamp;
   return y;
 }
 ```
-You can use it in code just by calling:
+你可以在代码中调用它:
 ```cpp
 float signal_filtered = filter(signal);
 ```
-And you can change the filtering constant at any time with line:
+也可以随时改变滤波的时间常数:
 ```cpp
-filter.Tf = 0.01; // changed to 10ms
+filter.Tf = 0.01; // 改变为10ms
 ```
-This low pass filter is implemented in the motor class and its time constant can be changed by calling:
+这个低通滤波器是在motor中实现的，它的时间常数可以通过调用改变:
+
 ```cpp
-motor.LPF_velocity.Tf = 0.01;// to set it to 10ms
+motor.LPF_velocity.Tf = 0.01;// 设置为10ms
 ```
 
