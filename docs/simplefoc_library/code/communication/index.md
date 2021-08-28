@@ -3,7 +3,7 @@ layout: default
 title: 内置通信接口
 nav_order: 8
 permalink: /communication
-parent: Writing the Code
+parent: 代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: True
 has_toc: False

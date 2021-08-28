@@ -3,8 +3,8 @@ layout: default
 title: Commander 接口
 nav_order: 1
 permalink: /commander_interface
-parent: Communication
-grand_parent: Writing the Code
+parent: 内置通信接口
+grand_parent: 代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
