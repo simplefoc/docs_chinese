@@ -1,39 +1,43 @@
 ---
 layout: default
-title: StepperDriver
+title: 步进驱动程序配置
 nav_order: 2
 permalink: /stepperdriver
-parent: Driver code
-grand_parent: Writing the Code
+parent: 驱动器
+grand_parent: 代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: True
 has_toc: False
 ---
 
-# Stepper Driver configuration
+# 步进驱动程序配置
 
 <div class="width60">
 <img src="extras/Images/l298n.jpg" style="width:25%;display:inline"><img src="extras/Images/sd_m13.jpg" style="width:25%;display:inline"><img src="extras/Images/shield_monster.jpg" style="width:25%;display:inline">
 </div>
 
-Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> implements support for two types of Stepper driver control interfaces:<br>
+Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 实现了对两种类型的步进驱动程序控制接口的支持：<br>
+
 - [4PWM <i class="fa fa-external-link"></i>](stepper_driver_4pwm) - class `StepperDriver4PWM`
 - [2PWM <i class="fa fa-external-link"></i>](stepper_driver_2pwm) - class `StepperDriver2PWM`
 
-Classes `StepperDriver2PWM` and  `StepperDriver4PWM` provide an abstraction layer of all the hardware/platform specific code for all the supported platforms: atmega328, esp32, stm32, sam, samd and teensy. 
-They implement:
-- PWM configuration
-    - PWM frequency
-    - PWM center-alignment 
-    - Direction channel handling (2PWM)
-    - Complementary direction channel  (2PWM)
-- PWM duty cycle setting 
-- Voltage limiting
+`StepperDriver2PWM`和`StepperDriver4PWM`为所有受支持的平台提供了所有硬件/平台特定代码的抽象层：atmega328、esp32、stm32、sam、samd和teensy。
+它们执行：
 
-These classes can be used as stand-alone classes and they can be used to set certain PWM value to the stepper driver outputs, see example codes in `utils > driver_standalone_test`.
-In order for FOC algorithm to work the `StepperDriverxPWM` classes are linked to a `StepperMotor` class which uses the driver to set the appropriate phase voltages.   
+- PWM配置
+    - 脉宽调制频率
+    - PWM中心对准
+    - 方向通道处理（2PWM）
+    - 互补方向通道（4PWM）
+- PWM占空比设置
+- 限压
 
-The driver code is written in a way to support as many different drivers out there as possible and in a way to be fully interchangeable. 
+这些类可作为独立类使用，并可用于设置步进驱动器输出的特定PWM值，请参见`utils > driver_standalone_test`.
 
-## Digging deeper
-For more theoretical explanations and source code implementations of the FOC algorithm and the motion control approaches check out the [digging deeper section](digging_deeper).
+为了使FOC算法工作，`StepperDriverxPWM`链接到`StepperMotor`，该类使用驱动器设置适当的相电压。
+
+驱动程序代码的编写方式可以支持尽可能多的不同驱动程序，并且可以完全互换。
+
+## 深入挖掘
+有关FOC算法和运动控制方法的更多理论解释和源代码实现，请查看 [digging deeper section](digging_deeper)。
+
