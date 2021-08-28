@@ -6,7 +6,7 @@ permalink: /index_search_loop
 parent: 开环运动控制
 grand_parent: 运动控制
 grand_grand_parent: 代码
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>o因
+grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
 # 索引搜索程序
