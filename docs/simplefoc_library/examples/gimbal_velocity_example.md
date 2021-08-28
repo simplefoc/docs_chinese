@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Gimbal Controller example 
-parent: Example projects
+title: 云台控制器实例
+parent: 实例项目
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 3
 permalink: /gimbal_velocity_example
@@ -9,241 +9,239 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 ---
 
 
-# Velocity control example<br>using HMBGC V2.2 board
-This is a very simple and cool example of using the FOC algorithm using the gimbal controller board. They are not meant to be used with the closed loop position control but <span class="simple">Simple<span class="foc">FOC</span>library</span> makes it not just possible but also pretty simple. 
+# 基于HMBGC V2.2 的速度控制例程<br>
+这是一个基于FOC算法使用万向节控制板的简单炫酷例程。它本来是不可以用于闭环位置控制的，但 <span class="simple">Simple<span class="foc">FOC</span>library</span> 不仅让闭环控制成为可能还使其变得相当简单。
 
-Here is the hardware we used for this project:
+以下是这个项目会使用到的硬件：
 
-[HMBGC V2.2](https://www.ebay.com/itm/HMBGC-V2-0-3-Axle-Gimbal-Controller-Control-Plate-Board-Module-with-Sensor/351497840990?hash=item51d6e7695e:g:BAsAAOSw0QFXBxrZ:rk:1:pf:1) | [AMT 103 encoder](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D) | [IPower GBM8017-120T](https://fr.aliexpress.com/item/32483131130.html?spm=a2g0o.productlist.0.0.6ddd749fFd3u9E&algo_pvid=a67f2ec1-5341-4f97-ba3e-720e24f6c4fb&algo_expid=a67f2ec1-5341-4f97-ba3e-720e24f6c4fb-10&btsid=0b0a187915885172220541390e7eed&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_)
---- | --- | --- | --- 
-<img src="extras/Images/pinout.jpg" class="imgtable150"> | <img src="extras/Images/enc1.png" class="imgtable150">  | <img src="extras/Images/big.jpg" class="imgtable150"> 
+ [HMBGC V2.2](https://www.ebay.com/itm/HMBGC-V2-0-3-Axle-Gimbal-Controller-Control-Plate-Board-Module-with-Sensor/351497840990?hash=item51d6e7695e:g:BAsAAOSw0QFXBxrZ:rk:1:pf:1) | [AMT 103 encoder（编码器）](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D) | [IPower GBM8017-120T](https://fr.aliexpress.com/item/32483131130.html?spm=a2g0o.productlist.0.0.6ddd749fFd3u9E&algo_pvid=a67f2ec1-5341-4f97-ba3e-720e24f6c4fb&algo_expid=a67f2ec1-5341-4f97-ba3e-720e24f6c4fb-10&btsid=0b0a187915885172220541390e7eed&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_) 
+ ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ 
+ <img src="extras/Images/pinout.jpg" class="imgtable150">     | <img src="extras/Images/enc1.png" class="imgtable150">       | <img src="extras/Images/big.jpg" class="imgtable150">        
 
 
-# Connecting everything together
-For a bit more in depth explanation of HMBGC V2.2 connections please check the [connection examples](hmbgc).
+# 连接所有硬件
+有关HMBGC V2.2接线的深入讲解，请查看 [接线案例](hmbgc).
 <p><img src="extras/Images/hmbgc_v22.jpg" class="width60">
 </p>
- 
-## Encoder
-<blockquote class="warning"> <p class="heading">Pinout restriction</p>
-HMBGC doesn't have access to the Arduino's external interrupt pins <code class="highlighter-rouge">2</code> and <code class="highlighter-rouge">3</code>, moreover the only pins we have access to are analog pins <code class="highlighter-rouge">A0-A7</code>. 
-Therefore we need to read the encoder channels using the software interrupt library, please check the  encoder <a href="encoder">code implementation </a> for more information. </blockquote>
 
-- Encoder channels `A` and `B` are connected to the pins `A0` and `A1`.
-
-## Motor
-- Motor phases `a`,`b` and `c` are connected directly to the driver outputs
-- Motor terminal `M1` uses Arduino pins `9`,`10`,`11` and `M2` uses `3`,`5`,`6`
+## 编码器
+<blockquote class="warning"> <p class="heading">引脚限制</p>
+HMBGC不能连接Arduino的外部中断引脚<code class="highlighter-rouge">2</code>和<code class="highlighter-rouge">3</code>，只能连接模拟引脚<code class="highlighter-rouge">A0-A7</code>。
+因此，我们需要用软件中断库来读取编码器通道。更多编码器的代码实现信息，请查看<a href="encoder">代码实现</a>。</blockquote>
 
 
 
-# Arduino code 
-Let's go through the full code for this example and write it together.
-First thing you need to do is include the `SimpleFOC` library:
+- 编码器通道 `A` 和 `B` 连接到引脚 `A0` 和 `A1`。
+
+## 电机
+- 电机 `a`相、 `b`相 和 `c`相直接连接到驱动板输出信号。
+- 电机端子 `M1` 使用 Arduino 引脚 `9`、`10`、`11`，端子 `M2` 使用引脚 `3`、`5`、`6`。
+
+
+
+# Arduino 代码
+让我们一起阅读这个例程的所有代码并开始编写吧
+你需要做的第一件事是引入 `SimpleFOC` 库：
 
 ```cpp
 #include <SimpleFOC.h>
 ```
-Make sure you have the library installed. If you still don't have it please check the [get started page](installation).
+请确保你安装了该库。如若没有安装，请返回 [页面”让我们开始吧“](installation) 查看。
 
-Also in the case of the gimbal controllers like the HMBGC we do not have access to the hardware interrupt pins so you will need to have a software interrupt library.
-I would suggest using `PciManager` library. If you have not installed it yet, you can do it using the Arduino library manager directly. Please check the `Encoder` class [docs](encoder) for more info.
-So once you have it please include it to the sketch:
+此外，云台控制器（如：HMBGC）是无法访问硬件中断引脚，因此你需要引入一个软件中断库。
+
+我们建议使用 `PciManager`。如果你还没有安装它，可以直接使用 Arduino library manager安装。更多信息，请查看  `Encoder` [文档](encoder) 。
+一旦安装好，请将其引入你的程序中：
+
 ```cpp
-// software interrupt library
+// 软件中断库
 #include <PciManager.h>
 #include <PciListenerImp.h>
 ```
 
-## Encoder code
-First, we define the `Encoder` class with the A and B channel pins and number of impulses per revolution.
+## 编码器代码
+首先，我们定义 `Encoder` 中A、B通道的引脚以及每转脉冲数。
 ```cpp
-// define Encoder
+// 定义编码器
 Encoder encoder = Encoder(A0, A1, 2048);
 ```
-Then we define the buffering callback functions.
+然后，我们定义buffer回调函数。
 ```cpp
-// channel A and B callbacks
+// 通道A和B回调
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 ```
-Next we define the `PciManager` pin change listeners:
+接着，我们定义 `PciManager` 中的引脚更改监听器：
 ```cpp
-// pin change listeners
+// 引脚更改监听器
 PciListenerImp listenerA(encoder.pinA, doA);
 PciListenerImp listenerB(encoder.pinB, doB);
-``` 
-In the `setup()` function first we initialize the encoder:
+```
+在 `setup()` 函数中，我们先初始化编码器：
 ```cpp
-// initialize encoder hardware
+// 初始化硬件编码器
 encoder.init();
 ```
-And then instead of calling `encoder.enableInterrupt()` function we use the `PciManager` library interface to attach the interrupts.
+然后，我们用`PciManager`库的接口替代调用 `encoder.enableInterrupt()` 函数来添加中断。
 ```cpp
-// interrupt initialization
+// 中断初始化
 PciManager.registerListener(&listenerA);
 PciManager.registerListener(&listenerB);
 ```
-And that is it, let's setup the motor.
+那么这就让我们一起设置电机吧。
 
-<blockquote class="info">For more configuration parameters of the encoders please check the <code class="highlighter-rouge">Encoder</code> class <a href="encoder">docs</a>.</blockquote>
-
-
-## Motor code
-First we need to define the `BLDCMotor` class with the  number od pole pairs (`14`)
+<blockquote class="info">更多编码器参数配置信息，请查看<code class="highlighter-rouge">Encoder</code><a href="encoder">文档</a>。</blockquote>
+## 电机代码
+首先，我们需要定义 `BLDCMotor` 中的极对数为 `14`。
 ```cpp
-// define BLDC motor
+// 定义无刷直流电机
 BLDCMotor motor = BLDCMotor(14);
 ```
-<blockquote class="warning">If you are not sure what your pole pairs number is please check the  <code class="highlighter-rouge">find_pole_pairs.ino</code> example.</blockquote>
-
-
-Next we need to define the `BLDCDriver3PWM` class with the PWM pin numbers of the motor
+<blockquote class="warning">如果你不确定你电机的极对数是什么，请查看<code class="highlighter-rouge">find_pole_pairs.ino</code>的例子。</blockquote>
+接着，我们需要定义 `BLDCDriver3PWM` 中电机的 PWM 引脚编号以及驱动器的使能引脚。
 ```cpp
-// define BLDC driver
+// 定义无刷直流驱动器
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11);
 ```
 
-Then in the `setup()` we configure first the voltage of the power supply if it is not `12` Volts and init the driver.
+然后，在 `setup()`中我们要先配置电源电压（如果不是跟例程一样是12V），再初始化驱动器。
 ```cpp
-// power supply voltage
-// default 12V
+// 电源电压
+// 默认 12 V
 driver.voltage_power_supply = 12;
 driver.init();
 ```
-Then we tell the motor which control loop to run by specifying the `motor.controller` variable.
+然后，我们通过指定 `motor.controller`变量来告诉电机运行哪个控制环。
 ```cpp
-// set control loop type to be used
-// MotionControlType::torque
-// MotionControlType::velocity
-// MotionControlType::angle
+// 设置要使用的控制回路类型
+// 运动控制类型::转矩
+// 运动控制类型::速度
+// 运动控制类型::角度
 motor.controller = MotionControlType::velocity;
 ```
-Now we configure the PI controller parameters
+现在我们要来配置速度环PI控制器参数。
 ```cpp
-// velocity PI controller parameters
-// default P=0.5 I = 10
+// 速度PI控制器参数
+// 默认 P=0.5 I = 10
 motor.PID_velocity.P = 0.2;
 motor.PID_velocity.I = 20;
-// jerk control using voltage voltage ramp
-// default value is 300 volts per sec  ~ 0.3V per millisecond
+// 使用电压陡坡的急速控制
+// 默认值为300伏/秒~ 0.3伏/毫秒
 motor.PID_velocity.output_ramp = 1000;
 
-//default voltage_power_supply
+// 默认电压供电
 motor.voltage_limit = 6;
 ```
-Additionally we can configure the Low pass filter time constant `Tf`
+此外，我们可以配置低通滤波器的时间常数 `Tf`。
 ```cpp
-// velocity low pass filtering
-// default 5ms - try different values to see what is the best. 
-// the lower the less filtered
+// 速度低通滤波
+// 默认的5ms -尝试不同的值，选择最好的。
+// 越低过滤越少
 motor.LPF_velocity.Tf = 0.01;
 ```
-<blockquote class="info">For more information about the velocity control loop parameters please check the <a href="velocity_loop">doc</a>.</blockquote>
-
-And finally we connect the encoder and the driver to the motor, do the hardware init  and init of the Field Oriented Control.
+<blockquote class="info">更多速度环参数信息，请查看<a href="velocity_loop">文档</a>.</blockquote>
+最后，我们将编码器和驱动板与电机连接，初始化硬件，初始化 Field Oriented Control（FOC）。
 ```cpp  
-// link the motor to the sensor
+// 将电机连接到传感器上
 motor.linkSensor(&encoder);
-// link driver
+// 连接驱动器
 motor.linkDriver(&driver);
 
-// initialize motor
+// 初始化电机
 motor.init();
-// align encoder and start FOC
+// 校准编码器并启动FOC
 motor.initFOC();
 ```
-The last peace of code important for the motor is of course the FOC routine in the `loop` function.
+对驱动电机来说，最后也是最重要的一步当然就是将`loopFOC`放入 `loop` 函数中，让它能够不断循环了。
 ```cpp
 void loop() {
-// iterative FOC function
+// 迭代FOC函数
 motor.loopFOC();
 
-// iterative function setting and calculating the velocity loop
-// this function can be run at much lower frequency than loopFOC function
+// 迭代函数设置和计算速度环
+// 这个函数可以在比loopFOC函数低得多的频率下运行
 motor.move(target_velocity);
 }
 ```
-That is it, let's see the full code now!
-<blockquote class="info">For more configuration parameters and control loops please check the <code class="highlighter-rouge">BLDCMotor</code> class <a href="motors_config">doc</a>.</blockquote>
-
-## Full Arduino code
-To the full code I have added a small serial [commander interface](commander_interface),  to be able to change velocity target value in real time.
+那么现在就让我们看看完整的代码吧！
+<blockquote class="info">更多参数和控制环配置信息，请查看<code class="highlighter-rouge">BLDCMotor</code><a href="motors_config">文档</a>.</blockquote>
+## 完整Arduino代码
+在完整代码中，我加入了一个小型串行 [commander接口](commander_interface)，使其能够实时改变速度的目标值。
 ```cpp
 #include <SimpleFOC.h>
-// software interrupt library
+// 软件中断库
 #include <PciManager.h>
 #include <PciListenerImp.h>
 
 
-// define BLDC motor
+// 定义无刷直流电机
 BLDCMotor motor = BLDCMotor( 14 );
-// define driver
+// 定义无刷直流驱动器
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11);
-//  define Encoder
+// 定义无刷直流电机
 Encoder encoder = Encoder(A0, A1, 500);
-// interrupt routine initialization
+// 中断程序初始化
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
-// encoder interrupt init
+// 编码器中断初始化
 PciListenerImp listenerA(encoder.pinA, doA);
 PciListenerImp listenerB(encoder.pinB, doB);
 
-// target variable
+// 目标变量
 float target_velocity=0;
-// commander interface
+// Commander 接口
 Commander command = Commander(Serial);
 void onTarget(char* cmd){ command.scalar(&target_velocity, cmd); }
 
 void setup() {
-  // initialize encoder hardware
+  // 初始化硬件编码器
   encoder.init();
-  // interrupt initialization
+  // 中断初始化
   PciManager.registerListener(&listenerA);
   PciManager.registerListener(&listenerB);
-  // link the motor to the sensor
+  // 将电机连接到传感器上
   motor.linkSensor(&encoder);
 
-  // power supply voltage
-  // default 12V
+  // 电源电压
+  // 默认 12 v
   driver.voltage_power_supply = 12;
   driver.init();
-  // link the motor to the driver
+  // 把马达连接到驱动器上
   motor.linkDriver(&driver);
 
-  // set FOC loop to be used
-  // MotionControlType::torque
-  // MotionControlType::velocity
-  // MotionControlType::angle
+  // 设置要使用的FOC环路
+  // 运动控制类型::转矩
+  // 运动控制类型::速度
+  // 运动控制类型::角度
   motor.controller = MotionControlType::velocity;
 
-  // controller configuration based on the control type 
-  // velocity PI controller parameters
-  // default P=0.5 I = 10
+  // 根据控制配置控制器
+  // 速度PI控制器参数
+  // 默认 P=0.5 I = 10
   motor.PID_velocity.P = 0.2;
   motor.PID_velocity.I = 20;
-  // jerk control using voltage voltage ramp
-  // default value is 300 volts per sec  ~ 0.3V per millisecond
+  // 使用电压陡坡的急速控制
+  // 默认值为300伏/秒~ 0.3伏/毫秒
   motor.PID_velocity.output_ramp = 1000;
 
-  // velocity low pass filtering
-  // default 5ms - try different values to see what is the best. 
-  // the lower the less filtered
+  // 速度低通滤波
+  // 默认的5ms -尝试不同的值，选择最好的。
+  // 越低过滤越少
   motor.LPF_velocity.Tf = 0.01;
 
-  //default voltage_power_supply
+  //默认电压电源
   motor.voltage_limit = 6;
 
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align encoder and start FOC
+  // 校准编码器并启动FOC
   motor.initFOC();
   
-  // add target command T
+  // 添加目标命令T
   command.add('T', doTarget, "target velocity");
 
-  // monitoring port
+  // 监控端口
   Serial.begin(115200);
   Serial.println("Motor ready.");
   Serial.println("Set the target velocity using serial terminal:");
@@ -251,14 +249,14 @@ void setup() {
 }
 
 void loop() {
-  // iterative FOC function
+  // 迭代FOC函数
   motor.loopFOC();
 
-  // 0.5 hertz sine wave
+  // 0.5赫兹正弦波
   //target_velocity = sin( micros()*1e-6 *2*M_PI * 0.5 );
   motor.move(target_velocity);
 
-  // iterative function setting the velocity target
+  // 迭代函数设置速度目标
   command.run();
 }
 ```

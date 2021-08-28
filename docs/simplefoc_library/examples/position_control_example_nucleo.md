@@ -1,7 +1,7 @@
 ---
 layout: default
-title:  Position Control Nucleo-64
-parent: Example projects
+title:  Nucleo-64位置控制实例
+parent: 实例项目
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 nav_order: 5
 permalink: /position_control_nucleo_example
@@ -9,175 +9,168 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 ---
 
 
-# Position control example<br>using <span class="simple">Simple<span class="foc">FOC</span>Shield</span> and Stm32 Nucleo-64
-For this BLDC motor position control example we are going to be using this hardware:
+# 基于<span class="simple">Simple<span class="foc">FOC</span>Shield</span>和Stm32 Nucleo-64的位置控制例程<br>
+运行这个无刷电机位置控制例程需要用到以下硬件：
 
-[Stm32 Nucleo-64](https://www.mouser.fr/ProductDetail/STMicroelectronics/NUCLEO-F446RE?qs=%2Fha2pyFaduj0LE%252BzmDN2WNd7nDNNMR7%2Fr%2FThuKnpWrd0IvwHkOHrpg%3D%3D) | [Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>](arduino_simplefoc_shield_showcase) | [AMT 103 encoder](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D) | [GBM5108-120T](https://www.onedrone.com/store/ipower-gbm5108-120t-gimbal-motor.html)
---- | --- | --- | --- 
-<img src="extras/Images/nucleo.jpg" class="imgtable150"> |  <img src="extras/Images/shield_to_v13.jpg" class="imgtable150">  | <img src="extras/Images/enc1.png" class="imgtable150">  | <img src="extras/Images/bigger.jpg" class="imgtable150"> 
+ [Stm32 Nucleo-64](https://www.mouser.fr/ProductDetail/STMicroelectronics/NUCLEO-F446RE?qs=%2Fha2pyFaduj0LE%252BzmDN2WNd7nDNNMR7%2Fr%2FThuKnpWrd0IvwHkOHrpg%3D%3D) | [Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>](arduino_simplefoc_shield_showcase) | [AMT 103 encoder（编码器）](https://www.mouser.fr/ProductDetail/CUI-Devices/AMT103-V?qs=%2Fha2pyFaduiAsBlScvLoAWHUnKz39jAIpNPVt58AQ0PVb84dpbt53g%3D%3D) | [GBM5108-120T](https://www.onedrone.com/store/ipower-gbm5108-120t-gimbal-motor.html) 
+ ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ 
+ <img src="extras/Images/nucleo.jpg" class="imgtable150">     | <img src="extras/Images/shield_to_v13.jpg" class="imgtable150"> | <img src="extras/Images/enc1.png" class="imgtable150">       | <img src="extras/Images/bigger.jpg" class="imgtable150">     
 
 
-# Connecting everything together
-For a bit more in depth explanation of how to connect Nucleo board and <span class="simple">Simple<span class="foc">FOC</span>Shield</span> connection please check the [connection examples](nucleo_connection).
+# 连接所有硬件
+有关 Nucleo 板子与 SimpleFOCShield 接线的深入讲解，请查看 [接线案例](nucleo_connection)。
 <p><img src="extras/Images/nucleo_foc_shield_connection.jpg" class="width60"></p>
+有关SimpleFOCShield 的更多信息，请查看 [文档](arduino_simplefoc_shield_showcase)。
 
-For more information about the <span class="simple">Simple<span class="foc">FOC</span>Shield</span> check the [docs](arduino_simplefoc_shield_showcase).
-
-## Encoder 
-- Channels `A` and `B` are connected to the encoder connector `P_ENC`, terminals `A` and `B`. 
-- Index channel you can connect directly to the `P_ENC` as well to the terminal `I`
-## Motor
-- Motor phases `a`, `b` and `c` are connected directly the motor terminal connector `TB_M1`
+## 编码器
+- 通道 `A` 和 `B` 连接到编码器的 `P_ENC`, 端子 `A` 和 `B`。
+- I引脚可以直接连接到 `P_ENC` 以及 端子 terminal `I`。
+## 电机
+- 电机的 `a` 相， `b` 相和 `c` 相直接与电机终端连接器 `TB_M1` 连接。
 
 
-# Arduino code 
-Let's go through the full code for this example and write it together.
-First thing you need to do is include the `SimpleFOC` library:
+# Arduino 代码
+让我们一起阅读这个例程的所有代码并开始编写吧
+你需要做的第一件事是引入 `SimpleFOC` 库：
 
 ```cpp
 #include <SimpleFOC.h>
 ```
-Make sure you have the library installed. If you still don't have it please check the [get started page](installation)
+请确保你安装了该库。如若没有安装，请返回 [页面”让我们开始吧“](installation) 查看。
 
 
-## Encoder code
-First we define the `Encoder` class with the A and B channel pins and number of impulses per revolution.
+## 编码器代码
+首先，我们定义 `Encoder` 中A、B通道的引脚以及每转脉冲数。
 ```cpp
-// define Encoder
+// 定义编码器
 Encoder encoder = Encoder(A1, A2, 2048, A0);
 ```
-Then we define the buffering callback functions.
+然后，我们定义buffer回调函数。
 ```cpp
-// channel A, B and index callbacks
+// 通道A, B和索引回调
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doI(){encoder.handleIndex();}
 ```
-In the `setup()` function we initialize the encoder and enable interrupts:
+在函数 `setup()` 中，我们初始化编码器以及启用中断：
 ```cpp
-// initialize encoder hardware
+// 初始化硬件编码器
 encoder.init();
-// hardware interrupt enable
+// 硬件中断启用
 encoder.enableInterrupts(doA, doB, doI);
 ```
-And that is it, let's setup the motor.
+那么这就让我们一起设置电机吧。
 
-<blockquote class="info">For more configuration parameters of the encoders please check the <code class="highlighter-rouge">Encoder</code> class <a href="encoder">docs</a>.</blockquote>
-
-
-## Motor code
-First we need to define the `BLDCMotor` class with the  number od pole pairs (`11`)
+<blockquote class="info">更多编码器参数配置信息，请查看 <code class="highlighter-rouge">Encoder</code><a href="encoder">文档</a>。</blockquote>
+## 电机代码
+首先，我们需要定义 `BLDCMotor` 中的极对数为 `11`
 ```cpp
-// define BLDC motor
+// 定义无刷直流电机
 BLDCMotor motor = BLDCMotor(11);
 ```
-<blockquote class="warning">If you are not sure what your pole pairs number is please check the  <code class="highlighter-rouge">find_pole_pairs.ino</code> example.</blockquote>
-
-
-Next we need to define the `BLDCDriver3PWM` class with the PWM pin numbers of the motor and the driver enable pin
+<blockquote class="warning">如果你不确定你电机的极对数是什么，请查看 <code class="highlighter-rouge">find_pole_pairs.ino</code> 的例子。</blockquote>
+接着，我们需要定义 `BLDCDriver3PWM` 中电机的 PWM 引脚数字以及驱动器的使能引脚。
 ```cpp
-// define BLDC driver
+// 定义无刷直流驱动器
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
 ```
 
-Then in the `setup()` we configure first the voltage of the power supply if it is not `12` Volts and init the driver.
+然后，在 `setup()`中我们要先配置电源电压（如果不是跟例程一样是12V），再初始化驱动器。
 ```cpp
-// power supply voltage
-// default 12V
+// 电源电压
+// 默认 12 V
 driver.voltage_power_supply = 12;
 driver.init();
-```oltage_power_supply = 12;
+​```oltage_power_supply = 12;
 ```
-Next thing we can change is the index search velocity:
+下一件事我们要改变的是index search velocity：
 ```cpp
-// index search velocity
-// default 1 rad/s
+// 索引的搜索速度
+// 默认 1 rad / s
 motor.velocity_index_search = 3;
 ```
 
-Then we tell the motor which control loop to run by specifying the `motor.controller` variable.
+然后，我们通过指定 `motor.controller`变量来告诉电机运行模式。
 ```cpp
-// set control loop type to be used
-// MotionControlType::torque
-// MotionControlType::velocity
-// MotionControlType::angle
+// 设置要使用的控制回路类型
+// 运动控制类型::转矩
+// 运动控制类型::速度
+// 运动控制类型::角度
 motor.controller = MotionControlType::angle;
 ```
-Now we configure the velocity PI controller parameters
+现在我们要来配置速度环PI控制器参数。
 ```cpp
-// velocity PI controller parameters
-// default P=0.5 I = 10
+// 速度PI控制器参数
+// 默认 P=0.5 I = 10
 motor.PID_velocity.P = 0.2;
 motor.PID_velocity.I = 20;
 ```
-Additionally we can configure the Low pass filter time constant `Tf`
+此外，我们可以配置低通滤波器的时间常数 `Tf`。
 ```cpp
-// velocity low pass filtering
-// default 5ms - try different values to see what is the best. 
-// the lower the less filtered
+// 速度低通滤波
+// 默认的5ms -尝试不同的值，选择最好的。
+// 越低过滤越少
 motor.LPF_velocity.Tf = 0.01;
 ```
-Finally we configure position P controller gain and the velocity limit variable.
+最后，我们配置位置P控制器增益和速度约束变量。
 ```cpp
-// angle P controller 
-// default P=20
+// 角P控制器 
+// 默认 P=20
 motor.P_angle.P = 20;
-//  maximal velocity of the position control
-// default 20
+// 位置控制的最大速度
+// 默认 20
 motor.velocity_limit = 20;
 ```
-<blockquote class="info">For more information about the angle control loop parameters please check the  <a href="angle_loop">doc</a>.</blockquote>
-
-Next we connect the encoder and the driver to the motor, do the hardware init and init of the Field Oriented Control.
+<blockquote class="info">更多角度环参数信息，请查看 <a href="angle_loop">文档</a>.</blockquote>
+接着，我们将编码器和驱动板与电机连接，初始化硬件，初始化Field Oriented Control（FOC）。
 ```cpp  
-// link the motor to the sensor
+// 将电机连接到传感器上
 motor.linkSensor(&encoder);
-// link the motor to the driver
+// 把电机连接到驱动器上
 motor.linkDriver(&driver);
 
-// initialize motor
+// 初始化电机
 motor.init();
-// align encoder and start FOC
+// 校准编码器并启动FOC
 motor.initFOC();
 
-// initial target value
+// 最初的目标值
 motor.target = 0;
 ```
-The last peace of code important for the motor is of course the FOC routine in the `loop` function.
+对驱动电机来说，最后也是最重要的一步当然就是将`focloop()`置于 `loop` 函数中，让它能够不断循环了。
 ```cpp
 void loop() {
-// iterative FOC function
+// 迭代FOC函数
 motor.loopFOC();
 
-// iterative function setting and calculating the angle/position loop
-// this function can be run at much lower frequency than loopFOC function
+// 迭代函数设置和计算角度/位置环路
+// 这个函数可以在比 loopFOC 函数低得多的频率下运行
 motor.move();
 }
 ```
-That is it, that is the full code for the motor, FOC and motion control initialization and configuration. Let's enable user communication now.
-<blockquote class="info">For more configuration parameters and control loops please check the <code class="highlighter-rouge">BLDCMotor</code> class <a href="motors_config">doc</a>.</blockquote>
-
-## Monitor motor init 
-In order to enable it we need to enable [monitoring](monitoring) before the call of the `motor.init()` and `motor.initFOC()`:
+以上就是初始化和配置电机、FOC、运动控制的全部代码。现在让我们启用用户通信吧。
+<blockquote class="info">更多参数和控制环配置信息，请查看 <code class="highlighter-rouge">BLDCMotor</code><a href="motors_config">文档</a>。</blockquote>
+## 电机监视器初始化
+为了能够启用它，我们需要在调用  `motor.init()` and `motor.initFOC()`之前启用[监控](monitoring) 。
 ```cpp  
 Serial.begin(115200);
-// enable monitoring functionality
+// 启用监控功能
 motor.useMonitoring(Serial);
 ```
 
-## User communication 
+## 用户通信
 
-At the end the Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> enables you to change all the configuration parameters in real-time as well as read the motor state variables, and set the target values by using [commander interface](communication).
+最后，Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 能够允许你实时改变所有参数配置、阅读电机状态变量以及通过使用 [commander接口](communication) 设定目标值。
 
-First we instantiate the commander class:
+首先，实例化 commander ：
 ```cpp
 Commander command = Commander(Serial);
 ```
-Then we create the wrapper for generic motor callback:
+接着，创建一个通用电机回调的封装：
 ```cpp
 void onMotor(char* cmd){ command.motor(&motor, cmd); }
-``` 
-We subscribe the new command callback:
+```
+之后，订阅这个新的 command 回调：
 ```cpp
 void setup(){
   ....
@@ -185,7 +178,7 @@ void setup(){
   ....
 }
 ```
-And we add the commander runtime function the Arduino `loop`:
+然后，将命令例程函数置于 Arduino `loop`中：
 ```cpp
 void loop(){
   ....
@@ -193,88 +186,88 @@ void loop(){
 }
 ```
 
-And that is it, we everything configured and ready to go, let's see the full code!
+那么现在这一切都配置好，准备就绪了，让我们一起来看完整的代码吧！
 
-For more info about the [monitoring](monitoring) and [motor commands](communicaiton) visit the [Writing the Code section](code).
+更多 [监视](monitoring) 和 [电机命令](communicaiton) 的信息，请访问 [编写代码部分](code)。
 
-## Full Arduino code
+## 完整Arduino代码
 
 ```cpp
 #include <SimpleFOC.h>
 
-// init BLDC motor
+// 初始化无刷直流电机
 BLDCMotor motor = BLDCMotor( 11 );
-// init driver
+// 初始化驱动器
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
-//  init encoder
+// 初始化编码
 Encoder encoder = Encoder(2, 3, 2048);
-// channel A and B callbacks
+// 通道A和B回调
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
-// commander interface
+// commander 接口
 Commander command = Commander(Serial);
 void onMotor(char* cmd){ command.motor(&motor, cmd); }
 
 void setup() {
 
-  // initialize encoder hardware
+  // 初始化硬件编码器
   encoder.init();
-  // hardware interrupt enable
+  // 硬件中断启用
   encoder.enableInterrupts(doA, doB);
-  // link the motor to the sensor
+  // 将电机连接到传感器上
   motor.linkSensor(&encoder);
 
-  // power supply voltage
-  // default 12V
+  // 电源电压
+  // 默认 12 V
   driver.voltage_power_supply = 12;
   driver.init();
-  // link the motor to the driver
+  // 把电机连接到驱动器上
   motor.linkDriver(&driver);
 
-  // index search velocity
-  // default 1 rad/s
+  // 索引的搜索速度
+  // 默认 1 rad/s
   motor.velocity_index_search = 3;
 
-  // set control loop to be used
+  // 设置要使用的控制回路
   motor.controller = MotionControlType::angle;
   
-  // controller configuration based on the control type 
-  // velocity PI controller parameters
-  // default P=0.5 I = 10
+  // 根据控制配置控制器
+  // 速度PI控制器参数
+  // 默认 P=0.5 I = 10
   motor.PID_velocity.P = 0.2;
   motor.PID_velocity.I = 20;
-  // jerk control using voltage voltage ramp
-  // default value is 300 volts per sec  ~ 0.3V per millisecond
+  // 使用电压陡坡的急速控制
+  // 默认值为300伏/秒~ 0.3伏/毫秒
   motor.PID_velocity.output_ramp = 1000;
   
-  // velocity low pass filtering
-  // default 5ms - try different values to see what is the best. 
-  // the lower the less filtered
+  // 速度低通滤波
+  // 默认的5ms -尝试不同的值，选择最好的。
+  // 越低过滤越少
   motor.LPF_velocity.Tf = 0.01;
 
-  // angle P controller 
-  // default P=20
+  // 角P控制器 
+  // 默认 P=20
   motor.P_angle.P = 20;
-  //  maximal velocity of the position control
-  // default 20
+  // 位置控制的最大速度
+  // 默认 20
   motor.velocity_limit = 20;
   
-  // monitoring port
+  // 监控端口
   Serial.begin(115200);
-  // enable monitoring functionality
+  // 启用监控功能
   motor.useMonitoring(Serial);
 
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align encoder and start FOC
+  // 校准编码器并启动FOC
   motor.initFOC();
 
-  // initial angle target
-  // it will be changed by the commander class
+  // 初始角的目标
+  // 它将被 commander 改变
   motor.target = 0;
 
-  // define the motor id
+  // 定义电机id
   command.add('M', onMotor, "motor");
 
   Serial.println("Motor ready.");
@@ -283,13 +276,13 @@ void setup() {
 }
 
 void loop() {
-  // iterative FOC function
+  // 迭代FOC函数
   motor.loopFOC();
 
-  // position motion control loop
+  // 位置运动控制回路
   motor.move();
    
-  // user communication
+  // 用户沟通
   command.run();
 }
 ```
