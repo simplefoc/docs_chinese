@@ -6,7 +6,7 @@ description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /teensy_mcu
 parent: 单片机
 grand_parent: 支持的硬件
-grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</sp
+grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
 # 支持 Teensy
