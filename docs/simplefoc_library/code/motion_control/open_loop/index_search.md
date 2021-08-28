@@ -1,45 +1,49 @@
 ---
 layout: default
-title: Index Search loop 
+title: 索引搜索程序
 nav_order: 3
 permalink: /index_search_loop
-parent: Open-Loop Motion control
-grand_parent: Motion Control
-grand_grand_parent: Writing the Code
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+parent: 开环运动控制
+grand_parent: 运动控制
+grand_grand_parent: 代码
+grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>o因
 ---
 
-# Index search routine
-Finding the encoder index is performed only if the constructor of the `Encoder` class has been provided with the `index` pin. The search is performed by setting a constant velocity of the motor until it reaches the index pin. To set the desired searching velocity alter the parameter:
+# 索引搜索程序
+只有当`Encoder` 的构造函数提供了索引引脚时，才能执行索引搜索程序。该程序首先使电机恒定转速运动，而后便进行索引引脚的搜索。要设置电机的转速，可以修改参数：
+
 ```cpp
-// index search velocity - default 1rad/s
+// 索引搜索速度 - 默认为1rad/s
 motor.velocity_index_search = 2;
 ```
-The index search is executed in the `motor.initFOC()` function. 
+索引搜索会在`motor.initFOC()`函数中执行。
 
-This velocity control loop is implemented exactly the same as [velocity open-loop](/velocity_loop) and the only difference is that the voltage set to the motor will not be the `motor.volatge_limit` (or `motor.curren_limit*motor.phase_resistance`) but `motor.voltage_sensor_align`.
+该程序的速度控制环实际上与 [开环速度](/velocity_loop) 控制相同，唯一的区别是电压设定值将不在是`motor.volatge_limit` (或 `motor.curren_limit*motor.phase_resistance`)而是`motor.voltage_sensor_align`.
 
-## Example of code using Index search
 
-This is an example of a motion control program which uses encoder as position sensor and particularly, encoder with `index` signal. The index search velocity is set to be `3 RAD/s`:
+
+## 使用索引搜索的代码示例
+
+这是一个运动控制的例程，它使用编码器作为位置传感器，特别是带索引的编码器。索引搜索速度设置为`3 RAD/s`:
+
 ```cpp
-// index search velocity [rad/s]
+// 索引搜索速度 [rad/s]
 motor.velocity_index_search = 3;
 ```
 
-After the motor and the position senor have been aligned in `motor.initFOC()` by performing index search. The motor will start spinning with angular velocity `2 RAD/s` and maintain this value.
+在 `motor.initFOC()`中通过索引搜索对齐电机和位置传感器后，电机将以角速度 `2 RAD/s` 开始旋转并保持此速度。
 
 ```cpp
 #include <SimpleFOC.h>
 
-// motor instance
+// 电机实例
 BLDCMotor motor = BLDCMotor(11);
-// driver instance
+// 驱动器实例
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
 
-// encoder instance
+// 编码器实例
 Encoder encoder = Encoder(2, 3, 500, A0);
-// channel A and B callbacks
+// 回调通道A和B
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doIndex(){encoder.handleIndex();}
@@ -47,48 +51,48 @@ void doIndex(){encoder.handleIndex();}
 
 void setup() {
   
-  // initialize encoder sensor hardware
+  // 初始化编码传感器硬件
   encoder.init();
   encoder.enableInterrupts(doA, doB,doIndex); 
 
-  // link the motor to the sensor
+  // 连接电机和传感器
   motor.linkSensor(&encoder);
 
-  // driver config
+  // 配置驱动器
   driver.init();
   motor.linkDriver(&driver);
 
-  // index search velocity [rad/s]
+  // 索引搜索速度 [rad/s]
   motor.velocity_index_search = 3; // rad/s
   motor.voltage_sensor_align = 4; // Volts
 
-  // set motion control loop to be used
+  // 设置运动控制环
   motor.controller = MotionControlType::velocity;
 
-  // controller configuration 
-  // default parameters in defaults.h
+  // 配置控制器
+  // 默认参数见defaults.h
 
-  // velocity PI controller parameters
+  // 速度PI控制器参数
   motor.PID_velocity.P = 0.2;
   motor.PID_velocity.I = 20;
-  // default voltage_power_supply
+  // 默认为电源电压
   motor.voltage_limit = 6;
-  // jerk control using voltage voltage ramp
-  // default value is 300 volts per sec  ~ 0.3V per millisecond
+  // 基于斜坡电压的急动控制
+  // 默认值为300v/s，即0.3v/ms
   motor.PID_velocity.output_ramp = 1000;
  
-  // velocity low pass filtering time constant
+  // 速度低通滤波时间常数
   motor.LPF_velocity.Tf = 0.01;
 
 
-  // use monitoring with serial 
+  // 监视串口
   Serial.begin(115200);
-  // comment out if not needed
+  // 如果不需要，可以注释掉此行
   motor.useMonitoring(Serial);
   
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align encoder and start FOC
+  // 校准编码器，启用FOC
   motor.initFOC();
 
 
@@ -96,14 +100,14 @@ void setup() {
   _delay(1000);
 }
 
-// angle set point variable
+// 角度设置点变量
 float target_velocity = 2;
 
 void loop() {
-  // main FOC algorithm function
+  // FOC算法主函数
   motor.loopFOC();
 
-  // Motion control function
+  // 运动控制函数
   motor.move(target_velocity);
 
 }

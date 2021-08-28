@@ -1,92 +1,95 @@
 ---
 layout: default
-title: Velocity Open-Loop
+title: 开环速度控制
 parent: Motion Control
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /velocity_openloop
 nav_order: 1
-parent: Open-Loop Motion control
-grand_parent: Motion Control
-grand_grand_parent: Writing the Code
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+parent: 开环运动控制
+grand_parent: 运动控制
+grand_grand_parent: 代码
+grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Velocity open-loop control 
-This control loop allows you to spin your BLDC motor with desired velocity without using position sensor. This mode is enabled by:
+# 开环速度控制
+该模式无需设置任何位置传感器，而控制无刷直流电机达到所期望的速度。开环速度控制模式设置如下：
+
 ```cpp
-// set velocity control open-loop mode
+// 设置开环速度控制模式
 motor.controller = MotionControlType::velocity_openloop;
 ```
 
 <img src="extras/Images/open_loop_velocity.png" >
 
-You can test this algorithm by running the examples in `motion_control/openloop_motor_control/` folder.
+你可以通过运行`motion_control/openloop_motor_control/` 文件夹中的例程来测试这个算法。
 
-This control algorithm is very simple. User can set the target velocity it wants to achieve <i>v<sub>d</sub></i>, the algorithm is going to integrate it in time to find out what is the angle it needs to set to the motor <i>a<sub>c</sub></i> in order to achieve it. Then the maximal allowed voltage `motor.voltage_limit` is going to be applied in the direction of the <i>a<sub>c</sub></i> using `SinePWM` or `SpaceVectorPWM` modulation.
+这种控制算法非常简单。 用户可以设定期望的目标速度 <i>v<sub>d</sub></i>，算法会对目标速度进行积分，计算出所需设置到电机a<sub>c</sub>的值， 然后，通过 `SinePWM` 或者 `SpaceVectorPWM` 调制，在a<sub>c</sub>的方向上施加电机的最大允许电压 `motor.voltage_limit` 。
 
-This is the simplified version of the calculation of the next angle to set to the motor: 
+这是计算下一时刻设置到电机的角度的简化版:
+
 ```cpp
 next_angle = past_angle + target_velocity*d_time;
 ```
-You need to know the  `target_velocity`, sample time `d_time` and past value of the angle `past_angle` you have set to the motor.
+你需要知道  `target_velocity`，采样时间 `d_time` 和你设置的电机角度 `past_angle` 的上一时刻的值。
 
-## Configuration
+## 配置
 ```cpp
-// choose FOC modulation (optional) - default SinePWM
+// 选择FOC调制类型（可选的） - 默认为SinePWM
 motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 
-// limiting voltage 
+// 限制电压
 motor.voltage_limit = 3;   // Volts
-// or current  - if phase resistance provided
+// 限制电流 - 如果相电阻给定
 motor.current_limit = 0.5 // Amps
 ```
 
-This type of motion control is highly inefficient therefore try not to use to high value for `motor.voltage_limit`. We suggest you to provide the motor class with the `phase_resistance` value and set the `motor.current_limit` instead the voltage limit. This current might be surpassed but at least you will know an approximate current your motor is drawing. You can calculate the current the motor is going to be producing by checking the motor resistance `phase_resistance` and evaluating:
+这种运动控制类型是很低效的，因此 `motor.voltage_limit`尽量不要设太高。我们建议你设置相电阻 `phase_resistance` 然后设置电机的电流限制 `motor.current_limit` 来代替电压限制。这个所设定的电流可能会超，但至少你清楚电机运行时的电流近似值。你可以通过电机相电阻`phase_resistance` 来估算出大致的电流:
+
 ```cpp
 voltage_limit = current_limit * phase_resistance; // Amps
 ```
 
-Also, you can change the voltage/current limit in real-time if you need this kind of behavior in your application.
+此外，有需要的话，你可以实时更改电压/电流限制。
 
-## Velocity open-loop control example
+## 开环速度控制实例
 
-Here is one basic example of the velocity open-loop control with the complete configuration. The program will set the target velocity of `2 RAD/s` and maintain it, and the user cna change the target velocity using serial terminal.
+这里是一个基本的开环速度控制以及完整的配置的例程。该例程将目标速度设定并保持在 `2 RAD/s` ，用户可以通过串口终端改变目标速度。
 
 ```cpp
-// Open loop motor control example
+// 开环电机控制实例
 #include <SimpleFOC.h>
 
-// BLDC motor & driver instance
-// BLDCMotor( pp number , phase resistance)
+// 无刷直流电机及驱动器实例
+// BLDCMotor( pp number极对数 , phase resistance相电阻)
 BLDCMotor motor = BLDCMotor(11 , 12.5); 
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-//target variable
+// 目标变量
 float target_velocity = 2; // rad/s
 
-// instantiate the commander
+// commander实例化
 Commander command = Commander(Serial);
 void doTarget(char* cmd) { command.variable(&target_velocity, cmd); }
 
 void setup() {
 
-  // driver config
-  // power supply voltage [V]
+  // 配置驱动器
+  // 电源电压 [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // link the motor and the driver
+  // 连接电机和驱动器
   motor.linkDriver(&driver);
 
-  // limiting motor current (provided resistance)
+  // 限制电机电流 （电阻给定的话）
   motor.current_limit = 0.5;   // [Amps]
  
-  // open loop control config
+  // 配置开环控制
   motor.controller = MotionControlType::velocity_openloop;
 
-  // init motor hardware
+  // 初始化电机
   motor.init();
 
-  // add target command T
+  // 添加目标命令T
   command.add('T', doTarget, "target velocity");
 
   Serial.begin(115200);
@@ -97,11 +100,11 @@ void setup() {
 
 void loop() {
 
-  // open loop velocity movement
-  // using motor.current_limit and motor.velocity_limit
+  // 开环速度运动
+  // 使用电机电压限制和电机速度限制
   motor.move(target_velocity);
 
-  // user communication
+  // 用户通信
   command.run();
 }
 

@@ -1,93 +1,96 @@
 ---
 layout: default
-title: Torque Control
+title: 力矩控制
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /voltage_loop
 nav_order: 1
-parent: Closed-Loop Motion control
-grand_parent: Motion Control
-grand_grand_parent: Writing the Code
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+parent: 闭环运动控制
+grand_parent: 运动控制
+grand_grand_parent: 代码
+grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>力矩
 ---
 
-# Torque control loop
+# 力矩控制环
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> gives you the choice of using 3 different torque control strategies:
-- [Voltage mode](voltage_torque_mode) - `voltage`
-- [DC current mode](dc_current_torque_mode) - `dc_current`
-- [FOC current mode](foc_current_torque_mode) - `foc_current`
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 让你选择使用3种不同的力矩控制策略:
 
-In short **voltage control mode** is the simplest approximation of the motor torque control and it so basic that can be run on any motor+driver+mcu combination out there. **DC current mode** is teh next step of the motor's torque approximation which is much more exact than the voltage mode but requires current sensing and much stronger microcontroller. **FOC current mode** is controls motor's true torque and it is not an approximation, it also requires current sensor and even more processing power than the DC current mode. See in depth explanations in [torque mode docs](torque_mode). 
+- [电压——力矩控制模式](voltage_torque_mode) - `voltage`
+- [直流电流——力矩控制模式](dc_current_torque_mode) - `dc_current`
+- [FOC电流——力矩控制模式](foc_current_torque_mode) - `foc_current`
 
-This motion control mode is enabled setting the `controller` parameter to:
+简单来说，**voltage control mode**是最简单的接近电机力矩控制的方法。它基本在任何电机+驱动器+mcu的组合中运行。**DC current mode** 是**voltage control mode**的更进一步，它比**voltage control mode**更精确，但需要电流传感和更强大的mcu。**FOC current mode** 是真正的电机力矩控制方法，不同于前两者的“近似”，因此也需要电流传感器，也比**DC current mode**对MCU的处理能力有更高的要求。参见 [torque mode docs](torque_mode)文档中的深入解释。
+
+通过 `controller` 设置运动控制模式的参数:
+
 ```cpp
-// torque control loop
+// 力矩控制环
 motor.controller = MotionControlType::torque;
 ```
 
-If the voltage control mode is used and if the user does not provide the phase resistance parameter to the motor, the input to the torque control loop will be the target voltage <i>U<sub>q</sub></i>:
+如果采用电压控制模式，而用户不向电机提供相电阻阻值，则力矩控制环的输入为目标电压 <i>U<sub>q</sub></i>：
 
 <a name="foc_image"></a><img src="extras/Images/torque_loop_v.png">
 
-And if one of the current based torque control modes (DC current or FOC current) is used, the input in the control loop will be the target current <i>i<sub>q</sub></i>. The same is true in the voltage mode if the user provides the phase resistance value to the motor class. 
+如果采用电流控制模式(DC电流或FOC电流)，则控制环中的输入则为目标电流<i>i<sub>q</sub></i>。另外如果用户向电机提供相电阻阻值，则在电压模式下输入也为目标电流<i>i<sub>q</sub></i>。
 
 <a name="foc_image"></a><img src="extras/Images/torque_loop_i.png">
 
-The torque control loop is used as a base for all other motion control loops.  For more info about the content of the blue boxes check the [torque mode docs](torque_mode).
+力矩控制环是所有其他运动控制环的基础。想了解有关蓝色框内容的更多信息，请查看 [torque mode docs](torque_mode)。
 
-## Configuration parameters
-Depending on the torque control type you wish to use there are different parameters that you need to consider. 
-- [Voltage mode](voltage_mode)  - the simplest one - no parameters except maybe `motor.phase_resistance`
-- [DC current mode](dc_current_torque_mode) - 1xPID controller + 1xLPF
-- [FOC current mode](foc_current_torque_mode) - 2xPID controller + 2xLPF filters 
+## 配置参数
+根据希望使用的力矩控制类型，你需要考虑不同的参数。
+- [Voltage mode](voltage_mode)  - 最简单。无需参数，或者是 `motor.phase_resistance`
+- [DC current mode](dc_current_torque_mode) - PID控制器x1 + 低通滤波器x1
+- [FOC current mode](foc_current_torque_mode) - PID控制器x2 + 低通滤波器x2
 
-Now, lets see one example!
+现在，让我们看个例程
 
-## Voltage control example 
-You can test this algorithm by running the example `voltage_control.ino`.
+## 电压控制例程
+你可以通过运行 `voltage_control.ino`.这个例程来测试算法。
 
-Here we provide an example of a toque using voltage control program with full motion control configuration. The program sets target <i>U<sub>q</sub></i> voltage of 2V to the motor using the FOC algorithm. Since the phase resistance parameter is not available the motor target will be in volts.
+下面是一个利用电压实现的力矩控制以及完整的运动控制配置例程。该例程使用了FOC算法，设置了2v的目标电压U<sub>q</sub>。由于没有设置相电阻的阻值，则该电机的目标为电压，即单位为v。
+
 ```cpp
 #include <SimpleFOC.h>
 
-// BLDC motor & driver instance
+// 无刷直流电机及驱动器实例
 BLDCMotor motor = BLDCMotor(11);
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-// encoder instance
+// 编码器实例
 Encoder encoder = Encoder(2, 3, 500);
-// channel A and B callbacks
+// 回调通道A和B
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
 void setup() { 
   
-  // initialize encoder sensor hardware
+  // 初始化编码传感器硬件
   encoder.init();
   encoder.enableInterrupts(doA, doB); 
-  // link the motor to the sensor
+  // 连接电机和传感器
   motor.linkSensor(&encoder);
 
-  // driver config
-  // power supply voltage [V]
+  // 配置驱动器
+  // 电源电压 [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // link driver
+  // 连接驱动器
   motor.linkDriver(&driver);
 
-  // set the torque control type
+  // 设置力矩控制类型
   motor.torque_controller = TorqueControlType::voltage;
-  // set motion control loop to be used
+  // 设置运动控制环
   motor.controller = MotionControlType::torque;
 
-  // use monitoring with serial 
+  // 使用串口监视
   Serial.begin(115200);
-  // comment out if not needed
+  // 如果不需要，可以注释掉此行
   motor.useMonitoring(Serial);
 
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align sensor and start FOC
+  // 校准编码器，启用FOC
   motor.initFOC();
 
   Serial.println(F("Motor ready."));
@@ -97,56 +100,57 @@ void setup() {
 
 void loop() {
 
-  // main FOC algorithm function
+  // FOC算法主函数
   motor.loopFOC();
 
-  // Motion control function
+  // 运动控制函数
   motor.move(2);
 }
 ```
 
-If we add the pahse resitance to the constructor of the `BLDCMotor` class, the motor target will be in Amps. 
+如果再BLDC的构造函数上设置了相电阻，那么电机的目标为电流，即单位为A。
+
 ```cpp
 #include <SimpleFOC.h>
 
-// BLDC motor & driver instance
+// 无刷直流电机及驱动器实例
 BLDCMotor motor = BLDCMotor(11, 12.34); // 12.34 Ohms
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-// encoder instance
+// 编码器实例
 Encoder encoder = Encoder(2, 3, 500);
-// channel A and B callbacks
+// 回调通道A和B
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
 void setup() { 
   
-  // initialize encoder sensor hardware
+  // 初始化编码传感器硬件
   encoder.init();
   encoder.enableInterrupts(doA, doB); 
-  // link the motor to the sensor
+  // 连接电机和传感器
   motor.linkSensor(&encoder);
 
-  // driver config
-  // power supply voltage [V]
+  // 配置驱动器
+  // 电源电压 [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // link driver
+  // 连接驱动器
   motor.linkDriver(&driver);
 
-  // set the torque control type
+  // 设置力矩控制类型
   motor.torque_controller = TorqueControlType::voltage;
-  // set motion control loop to be used
+  // 设置运动控制环
   motor.controller = MotionControlType::torque;
 
-  // use monitoring with serial 
+  // 使用串口监视
   Serial.begin(115200);
-  // comment out if not needed
+  // 如果不需要，可以注释掉此行
   motor.useMonitoring(Serial);
 
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align sensor and start FOC
+  // 校准编码器，启用FOC
   motor.initFOC();
 
   Serial.println(F("Motor ready."));
@@ -156,16 +160,16 @@ void setup() {
 
 void loop() {
 
-  // main FOC algorithm function
+  // FOC算法主函数
   motor.loopFOC();
 
-  // Motion control function
+  // 运动控制函数
   motor.move(0.5);
 }
 ```
 
-## Project examples
-Here is one very cool project example which uses torque control and describes the full hardware + software setup needed.
+## 工程实例
+这里是一个项目的例子，它使用位置控制，并描述了full hardware + software setup设置
 
 <div class="image_icon width30">
     <a href="simplefoc_pendulum">
@@ -174,4 +178,4 @@ Here is one very cool project example which uses torque control and describes th
     </a>
 </div>
 
-Find more projects in the [example projects](example_projects) section.
+在[example projects](example_projects) 部分中可以找到更多项目。

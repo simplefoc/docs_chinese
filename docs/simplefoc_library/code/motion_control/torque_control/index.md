@@ -1,40 +1,45 @@
 ---
 layout: default
-title: Torque Mode
+title: 力矩控制
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /torque_mode
 nav_order: 1
 has_children: True
 has_toc: False
-parent: Motion Control
-grand_parent: Writing the Code
+parent: 运动控制
+grand_parent: 代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Torque control modes
+# 力矩控制模式
 
 <img src="extras/Images/torque_modes.gif">
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> gives you the choice of using 3 different torque control strategies:
+<span class="simple">Simple<span class="foc">FOC</span>library</span>提供3种不同的力矩控制策略:
+
 - [Voltage mode](voltage_torque_mode) - `voltage`
 - [DC current mode](dc_current_torque_mode) - `dc_current`
 - [FOC current mode](foc_current_torque_mode) - `foc_current`
 
-### Voltage mode - `voltage`
-Torque control through voltage is the most basic torque control type, and it provides you an abstraction of the BLDC motor so that you can control it as a DC motor. It is based on the principle that the current is directly proportional to the voltage (it neglects the current dynamics) and therefore does not need any current sensing hardware.  For more info about this approach, visit our [digging deeper section](voltage_torque_control). **This torque control approach will be able to work on any BLDC driver board, regardless if it has current sensing or not.**
+### 电压模式 - `voltage`
+基于电压的力矩控制是最基本的力矩控制模式，它为你提供了一个抽象的无刷直流电机，以便你可以控制它作为直流电机。
 
-### DC current mode - `dc_current`
-DC current control mode enables you to control the current of the BLDC motor as if it was a DC motor. Current sensing is used to obtain a overall magnitude of the current the motor is drawing and its direction, and the assumption is that the torque is proportional to the overall current. The benefit of this approach is that the true current set to the BLDC motor can be controlled very precisely it is a bit faster and more stable to execute for less-performant microcontrollers (such as Atmega328 family).
+> wait to translate
 
-### FOC current mode - `foc_current`
-FOC current control is the only true torque control approach. It controls two components of the current vector `q` and `d`. The torque is assumed to be proportional to the `q` current component and the `d` component of the current is controlled to remain equal to 0.
+它基于简单的欧姆定律(忽略了电流动态特性)，因此不需要任何电流检测相关的硬件。假若想了解有关此方法的更多信息，请访问我们的[digging deeper section](voltage_torque_control). **这种力矩控制方法无论其是否具有电流感应，都能够在任何无刷直流电机驱动板上工作。**
 
-### Comparison
+### 直流电流模式 - `dc_current`
+基于直流电流的力矩控制能够像控制直流电机那样控制无刷电机。电流检测用于获取通过电机的电流大小及方向，我们假设力矩和总电流是成正比的。这种模式好处在于可以非常精确地控制无刷电机的实际电流，一些性能较低的处理器（如ATMega328系列）也能有较快较稳定的效果。
 
-Torque control type | PROS | CONS
+### FOC电流模式- `foc_current`
+基于直流电流的力矩控制是唯一真正的力矩控制方法。它控制电流 `q和 ` `d`的两个分量。我们假设力矩与 `q` 电流分量成比例，并控制电流的 `d` 分量保持等于0。
+
+### 比较
+
+力矩控制类型 | 优点 | 缺点 
 ----- | ----- | ------
-Voltage  | ✔️ Very simple and fast <br>✔️ Good performance with any MCU <br> ✔️ Very smooth on low speeds<br> ✔️ No current sense needed   | ❌ Not optimal on high speeds <br> ❌ Cannot control true current draw <br> ❌ Torque is approximated (low error on low speeds)
-DC current  | ✔️ Can control true current draw <br> ✔️ Suitable for low performance MUCs <br> ✔️ Current limiting  | ❌ More complex to execute  (slower) <br> ❌ Can achieve lower speeds than voltage mode <br>❌ Torque is approximated (low error on low speeds) <br> ❌ Needs current sensing
-FOC current  | ✔️ True torque control (any velocity) <br> ✔️ Can control true current draw <br> ✔️ Very efficient on higher velocities <br> ✔️ Current limiting | ❌ The most complex to execute (slowest) <br> ❌ Not suitable for low-performing MCUs (can become unstable) <br> ❌ Needs current sensing
+电压  | ✔️简单和快速 <br>✔️ 任何 MCU上都有良好的性能 <br>✔️ 低速行驶时非常平稳<br>✔️ 无需电流检测 | ❌ 在高速下不是最佳的 <br>❌ 不能控制真正的电流 <br>❌ 力矩为近似估值(低速时误差小) 
+直流电流  | ✔️ 能控制真正电流 <br>✔️ 适用于低性能 MCU<br>✔️可实现电流限制 | ❌ 执行更复杂(更慢)<br>❌可以实现比电压模式更低的速度 <br>❌ 力矩为近似估值(低速时误差小)” <br>❌需要电流检测 
+FOC电流  | ✔️真正的力矩控制(任意速度) <br>✔️ 能控制真正电流 <br>✔️在更高的速度下更高效<br>✔️可实现电流限制 | ❌ 执行最复杂(最慢) <br>❌ 不适合低性能的MCU(可能变得不稳定)。 <br>❌需要电流检测 
 
-For more information about the source code implementation of the motion control strategies check the [library source code documentation](motion_control_implementation)
+如果想了解有关运动控制策略的源代码实现的更多信息，请查看 [library source code documentation](motion_control_implementation)

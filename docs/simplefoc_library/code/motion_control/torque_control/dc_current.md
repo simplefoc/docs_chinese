@@ -1,109 +1,113 @@
 ---
 layout: default
-title: DC Current Mode
+title: 直流电流控制模式
 permalink: /dc_current_torque_mode
 nav_order: 2 
-parent: Torque Mode
-grand_parent: Motion Control
-grand_grand_parent: Writing the Code
+parent: 力矩控制
+grand_parent: 运动控制
+grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
-description: "Arduino Simple Field Oriented Control (FOC) library ."
+description: "Arduino Simple Field Oriented Control (FOC) library ."lih控制采用直流电流1
 ---
 
-# Torque control using DC current
-This control loop allows you to run the BLDC motor as it is a current controlled DC motor. This torque control algorithm requires current sensing hardware. The user sets the target current <i>I<sub>d</sub></i> to the FOC algorithm calculates the necessary phase voltages <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> in order to maintain it. This mode is enabled by:
+# 基于直流电流的力矩控制
+这个控制环能够像直流电机那样控制直流无刷电机。这种力矩控制算法需要电流检测硬件的支持。用户设置的目标电流<i>I<sub>d</sub></i>用于FOC算法计算出所需维持的相电压<i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 。该模式设置如下：
+
 ```cpp
-// DC current torque control mode
+// 直流电流力矩控制模式
 motor.torque_controller = TorqueControlType::dc_current;
 ```
 
-## How does it work exactly
+## 它到底是如何工作的？
  <a name="foc_image"></a><img src="extras/Images/dc_current_mode.png">
 
-The DC current torque control algorithm reads the phase currents of the BLDC motor (usually <i>i<sub>a</sub></i> and <i>i<sub>b</sub></i>). Furthermore the algorithm reads the rotor angle <i>a</i> from the position sensor. The phase currents are transformed into the DC current <i>i<sub>DC</sub></i> using the Inverse Clarke and Park(simplified) transform. Using the target curren value <i>I<sub>d</sub></i> and the measured <i>i<sub>DC</sub></i> the PID controller calculates the appropriate voltage <i>U<sub>q</sub></i> to be set to the motor, <i>U<sub>d</sub></i> is kept in 0. Finally FOC algorithm sets the appropriate <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> and <i>u<sub>c</sub></i> voltages to the motor. FOC algorithm ensures that these voltages generate the magnetic force in the motor rotor exactly with <i>90 degree</i> offset from its permanent magnetic field, which guarantees maximal torque, this is called commutation.
+直流电流力矩控制算法读取无刷直流电机的相电流(通常是<i>i<sub>a</sub></i> 和 <i>i<sub>b</sub></i>)。
 
-The assumption of this torque control mode is that the torque generated in the motor is proportional the DC current <i>i<sub>DC</sub></i> drawn by the motor (<i>i<sub>DC</sub></i> = <i>i<sub>q</sub></i>). Therefore by controlling this current we user can control the torque value. This assumption is only true for the low velocities, for higher velocities the <i>i<sub>d</sub></i> component of the current becomes higher and <i>i<sub>DC</sub></i>=<i>i<sub>q</sub></i> no longer holds. 
+此外，该算法从位置传感器读取角度 <i>a</i>。 相电流通过逆Clarke和简化的Park变换转换为直流电流i<sub>DC</sub>。而后，PID控制器利用目标电流I<sub>d</sub>和测量电流i<sub>DC</sub>计算出相应的设置到电机的电压值U<sub>q</sub>，而U<sub>d</sub>始终保持为0。最后，FOC对电机设置相应的<i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 。FOC会确保这些电压产生的磁力恰好与电机转子的永磁场保持<i>90度</i>偏移，从而保证了最大力矩，这称为换向。
 
-## Configuration parameters
-In order to make this loop run smoothly the user needs to configure the PID controller parameters of teh `PID_current_q` and Low pass filter `LPF_current_q` time constant.
+这种力矩控制模式是假设在电机的力矩是和电机的直流电流i<sub>DC</sub>成比例的（i<sub>DC</sub>=i<sub>q</sub>），因此可以通过控制电流来实现力矩的控制。但是这种假设仅限于低速的情况，在高速情况下，i<sub>d</sub>分量会变得很高，致使i<sub>DC</sub>=i<sub>q</sub>就不成立了。
+
+## 配置参数
+为了可以平稳运行，用户需要配置PID控制器`PID_current_q`参数和低通滤波器`LPF_current_q`时间常数。
+
 ```cpp
-// PID parameters - default 
+// PID参数 - 默认
 motor.PID_current_q.P = 5;                       // 3    - Arduino UNO/MEGA
 motor.PID_current_q.I = 1000;                    // 300  - Arduino UNO/MEGA
 motor.PID_current_q.D = 0;
 motor.PID_current_q.limit = motor.voltage_limit; 
 motor.PID_current_q.ramp = 1e6;                  // 1000 - Arduino UNO/MEGA
-// Low pass filtering - default 
+// 低通滤波器 - 默认
 LPF_current_q.Tf= 0.005;                         // 0.01 - Arduino UNO/MEGA
 ```
 
 
 
-## Torque control example code
+## 力矩控制示例代码
 
-A simple example of the DC current based torque control using Inline current sensor and setting the target value by serial command interface. 
+下面是一个简单的利用了在线电流检测的基于直流电流的力矩控制，可以在串行的commander接口设定目标值。
 
 ```cpp
 #include <SimpleFOC.h>
 
-// BLDC motor & driver instance
+// 无刷直流电机及驱动器实例
 BLDCMotor motor = BLDCMotor(11);
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-// encoder instance
+// 编码器实例
 Encoder encoder = Encoder(2, 3, 500);
-// channel A and B callbacks
+// 回调通道A和B
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
-// current sensor
+// 电流检测
 InlineCurrentSense current_sense = InlineCurrentSense(0.01, 50.0, A0, A2);
 
-// instantiate the commander
+// commander实例化
 Commander command = Commander(Serial);
 void doTarget(char* cmd) { command.variable(&motor.target, cmd); }
 
 void setup() { 
   
-  // initialize encoder sensor hardware
+  // 初始化编码传感器硬件
   encoder.init();
   encoder.enableInterrupts(doA, doB); 
-  // link the motor to the sensor
+  // 连接电机和传感器
   motor.linkSensor(&encoder);
 
-  // driver config
-  // power supply voltage [V]
+  // 配置驱动器
+  // 电源电压 [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // link driver
+  // 连接驱动器
   motor.linkDriver(&driver);
 
-  // current sense init hardware
+  // 电流检测初始化硬件
   current_sense.init();
-  // link the current sense to the motor
+  // 连接电流检测器和电机
   motor.linkCurrentSense(&current_sense);
 
-  // set torque mode:
+  // 设置力矩模式：
   motor.torque_controller = TorqueControlType::dc_current; 
-  // set motion control loop to be used
+  // 设置运动控制环
   motor.controller = MotionControlType::torque;
 
-  // foc current control parameters (Arduino UNO/Mega)
+  // 电流控制参数 (Arduino UNO/Mega)
   motor.PID_current_q.P = 5;
   motor.PID_current_q.I= 300;
   motor.LPF_current_q.Tf = 0.01; 
 
-  // use monitoring with serial 
+  // 监视串口
   Serial.begin(115200);
-  // comment out if not needed
+  // 如果不需要，可以注释掉此行
   motor.useMonitoring(Serial);
 
-  // initialize motor
+  // 初始化电机
   motor.init();
-  // align sensor and start FOC
+  // 校准编码器，启用FOC
   motor.initFOC();
 
-  // add target command T
+  // 添加目标命令T
   command.add('T', doTarget, "target current");
 
   Serial.println(F("Motor ready."));
@@ -113,13 +117,13 @@ void setup() {
 
 void loop() {
 
-  // main FOC algorithm function
+  // FOC算法主函数
   motor.loopFOC();
 
-  // Motion control function
+  // 运动控制函数
   motor.move();
 
-  // user communication
+  // 用户通信
   command.run();
 }
 ```
