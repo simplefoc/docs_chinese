@@ -1,14 +1,14 @@
 ---
 layout: default
-title: Library Installation
-parent: Installation
+title: 库安装
+parent: 安装
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /library_download
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Installing <span class="simple">Simple<span class="foc">FOC</span>library（安装完整的SimpleFOC库）</span>
+# 安装完整的 SimpleFOClibrary </span>
 
 ## <i class="fa fa-desktop"></i> 通过Arduino Library Manager安装
 最简单的方式是直接通过 `Arduino IDE`中的 *Arduino Library Manager* 获取库。
@@ -29,7 +29,7 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 ### <i class="fa fa-terminal"></i> 电脑终端克隆
 - 打开电脑终端并运行下列代码：
 ```sh  
-cd #arduino libraries folder
+cd #arduino 库文件夹
 git clone https://github.com/simplefoc/Arduino-FOC.git
 ```
 - 重新打开Arduino IDE，就能在 `File > Examples > Simple FOC`中看到库例程。
