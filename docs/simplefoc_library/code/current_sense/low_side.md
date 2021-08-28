@@ -1,18 +1,17 @@
 ---
 layout: default
-title: Low-Side Current Sense
+title: 低侧电流检测
 nav_order: 2
 permalink: /low_side_current_sense
-parent: Current Sensing
-grand_parent: Writing the Code
+parent: 电流检测
+grand_parent: 代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# Low-side current sensing
-Low-side current sensing is probably the most common current sensing technique. The main reason why is because it does not require neither high-performance PWM rejection current sense amplifiers (as inline does) neither high-voltage supporting amplifiers (as high-side does). The shunt resistors are always placed in between low side mosfets and the ground making sure that the amplifiers always has very low voltages on its terminals. The main drawback of this approach is that since the current passing through the shunt resistors is phase current only if the  corresponding low side mosfet is on we can only measure it in those moments. The PWM frequency is usually 20 to 50 kHz, which means that the low-side mosfets turns on and off 20,000 to 50,000 times per second, therefore the synchronization in between PWM setting and ADC acquisition is very very important.
+# 低侧电流检测
+低侧电流检测可能是最常见的电流检测技术。主要原因是它既不需要高性能PWM抑制电流检测放大器（如在线检测放大器），也不需要支持高压的放大器（如高侧放大器）。采样电阻始终置于低侧MOSFET和地之间，确保放大器的端子上始终具有非常低的电压。这种方法的主要缺点是，由于只有相应的低侧mosfet开启时，通过采样电阻的电流才是相电流，而我们只能在这些时刻测量到相电流。PWM频率通常为20至50 kHz，这意味着低侧MOSFET每秒开关20000至50000次，因此PWM设置和ADC采集之间的同步非常重要。
 
-Low side current sensing will be implemented soon. The main issue at the moment is very hardware specific synchronisation procedure of the PWM generation and ADC triggering. Therefore it is possible that this implantation will be done one MCU architecture at the time. 
-
+低侧电流电测将很快完成。目前的主要问题是PWM生成和ADC触发需要特定的硬件的同步程序。因此，低侧电流检测可能会先在其中一种MCU结构中先完成。
 
 <img src="extras/Images/low-side.png" class="width50">
 <img src="extras/Images/low_side_sync.png" class="width40">
