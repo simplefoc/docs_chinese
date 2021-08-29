@@ -3,7 +3,7 @@ layout: default
 title: 监控
 nav_order: 7
 permalink: /monitoring
-parent: Writing the Code
+parent: 代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 

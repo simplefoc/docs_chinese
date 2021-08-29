@@ -1,10 +1,10 @@
 ---
 layout: default
-title: 开始
+title: 让我们开始吧
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /example_from_scratch
-parent: Writing the Code
+parent: 代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
