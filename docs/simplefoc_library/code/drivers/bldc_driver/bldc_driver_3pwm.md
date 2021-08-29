@@ -1,15 +1,17 @@
 ---
 layout: default
-title: 3路PWM的无刷直流电机
+title: 3路PWM无刷直流电机
 nav_order: 1
 permalink: /bldcdriver3pwm
 parent: 无刷直流驱动器配置
 grand_parent: 驱动器
 grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+
+
 ---
 
-#   3路PWM的无刷直流电机- `BLDCDriver3PWM`
+#   3路PWM无刷直流电机- `BLDCDriver3PWM`
 
 该类提供了一个大多数常见的 3路PWM 无刷直流驱动器的抽象层。基本上所有用 3路PWM 信号运行的无刷直流驱动器都可以用这个类。
 比如：
