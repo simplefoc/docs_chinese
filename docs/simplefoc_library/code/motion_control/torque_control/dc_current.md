@@ -7,7 +7,8 @@ parent: 力矩控制
 grand_parent: 运动控制
 grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
-description: "Arduino Simple Field Oriented Control (FOC) library ."lih控制采用直流电流1
+description: "Arduino Simple Field Oriented Control (FOC) library ."
+
 ---
 
 # 基于直流电流的力矩控制
