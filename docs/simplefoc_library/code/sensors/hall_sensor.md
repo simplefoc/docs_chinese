@@ -1,74 +1,77 @@
 ---
 layout: default
-title: Hall sensors
+title: 霍尔传感器设置
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /hall_sensors
 nav_order: 2
-parent: Position Sensors
-grand_parent: Writing the Code
-grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+parent: 位置传感器
+grand_parent: 代码
+grand_grand_parent: Arduino <span 类="simple">Simple<span 类="foc">FOC</span>library</span>
 ---
 
 
-# Hall sensors setup
+# 霍尔传感器设置
 <div class="width60">
 <img src="extras/Images/hall_schema.jpg" style="width:48.5%;display:inline"><img src="extras/Images/hall.png" style="width:48.5%;display:inline">
 </div>
 
-## Step 1. Instantiate `HallSensor` class
-To initialize the hall sensors you need to provide the pin numbers for `A`, `B` and `C` (sometimes called `U`,`V` and`W`) channel and the number of pole pairs `pp` of the motor.
+## 步骤1.实例化 `HallSensor` 类
+为了初始化霍尔传感器 ，你需要提供 `A`, `B`和 `C` (有时称为 `U`,`V` 和`W`)通道的引脚编号和电机的极对 `pp` 的数量。
+
 ```cpp
-// Hall sensor instance
+// 霍尔传感器实例
 // HallSensor(int hallA, int hallB , int cpr, int index)
-//  - hallA, hallB, hallC    - HallSensor A, B and C pins
-//  - pp                     - pole pairs
+//  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
+//  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
 ```
 
-## Step 2. Configuration
+## 步骤2.配置
 
-Additionally the hall senso has one more optional parameter you may set, the pullup location. Hall sensors usually require pullups and in cases when your sensor needs one and you don't have one on your hands you can use Arduino pullups. That is set by changing the value of the `sensor.pullup` variable. The default value is set to `Pullup::USE_EXTERN` but if you would like to change it to use the MCU ones do:
+此外，霍尔传感器还有一个可选参数的上拉位置。霍尔传感器通常需要上拉，如果你的传感器需要上拉电阻，而你手上没有，你可以使用 Arduino pullups。则可以使用Arduino pullups的`encoder.pullup` 值来设置。默认值设置为`Pullup::USE_EXTERN` 但如果你想改用MCU的内部上拉，可以:
+
 ```cpp
-// use internal pullups
+// 使用内部上拉
 sensor.pullup = Pullup::USE_INTERN;
 ```
-<blockquote class="warning"><p class="heading">Arduino Pullup 20kΩ</p> Be careful when using internal pullups, Arduino has relatively high valued pullups around 20kΩ, which means that you might have some problems for higher velocities (for shorted impulse durations). Recommended pull-up values are in between 1kΩ and 5kΩ.</blockquote>
-
-## Step 3. Interrupt setup
-There are two ways you can run hall sensors with Simple FOC library.
-- Using [hardware external interrupt](#hardware-external-interrupt) 
-   - Arduino UNO(Atmega328) pins `2` and `3`
+<blockquote class="warning"><p class="heading">Arduino Pullup 20kΩ</p> 使用内部上拉时要小心，Arduino有比较高的20kΩ左右的上拉电阻，这意味着可能较高转速下(较短的脉冲持续时间)会出现一些问题。推荐的上拉值在1kΩ到5kΩ之间。.</blockquote>
+## 步骤3.中断设置
+有两种使用Simple FOC库运行霍尔传感器的方法。
+- 使用 [hardware external interrupt](#hardware-external-interrupt) 
+   - Arduino UNO(Atmega328) pins `2` 和 `3`
    - STM32 boards any pin
    - ESP32 any pin
-- Using [software pin change interrupt](#software-pin-change-interrupt) by using a library such as [PciManager library](https://github.com/prampec/arduino-pcimanager)
-   - Only for Arduino devices (Atmga328 and Atmage2560)
+- 使用 [software pin change interrupt](#software-pin-change-interrupt) 通过使用这样的库例如 [PciManager library](https://github.com/prampec/arduino-pcimanager)
+   - 只对 Arduino devices (Atmga328 and Atmage2560)
 
-<blockquote class="warning"><p class="heading">Software interrupts</p> Using the hardware external interrupts usually results in better and more reliable performance but software interrupts will work very well for lower velocities. Especially on boards that just don't have enough hardware interrupt pins, having this functionality basically enables FOC on these boards.</blockquote>
+<blockquote class="warning"><p class="heading">软件中断</p> 使用硬件外部中断通常会得到更好和更可靠的性能，但是软件中断在较低的速度下也运行得很好，特别是在没有足够的硬件中断引脚的板上。有了这个功能基本上可以在这些板上实现FOC。</blockquote>
+### 硬件外部中断
 
-### Hardware external interrupt
-Arduino UNO has two hardware external interrupt pins, pin `2` and `3`,  Arduino Mega has 6 interrupt pins, pins `2`, `3`, `18`, `19`, `20`and `2` whereas ESP32 and STM32 boards can use all their digital pins as interrupt pins, which makes implementation much easier.
+Arduino UNO有两个硬件外部中断引脚，pin `2` 和 `3`，Arduino Mega有6个中断引脚，  `2`, `3`, `18`, `19`, `20`和 `2` ，而STM32如Nucleo和Bluepill可以以任意引脚为中断引脚，使实现更加容易。对于Arduino Uno，编码器通道 `A` 和 `B` 必须连接到pins `2` 和 `3`，以便使用硬件中断。
 
-Simple FOC `HallSensor` class already has implemented initialization and sensor `A`, `B` and `C` channel callbacks. 
-All you need to do is define two functions `doA()`, `doB()` and `doC()`, the buffering functions of sensor callback functions `sensor.handleA()`, `sensor.handleB()` and  `sensor.handleC()`. 
+Simple FOC `HallSensor` 类已经实现了初始化和编码器`A`, `B` 和 `C` 通道回调。你需要做的就是定义三个函数 `doA()`, `doB()` 和 `doC()`,传感器回调函数的buffer函数`sensor.handleA()`, `sensor.handleB()` 和  `sensor.handleC()`.
+
 ```cpp
-// interrupt routine initialization
+// 中断例程初始化
 void doA(){sensor.handleA();}
 void doB(){sensor.handleB();}
 void doC(){sensor.handleC();}
 ```
-And provide those functions to the hall sensor interrupt init function `sensor.enableInterrupts()`
+并将这些功能提供给霍尔传感器中断初始化功能 `sensor.enableInterrupts()`.
+
 ```cpp
-// enable hall sensor hardware interrupts
+// 启用霍尔编码器硬件中断
 sensor.enableInterrupts(doA, doB, doC)
 ```
-You can name the buffering functions as you wish. It is just important to provide them to the `sensor.enableInterrupts()` function. This procedure is a tradeoff in between scalability and simplicity. This allows you to have more than one sensor connected to the same MCU. All you need to do is to instantiate new `HallSensor` class and create new buffer functions. For example:
+你可以自行命名buffer函数。将它们提供给 `sensor.enableInterrupts()`是很重要的。这个过程是可伸缩性和简单性之间的权衡。这可以实现一个MCU连接多个编码器。你所需要做的就是实例化新的  `HallSensor`类并创建新的buffer函数。例如:
+
 ```cpp
-// sensor 1
+//  编码器 1
 HallSensor sensor1 = HallSensor(...);
 void doA1(){sensor1.handleA();}
 void doB1(){sensor1.handleB();}
 void doC1(){sensor1.handleC();}
-// sensor 2
+//  编码器 2
 HallSensor sensor2 = HallSensor(...);
 void doA2(){sensor2.handleA();}
 void doB2(){sensor2.handleB();}
@@ -84,53 +87,56 @@ void setup(){
 }
 ```
 
-### Software pin change interrupt
+###  软件中断
 
-For Arduino Uno and boards using Atmega328 chipd, we will have to use the software interrupt library to use Hall senors with this library, because we will need three interrupt pins and Atmega328 has only 2.  
-I suggest using the [PciManager library](https://github.com/prampec/arduino-pcimanager).
+如果你无法使用Arduino UNO的pin `2` 和 `3` ，或者想使用多个编码器，你就必须使用软件中断方法。
 
-The steps of using this library in code are very similar to [hardware interrupt](#arduino-hardware-external-interrupt).
-The SimpleFOC `HallSensor` class still provides you with all the callbacks `A`, `B` and `C` channels but the Simple FOC library will not initialize the interrupts for you. 
+我建议使用[PciManager library](https://github.com/prampec/arduino-pcimanager).
 
-In order to use the `PCIManager` library you will need to include it in your code:
+在代码中使用这个库的步骤与 [hardware interrupt](#arduino-hardware-external-interrupt)非常相似。SimpleFOC  `Encoder` 类提供所有 `A`, `B` 和 `Index` 通道的回调，但Simple FOC library 不会初始化中断。
+
+为了使用 `PCIManager`，你需要将它include进你的代码中:
+
 ```cpp
 #include <PciManager.h>
 #include <PciListenerImp.h>
 ```
-Next step is the same as before, you will just initialize the new `HallSensor` instance.
+下一步和前面一样，初始化新 `HallSensor` 实例
 ```cpp
 HallSensor sensor = HallSensor(2, 3, 4, 11);
-// A, B and C interrupt callback buffers
+// A、B和C中断调回buffers
 void doA(){sensor.handleA();}
 void doB(){sensor.handleB();}
 void doC(){sensor.handleC();}
 ```
-Then you declare listeners `PciListenerImp `:
+然后你声明监听器 `PciListenerImp `:
 ```cpp
-// sensor interrupt init
+// 初始化编码器中断
 PciListenerImp listenA(sensor.pinA, doA);
 PciListenerImp listenB(sensor.pinB, doB);
 PciListenerImp listenC(sensor.pinC, doC);
 ```
-Finally, after running `sensor.init()` you skip the call of the `sensor.enableInterrupts()` and call the `PCIManager` library to register the interrupts for all the sensor channels.
+最后，在运行 `encoder.init()` 之后，跳过 `encoder.enableInterrupts()` 并调用`PCIManager` library来注册所有编码器通道的中断。
+
 ```cpp
-// initialize sensor hardware
+// 初始化编码器硬件
 sensor.init();
-// interrupt initialization
+// 初始化中断
 PciManager.registerListener(&listenA);
 PciManager.registerListener(&listenB);
 PciManager.registerListener(&listenC);
 ```
-And that is it, it is very simple. It if you want more than one sensor, you just initialize the new class instance, create the new `A`, `B` and `C` callbacks, initialize the new listeners. Here is a quick example:
+就是这样，非常简单。如果你想要多个编码器，你只需初始化新的 `Encoder`实例，创建新的`A`, `B` 和 `C` 回调，初始化新的监听器。下面是一个简单的例子:
+
 ```cpp
-// sensor 1
+// 编码器 1
 HallSensor sensor1 = HallSensor(2, 3, 4, 11);
 void doA1(){sensor1.handleA();}
 void doB1(){sensor1.handleB();}
 void doC1(){sensor1.handleC();}
 PciListenerImp listenC1(sensor1.pinC, doC1);
 
-// sensor 2
+// 编码器 2
 HallSensor sensor2 = HallSensor(5, 6, 7, 11);
 void doA2(){sensor2.handleA();}
 void doB2(){sensor2.handleB();}
@@ -141,12 +147,12 @@ PciListenerImp listenC2(sensor2.pinC, doC2);
 
 void setup(){
 ...
-  // sensor 1
+  // 编码器 1
   sensor1.init();
-  sensor1.enableInterrupts(doA1,doB1); // two hardware interrupts
-  PciManager.registerListener(&listenC1); // one software interrupt
+  sensor1.enableInterrupts(doA1,doB1); // 两个硬件中断
+  PciManager.registerListener(&listenC1); // 一个软件中断
 
-  // sensor 2
+  // 编码器 2
   sensor2.init();
   PciManager.registerListener(&listenA2);
   PciManager.registerListener(&listenB2);
@@ -155,58 +161,59 @@ void setup(){
 }
 ```
 
-## Step 4. Using hall sensors in real-time
+## 步骤4.实时使用霍尔传感器
 
-There are two ways to use hall sensor implemented within this library:
-- As motor position sensor for FOC algorithm
-- As standalone position sensor
+使用霍尔传感器实现在这个库有两种方法:
+- 作为FOC算法的电机位置传感器
+- 作为独立位置传感器
 
-### Position sensor for FOC algorithm
+### FOC算法的位置传感器
 
-To use the hall sensor with the foc algorithm implemented in this library, once when you have initialized `sensor.init()` it and enabled interrupts `sensor.enableInterrupts(...)` you just have to link it to the BLDC motor by executing:
+要利用这个库通过编码器实现FOC算法，一旦你已经初始化传感器 `sensor.init()`它并启用中断传感器 `sensor.enableInterrupts(...)` 你只需要通过执行链接它到BLDC电机:
+
 ```cpp
 motor.linkSensor(&sensor);
 ```
 
-### Standalone sensor 
+### 独立的传感器
 
-To get the hall sensor angle and velocity at any given time you can use the public methods:
+获得霍尔传感器的角度和速度，你可以使用public方法:
 ```cpp
-class HallSensor{
+类 HallSensor{
  public:
-    // shaft velocity getter
+    // 获取轴速度
     float getVelocity();
-	  // shaft angle getter
+	  // 获取轴角度
     float getAngle();
 }
 ```
 
-Here is a quick example using only hardware interrupts:
+下面是一个只使用硬件中断的快速示例:
 ```cpp
 #include <SimpleFOC.h>
 
-// Hall sensor instance
+// 霍尔传感器实例
 // HallSensor(int hallA, int hallB , int cpr, int index)
-//  - hallA, hallB, hallC    - HallSensor A, B and C pins
-//  - pp                     - pole pairs
+//  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
+//  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
 
-// Interrupt routine initialization
-// channel A and B callbacks
+// 中断例程初始化
+// 通道A和B回调
 void doA(){sensor.handleA();}
 void doB(){sensor.handleB();}
 void doC(){sensor.handleC();}
 
 void setup() {
-  // monitoring port
+  // 监视点
   Serial.begin(115200);
 
-  // check if you need internal pullups
+  // 检查是否需要内部上拉
   sensor.pullup = Pullup::USE_EXTERN;
   
-  // initialize sensor hardware
+  // 初始化磁传感器硬件
   sensor.init();
-  // hardware interrupt enable
+  // 启用硬件中断
   sensor.enableInterrupts(doA, doB, doC);
 
   Serial.println("Sensor ready");
@@ -214,7 +221,7 @@ void setup() {
 }
 
 void loop() {
-  // display the angle and the angular velocity to the terminal
+  // 在终端显示角度和角速度
   Serial.print(sensor.getAngle());
   Serial.print("\t");
   Serial.println(sensor.getVelocity());
@@ -222,37 +229,37 @@ void loop() {
 ```
 
 
-Here is a quick example using software interrupts:
+下面是一个使用软件中断的快速示例:
 ```cpp
 #include <SimpleFOC.h>
 
-// Hall sensor instance
+// 霍尔传感器实例
 // HallSensor(int hallA, int hallB , int cpr, int index)
-//  - hallA, hallB, hallC    - HallSensor A, B and C pins
-//  - pp                     - pole pairs
+//  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
+//  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
 
-// Interrupt routine initialization
-// channel A and B callbacks
+// 中断例程初始化
+// 通道A和B回调
 void doA(){sensor.handleA();}
 void doB(){sensor.handleB();}
 void doC(){sensor.handleC();}
 
-// sensor interrupt init
+// 初始化传感器中断
 PciListenerImp listenA(sensor.pinA, doA);
 PciListenerImp listenB(sensor.pinB, doB);
 PciListenerImp listenC(sensor.pinC, doC);
 
 void setup() {
-  // monitoring port
+  // 监视点
   Serial.begin(115200);
 
-  // check if you need internal pullups
+  // 检查是否需要内部上拉
   sensor.pullup = Pullup::USE_EXTERN;
   
-  // initialize sensor hardware
+  // 初始化磁传感器硬件
   sensor.init();
-  // interrupt initialization
+  // 中断初始化
   PciManager.registerListener(&listenA);
   PciManager.registerListener(&listenB);
   PciManager.registerListener(&listenC);
@@ -262,7 +269,7 @@ void setup() {
 }
 
 void loop() {
-  // display the angle and the angular velocity to the terminal
+  // 在终端显示角度和角速度
   Serial.print(sensor.getAngle());
   Serial.print("\t");
   Serial.println(sensor.getVelocity());
