@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 直流电流控制模式
+title: 基于直流电流
 permalink: /dc_current_torque_mode
 nav_order: 2 
 parent: 力矩控制

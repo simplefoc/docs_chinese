@@ -1,6 +1,6 @@
 ---
 layout: default
-title: FOC电流——力矩控制模式
+title: 基于FOC电流
 parent: 力矩控制
 grand_parent: 运动控制
 grand_grand_parent: 代码

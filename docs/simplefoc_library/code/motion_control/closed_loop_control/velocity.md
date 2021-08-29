@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 速度控制
+title: 速度控制环
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /velocity_loop
 nav_order: 2

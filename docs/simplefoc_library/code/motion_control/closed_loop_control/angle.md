@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 位置控制
+title: 位置控制环
 description: "Arduino Simple Field Oriented Control (FOC) library 。"
 nav_order: 3
 permalink: /angle_loop

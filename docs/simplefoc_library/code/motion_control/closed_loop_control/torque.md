@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 力矩控制
+title: 力矩控制环
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /voltage_loop
 nav_order: 1

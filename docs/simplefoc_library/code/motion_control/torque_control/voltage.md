@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 电压控制
+title: 基于电压
 parent: 力矩控制
 grand_parent: 运动控制
 grand_grand_parent: 代码
