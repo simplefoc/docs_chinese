@@ -6,7 +6,7 @@ permalink: /hall_sensors
 nav_order: 2
 parent: 位置传感器
 grand_parent: 代码
-grand_grand_parent: Arduino <span 类="simple">Simple<span 类="foc">FOC</span>library</span>
+grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
 
