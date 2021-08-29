@@ -9,7 +9,7 @@ has_toc: False
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# 开始上手Simple<span class="foc">FOClibrary</span></span> 
+# 开始上手Simple<span class="foc">FOClibrary</span>
 
 安装好 [SimpleFOClibrary](installation) ，准备好所有必须的 [硬件](supported_hardware) 后, 我们就要开始了解驱动电机的Arduino代码。以下是编写程序时的所有重要步骤。
 
