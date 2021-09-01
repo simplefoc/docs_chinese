@@ -15,7 +15,7 @@ permalink: /arduino_simplefoc_shield_fabrication_v1
 <img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v1.3.3/images/top.png"  class="width30"><img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v1.3.3/images/bottom.png"  class="width30">
 </p>
 
-## Board releases（板子的版本）
+## 板子的版本
 查看发布的时间表，点击 [这里](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
 
 Version（版本）  | link（链接） | Release date（发布日期） | Comment（版本描述） 
@@ -34,10 +34,10 @@ Version（版本）  | link（链接） | Release date（发布日期） | Comme
 - <b><i class="fa fa-file"></i> PCB design project（PCB设计项目）</b> - Altium Designer 2019
 
 
-## Fabrication procedure and cost（制造工艺及成本）
+## 制造工艺及成本
 制造的价格将由板的数量和PCB制造商和组件供应商决定。这里有两篇很好的文章，解释了如何从 [electronics-notes.com](https://www.electronics-notes.com/articles/constructional_techniques/printed-circuit-board-pcb/how-to-choose-right-best-pcb-manufacturer.php) 网站选择 PCB 制造商和从 [pcbonline.com](https://www.pcbonline.com/blog/How_to_Choose_a_PCB_Component_Supplier_165.html) 网站选择组件供应商。但在大多数情况下人们选择的重点考虑因素是价格。 :)
 
-## PCB fabrication + Self assembly  - **preferred choice** 📢（制造 PCB +自行装配 - 首选）
+## 制造 PCB +自行装配 - 首选 📢
 当你只做少数的板子时，这是一个选择。你可以从 PCB 制造商那里订购 PCB，从供应商那里购买组件，然后自己焊接电路板。这个电路板是比较容易焊接的。
 
 ### PCB 制造
