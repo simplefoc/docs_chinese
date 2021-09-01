@@ -18,8 +18,8 @@ has_toc: False
 该Arduino库为无刷直流电机和步进电机实现磁场定向控制（FOC）算法。FOC算法产生平滑的操作和高度的扭矩、速度和位置控制。
 该库的用途包括：
 
-- 向初学者提供一种简单的方法来学习如何控制无刷直流电机和步进电机
-- 针对其特定应用程序/硬件优化代码，方便高级用户深入研究FOC算法。
+- 让初学者用简单的方法学习如何控制无刷直流电机和步进电机
+- 方便高级用户深入研究FOC算法和为其特定应用程序/硬件优化代码
 
 ## 特征
 - **Arduino 兼容性**：
@@ -134,14 +134,14 @@ Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> �
 [查看更多 <i class="fa  fa-external-link"></i>](supported_hardware)
 
 ## 编写代码
-此库代码的编写方式尽可能简单易用，并为特定应用程序的配置和微调留出大量空间。
+此库的代码编写方式尽可能简单易用，并为特定应用程序的配置和微调留出大量空间。
 
 [Find out more <i class="fa  fa-external-link"></i>](code)
 
 
 ## 项目实例
-我们很高兴为你提供多个项目、多个硬件配置以及完整的文档和解释代码！
-让我们一起看看[实例](examples)吧!
+我们很高兴为你提供多个项目、多个硬件配置以及完整的文档和代码解释！
+让我们一起看看[实例](examples)吧！
 
 <p style="width:100%">
 <a href="position_control_example"><img src="extras/Images/position_control_example.jpg" class="img200 img_half"></a><a href="velocity_control_example"><img src="extras/Images/hmbgc_v22_velocity_control.jpg" class="img200 img_half"></a><a href="simplefoc_pendulum"><img src="extras/Images/foc_pendulum.jpg" class="img200 img_half"></a>
