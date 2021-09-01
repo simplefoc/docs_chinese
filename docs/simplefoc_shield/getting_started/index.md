@@ -35,8 +35,6 @@ has_toc: false
 
 ## 第三步：[编写代码](foc_shield_code)
 
-在配置好合适的
-
-一旦你决定了合适板的 [硬件配置](pads_soldering) ，一旦你准备好所有的硬件 [连接](foc_shield_connect_hardware)，我们就可以开始最激动人心的部分，写代码！
+在配置好合适的 [硬件配置](pads_soldering) 和硬件 [连接](foc_shield_connect_hardware) 之后，我们就可以开始最激动人心的部分，写代码！
 
 [查看更多](foc_shield_code)
