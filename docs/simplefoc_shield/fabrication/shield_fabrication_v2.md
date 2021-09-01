@@ -8,7 +8,7 @@ nav_order: 2
 permalink: /arduino_simplefoc_shield_fabrication_v2
 ---
 # <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v2.0.2</i></small> 的制作指南
-Here is a quick guide how to fabricate the Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V2.0.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
+下面是一个如何制作 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V2.0.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 的快速指南。
 
 
 <p align="">
@@ -248,7 +248,12 @@ Version  | link | Release date | Comment
 ## 完成装配好的版本
 从我们的 [商店](https://simplefoc.com/simplefoc_shield_product) 中购买完成测试好装配好的 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 。
 =======
-## Fully assembled versions
-Order your own fully tested and assembled Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  from our [shop](https://simplefoc.com/simplefoc_shield_product).
+## 完成装配好的版本
+
+从我们的 [商店](https://simplefoc.com/simplefoc_shield_product) 中购买完成测试好装配好的 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 。
+
+
+
+
 >>>>>>> 289dfb4acf93c964be860c648c6333f5854856c0
 
