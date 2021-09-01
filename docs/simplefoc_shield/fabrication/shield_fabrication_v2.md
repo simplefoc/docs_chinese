@@ -252,8 +252,3 @@ Version  | link | Release date | Comment
 
 从我们的 [商店](https://simplefoc.com/simplefoc_shield_product) 中购买完成测试好装配好的 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 。
 
-
-
-
->>>>>>> 289dfb4acf93c964be860c648c6333f5854856c0
-
