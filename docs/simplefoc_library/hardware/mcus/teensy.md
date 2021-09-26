@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Teensy 板
+title: Teensy
 nav_order: 5
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /teensy_mcu

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: ESP32板
+title: ESP32
 nav_order: 3
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /esp32_mcu

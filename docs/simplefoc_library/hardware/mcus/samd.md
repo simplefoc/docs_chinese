@@ -1,6 +1,6 @@
 ---
 layout: default
-title: SAMD21/51 板
+title: SAMD21/51
 nav_order: 6
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /samd_mcu

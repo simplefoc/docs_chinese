@@ -1,6 +1,6 @@
 ---
 layout: default
-title: STM32 板
+title: STM32
 nav_order: 2
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /stm32_mcu

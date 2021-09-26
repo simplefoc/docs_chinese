@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 树莓派 Pico 板
+title: 树莓派 Pico
 nav_order: 7
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /rpi_mcu

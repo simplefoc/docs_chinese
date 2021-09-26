@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Arduino板
+title: Arduino
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /arduino_mcu
