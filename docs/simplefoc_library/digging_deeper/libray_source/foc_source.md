@@ -2,7 +2,7 @@
 layout: default
 title: FOC 算法
 parent: Library Source
-grand_parent: Digging deeper
+grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 nav_order: 1
 permalink: /foc_implementation
@@ -37,7 +37,6 @@ motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 ```
 
 <blockquote class="info"> <p class="heading">注意：</p>更多FOC算法的理论知识，请访问<a href="foc_theory"> foc theory corner</a>. </blockquote>
-
 两种调制类型和相电压计算在`setPhaseVoltage()` 函数中完全实现。下面是例子。
 
 ```cpp

@@ -4,7 +4,7 @@ title: 库实例
 parent: Library Source
 nav_order: 5
 permalink: /library_examples
-grand_parent: Digging deeper
+grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 

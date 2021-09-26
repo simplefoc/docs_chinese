@@ -2,7 +2,7 @@
 layout: default
 title: 支持的传感器
 parent: Library Source
-grand_parent: Digging deeper
+grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 nav_order: 3
 permalink: /sensor_support

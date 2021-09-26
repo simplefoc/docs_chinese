@@ -2,7 +2,7 @@
 layout: default
 title: Arduino SimpleFOClibrary 源代码
 nav_order: 1
-parent: Digging deeper
+parent: 深入研究
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /source_code
@@ -30,7 +30,6 @@ arduino库代码被组织成标准 [Arduino library structure（Arduino的库结
 ```
 
 <blockquote class="info">更多信息，请访问<a href="http://source.simplefoc.com/" target="_blank"> full source code documentation <i class="fa fa-external-link fa-sm"></i></a></blockquote>
-
 ## 电机
 ### `BLDCMotor.cpp/h`
 无刷直流电机的实现

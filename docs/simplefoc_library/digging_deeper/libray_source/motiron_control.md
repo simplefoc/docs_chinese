@@ -4,7 +4,7 @@ title: 运动控制
 parent: Library Source
 nav_order: 2
 permalink: /motion_control_implementation
-grand_parent: Digging deeper
+grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
@@ -123,7 +123,6 @@ struct LPF_s{
 控制回路的实现非常简单，基本上将目标电压设置为`voltage_q`变量，以便使用FOC算法`loopFOC()`将其设置为电机。
 
 <blockquote class="warning"><p class="heading">API使用</p>有关如何使用该控制环的更多信息，请查看<a href="voltage_loop"> voltage loop api docs</a></blockquote>
-
 ### 基于电压理论的力矩控制
 有关这类控制理论的更多信息，请访问 [ theory lovers corner ](voltage_torque_control)
 
@@ -186,7 +185,6 @@ struct PI_s{
 ```
 
 <blockquote class="warning"><p class="heading">API usage</p>有关如何使用该控制环的信息，请查看<a href="velocity_loop"> velocity loop api docs</a></blockquote>
-
 ### PI控制器理论
 
 有关在该库中实现的hte PI控制器理论的更多信息，请访问[theory lovers corner](pi_controller)
