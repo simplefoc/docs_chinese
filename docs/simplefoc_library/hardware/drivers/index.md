@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 驱动器
+title: 驱动板
 parent: 支持的硬件
 nav_order: 2
 description: "Arduino Simple Field Oriented Control (FOC) library ."
