@@ -4,7 +4,7 @@ title: 无刷直流电机
 nav_order: 1
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /bldc_motors
-parent: 支持的无刷直流电机
+parent: 电机
 grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
