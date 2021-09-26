@@ -2,7 +2,7 @@
 layout: default
 title: v1.3.3
 parent: 焊盘部分
-grand_parent: Getting Started
+grand_parent: 开始上手
 description: "Configuring your SimpleFOCShield by soldering the pads."
 nav_order: 1
 permalink: /pads_soldering_v1
