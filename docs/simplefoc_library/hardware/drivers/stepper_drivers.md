@@ -4,7 +4,7 @@ title: 步进电机驱动器
 nav_order: 2
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /stepper_drivers
-parent: 驱动板
+parent: 驱动器
 grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
