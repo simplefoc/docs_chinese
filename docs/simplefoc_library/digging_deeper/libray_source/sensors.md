@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 支持的传感器
-parent: Library Source
+parent: Arduino SimpleFOClibrary 源代码
 grand_parent: 深入研究
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 nav_order: 3

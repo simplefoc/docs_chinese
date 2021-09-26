@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 库实例
-parent: Library Source
+parent: Arduino SimpleFOClibrary 源代码
 nav_order: 5
 permalink: /library_examples
 grand_parent: 深入研究

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 电机命令
-parent: Library Source
+parent: Arduino SimpleFOClibrary 源代码
 nav_order: 4
 permalink: /commands_source
 grand_parent: 深入研究

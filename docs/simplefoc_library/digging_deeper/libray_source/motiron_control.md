@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 运动控制
-parent: Library Source
+parent: Arduino SimpleFOClibrary 源代码
 nav_order: 2
 permalink: /motion_control_implementation
 grand_parent: 深入研究
