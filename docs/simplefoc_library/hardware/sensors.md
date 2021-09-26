@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 支持的传感器
+title: 传感器
 nav_order: 3
 parent: 支持的硬件
 description: "Arduino Simple Field Oriented Control (FOC) library ."
