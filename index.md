@@ -15,7 +15,9 @@ permalink: /
 
 相比于直流电机，无刷电机的优点可谓数不胜数，但同时它也拥有巨大的不足，那就是控制过于复杂。尽管身处工具链和PCB制造设计技术发达，设计自己的PCB变得很容易的年代，但一个低成本的无刷电机驱动方案却尚未出现。其中一个原因就是自行编写无刷电机的驱动方案太过复杂，尽管我们可以在网上找到很多成熟的FOC代码方案，但他们大部分都针对特定的硬件配置、特定的单片机；同时，现在很多的FOC算法和硬件开发尝试都是围绕着高功率无刷电机应用，低成本低功率的FOC硬件十分难找，甚至根本就找不到。
 
-**如果在国内的朋友访问速度慢，可以访问中国国内中文文档镜像站**: [http://simplefoc.cn/](http://simplefoc.cn/#/)
+**灯哥开源** 是SimpleFOC官方中文资料的维护者。作为中文官方，我不仅及时更新SimpleFOC的中文翻译和技术资料，还基于SimpleFOC库开发了全开源的基于ESP32的双路无刷电机控制器硬件[DengFOC](https://github.com/ToanTech/Deng-s-foc-controller)。作为SimpleFOC技术的提倡者,欢迎大家使用SimpleFOC开源技术，若对中文资料有翻译问题或者疑惑，也欢迎大家联系我 (QQ：915767895)。
+
+**如果在国内的朋友访问速度慢，可以访问中国国内中文文档镜像站**： [http://simplefoc.cn/](http://simplefoc.cn/#/)
 
 <br>
 
@@ -28,23 +30,18 @@ permalink: /
    - ***新*** 📢: 支持*中功率* 无刷直流电驱动器的板子（<30A）： [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
    - 另外 [@byDagor](https://github.com/byDagor) *也做了完全集成的* 基于ESP32 的板子，大家可以一看： [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
 
-<blockquote class="info">
-   <p class="heading">新版本 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.1.1 - <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.1.1">请参阅版本</a></p>
-   <ul>
-      <li>初步支持 Raspberry pi Pico  - <a href="rpi_mcu">请参阅文档</a></li>
-      <li>支持 SAMD51  - <a href="samd_mcu">请参阅文档</a></li>
-      <li>完全支持 <a href="studio">Simple<b>FOC</b>Studio</a>  - <a href="studio">具体请参阅文档</a></li>
-      <li>增加了对  <code class="highlighter-rouge">PWM制式磁编码器</code> 的初始支持 <a href="magnetic_sensor_pwm">请参阅文档</a></li>
-      <li>改进了 esp32 的实现，新版本不用修改 @tschundler 对 <code class="highlighter-rouge">mcpwm.h</code> </li>
-      <li>增加了 PowerShield 的实例 </li>
-      <li>增加的 PowerShield 实例，能找出模拟信号和 PWM 制式传感器的最大值和最小值</li>
-      <li>在库里增加了 commander 方法+附加的命令  - <a href="commander_interface">请参阅文档</a></li>
-   </ul>
-</blockquote>
+
+
+灯哥开源专注于FOC技术，可定制化，资料齐全售后周到，也是simplefoc的中文官方，Docs文档所有更新的内容同时更新在中文官网。
 
 
 
-## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.1.1</small></i>
+<blockquote class="info">   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.1 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.1">查看版本</a></p>   <ul>      <li>修复了传感器的类 init 的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/121">#121</a></li>      <li>处理了电压/电流限制的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/118">#118</a></li>      <li>为命令行增加了新的运动控制界面 <a href="https://docs.simplefoc.com/commander_target">查看文档</a>      <ul>         <li>新的target设置 - 可以立即设置位置、电压和扭矩</li>         <li>将运动控制接口与全电机回调分离 - 只有运动控制和转矩控制类型，enable disable和target设置</li>      </ul>      </li>      <li>支持新的MCU <a href="https://docs.simplefoc.com/microcontrollers">查看文档</a>      <ul>        <li>NRF52系列的支持者是 <a href="https://github.com/Polyphe">@Polyphe</a></li>        <li><b>esp32 arduino 的包转到 v2.0.1+</b> -  <a href="https://github.com/simplefoc/Arduino-FOC/pull/92/149">PR#149</a> 支持者是 <a href="https://github.com/samguns">samguns</a></li>        <li>初步支持 esp32s2 和 esp32s3 - 分离 esp32 的mcpwm 和 led 实现 </li>      </ul>      </li>      <li>通用传感器类 - 要实现一个新的传感器，只需要执行一个功能 <a href="https://docs.simplefoc.com/generic_sensor">查看文档</a></li>      <li>Arduino库管理器的 <a href="/drivers_library">驱动器库</a> v1.0.0 首次发布</li>      </ul></blockquote>
+
+
+
+
+## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.1</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
