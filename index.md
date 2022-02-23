@@ -32,14 +32,6 @@ permalink: /
 
 
 
-这是一个开源的低成本无刷直流(BLDC)电机驱动器项目，主要用于最大5A电流的低功率的FOC应用。该驱动器完全兼容Arduino UNO和所有标准Arduino接口的主控板。SimpleFOCShield结合SimpleFOClibrary提供了友好的方式来控制无刷直流电机的硬件和软件。
-
-灯哥开源专注于FOC技术，可定制化，资料齐全售后周到，也是simplefoc的中文官方，Docs文档所有更新的内容同时更新在中文官网。
-
-相比于直流电机，无刷电机的优点可谓数不胜数，但同时它也拥有巨大的不足，那就是控制过于复杂。尽管身处工具链和PCB制造设计技术发达，设计自己的PCB变得很容易的年代，但一个低成本的无刷电机驱动方案却尚未出现。
-
-
-
 <blockquote class="info">   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.1 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.1">查看版本</a></p>   <ul>      <li>修复了传感器的类 init 的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/121">#121</a></li>      <li>处理了电压/电流限制的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/118">#118</a></li>      <li>为命令行增加了新的运动控制界面 <a href="https://docs.simplefoc.com/commander_target">查看文档</a>      <ul>         <li>新的target设置 - 可以立即设置位置、电压和扭矩</li>         <li>将运动控制接口与全电机回调分离 - 只有运动控制和转矩控制类型，enable disable和target设置</li>      </ul>      </li>      <li>支持新的MCU <a href="https://docs.simplefoc.com/microcontrollers">查看文档</a>      <ul>        <li>NRF52系列的支持者是 <a href="https://github.com/Polyphe">@Polyphe</a></li>        <li><b>esp32 arduino 的包转到 v2.0.1+</b> -  <a href="https://github.com/simplefoc/Arduino-FOC/pull/92/149">PR#149</a> 支持者是 <a href="https://github.com/samguns">samguns</a></li>        <li>初步支持 esp32s2 和 esp32s3 - 分离 esp32 的mcpwm 和 led 实现 </li>      </ul>      </li>      <li>通用传感器类 - 要实现一个新的传感器，只需要执行一个功能 <a href="https://docs.simplefoc.com/generic_sensor">查看文档</a></li>      <li>Arduino库管理器的 <a href="/drivers_library">驱动器库</a> v1.0.0 首次发布</li>      </ul></blockquote>
 
 
