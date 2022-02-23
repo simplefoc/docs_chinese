@@ -20,7 +20,7 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
 ```cpp
 // 霍尔传感器实例
-// HallSensor(int hallA, int hallB , int cpr, int index)
+// HallSensor(int hallA, int hallB , int hallC, int pp)
 //  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
 //  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
@@ -193,7 +193,7 @@ motor.linkSensor(&sensor);
 #include <SimpleFOC.h>
 
 // 霍尔传感器实例
-// HallSensor(int hallA, int hallB , int cpr, int index)
+// HallSensor(int hallA, int hallB , int hallC, int pp)
 //  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
 //  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
@@ -234,7 +234,7 @@ void loop() {
 #include <SimpleFOC.h>
 
 // 霍尔传感器实例
-// HallSensor(int hallA, int hallB , int cpr, int index)
+// HallSensor(int hallA, int hallB , int hallC, int pp)
 //  - hallA, hallB, hallC    - 霍尔传感器 A、 B 和 C 引脚
 //  - pp                     - 极对数
 HallSensor sensor = HallSensor(2, 3, 4, 11);
