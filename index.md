@@ -11,11 +11,13 @@ permalink: /
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)
 
+[![status](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d/status.svg)](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d)
+
 时代的进步通常令人激动。现今，无刷电机已经进入各种爱好者DIY社区，并且出现了很多高质量且拥有优异性能的无刷电机驱动方案。
 
 相比于直流电机，无刷电机的优点可谓数不胜数，但同时它也拥有巨大的不足，那就是控制过于复杂。尽管身处工具链和PCB制造设计技术发达，设计自己的PCB变得很容易的年代，但一个低成本的无刷电机驱动方案却尚未出现。其中一个原因就是自行编写无刷电机的驱动方案太过复杂，尽管我们可以在网上找到很多成熟的FOC代码方案，但他们大部分都针对特定的硬件配置、特定的单片机；同时，现在很多的FOC算法和硬件开发尝试都是围绕着高功率无刷电机应用，低成本低功率的FOC硬件十分难找，甚至根本就找不到。
 
-**灯哥开源** 是SimpleFOC官方中文资料的维护者。作为中文官方，我不仅及时更新SimpleFOC的中文翻译和技术资料，还基于SimpleFOC库开发了全开源的基于ESP32的双路无刷电机控制器硬件[DengFOC](https://github.com/ToanTech/Deng-s-foc-controller)。作为SimpleFOC技术的提倡者，欢迎大家使用SimpleFOC开源技术，若对中文资料有翻译问题或者疑惑，也欢迎大家联系我 (QQ：915767895)。
+**灯哥开源** 是SimpleFOC官方中文资料的维护者。作为中文官方，我不仅及时更新SimpleFOC的中文翻译和技术资料，还基于SimpleFOC库开发了全开源的基于ESP32的双路无刷电机控制器硬件[DengFOC](https://github.com/ToanTech/Deng-s-foc-controller)。作为SimpleFOC技术的提倡者,欢迎大家使用SimpleFOC开源技术，若对中文资料有翻译问题或者疑惑，也欢迎大家联系我 (QQ：915767895)。
 
 **如果在国内的朋友访问速度慢，可以访问中国国内中文文档镜像站**： [http://simplefoc.cn/](http://simplefoc.cn/#/)
 
@@ -26,37 +28,92 @@ permalink: /
 - 🎯 揭开 FOC 算法的神秘面纱，制作一个强大而简单的 Arduino 库： [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> ](#arduino-simplefoclibrary-v160)
   - <i>此库要支持尽可能多的**电机+传感器+电流检测+驱动器+单片机 **，做到通用性</i>
 - 🎯 建立几套适应不同应用情况的低成本FOC驱动板：
+   - ***新*** 📢: *简化版* 无刷直流驱动器 (<3Amps) :   [<span class="simple">Simple<b>FOC</b>Mini</span> ](https://github.com/simplefoc/SimpleFOCMini).
    - 支持*小功率* 云台设备的板子（<5A）：   [Arduino <span class="simple">Simple<b>FOC</b>Shield</span> ](arduino_simplefoc_shield_showcase).
-   - ***新*** 📢: 支持*中功率* 无刷直流电驱动器的板子（<30A）： [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
+   - 支持*中等功率* 无刷直流电驱动器的板子（<30A）： [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
    - 另外 [@byDagor](https://github.com/byDagor) *也做了完全集成的* 基于ESP32 的板子，大家可以一看： [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
 
+<blockquote class="success">
+<p class="heading">新消息 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> 已经发表在开源软件杂志上 <a href="citing">阅读更多</a></p>
+
+SimpleFOC: A Field Oriented Control (FOC) Library for Controlling Brushless Direct Current (BLDC) and Stepper Motors.<br>
+A. Skuric, HS. Bank, R. Unger, O. Williams, D. González-Reyes<br>
+Journal of Open Source Software, 7(74), 4232<br>
+</blockquote>
+
+<blockquote class="info">
+   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.2 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.2">see release</a></p>
+   <ul>
+      <li>GenericCurrentSense 的错误修复和测试</li>
+      <li>修复错误 leonardo #170</li>
+      <li>错误修复 - 指定自然方向后没有索引搜索</li>
+      <li>Low level API 重构
+         <ul dir="auto">
+            <li>
+                驱动程序 API</li>
+            <li>电流检测 API</li>
+         </ul>
+      </li>
+      <li>新的调试界面 - <a href="debugging">查看文档</a>
+         <ul dir="auto">
+            <li>静态类 SimpleFOCDebug</li>
+         </ul>
+      </li>
+      <li>CurrentSense API 的变化 - 增加方法 <code class="highlighter-rouge">linkDriver()</code> - <a href="current_sense">查看文档</a></li>
+      <li>低端电流检测 - <a href="low_side_current_sense">查看文档</a>
+         <ul dir="auto">
+            <li>ESP32 对多电机的通用支持</li>
+            <li>为 stm32 添加了低侧电流检测支持 - 仅一个电机
+            <ul dir="auto">
+               <li>f1 family</li>
+               <li>f4 family</li>
+               <li>g4 family</li>
+            </ul>
+            </li>
+         </ul>
+      </li>
+      <li>New appraoch for current estimation for torque control using voltage使用电压控制扭来预测电流的新方法 - <a href="voltage_torque_mode">查看文档</a>
+         <ul dir="auto">
+            <li>支持电机 KV 额定值 - 反电动势估计</li>
+            <li>使用电机相电阻</li>
+         </ul>
+      </li>
+      <li>KV 额定值和相电阻也用于开环电流限制 - <a href="open_loop_motion_control">查看文档 </a> </li>
+   </ul>
+</blockquote>
 
 
-<blockquote class="info">   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.1 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.1">查看版本</a></p>   <ul>      <li>修复了传感器的类 init 的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/121">#121</a></li>      <li>处理了电压/电流限制的bug <a href="https://github.com/simplefoc/Arduino-FOC/issues/118">#118</a></li>      <li>为命令行增加了新的运动控制界面 <a href="https://docs.simplefoc.com/commander_target">查看文档</a>      <ul>         <li>新的target设置 - 可以立即设置位置、电压和扭矩</li>         <li>将运动控制接口与全电机回调分离 - 只有运动控制和转矩控制类型，enable disable和target设置</li>      </ul>      </li>      <li>支持新的MCU <a href="https://docs.simplefoc.com/microcontrollers">查看文档</a>      <ul>        <li>NRF52系列的支持者是 <a href="https://github.com/Polyphe">@Polyphe</a></li>        <li><b>esp32 arduino 的包转到 v2.0.1+</b> -  <a href="https://github.com/simplefoc/Arduino-FOC/pull/92/149">PR#149</a> 支持者是 <a href="https://github.com/samguns">samguns</a></li>        <li>初步支持 esp32s2 和 esp32s3 - 分离 esp32 的mcpwm 和 led 实现 </li>      </ul>      </li>      <li>通用传感器类 - 要实现一个新的传感器，只需要执行一个功能 <a href="https://docs.simplefoc.com/generic_sensor">查看文档</a></li>      <li>Arduino库管理器的 <a href="/drivers_library">驱动器库</a> v1.0.0 首次发布</li>      </ul></blockquote>
 
 
-
-
-## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.1</small></i>
+## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.2</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
 ### 特性
-- **兼容 Arduino**：
-   - Arduino 库代码
-  - Arduino 库管理器集成
+
+- **简易安装**: 
+  - Arduino IDE: Arduino 库管理器集成
+  - PlatformIO
+
 - **开源**：在github上可以获得完整的代码和文档
-- **易于设置和配置**：
-  - 硬件连接安装简单
-  - 易于 [调整控制模式，如 开环/闭环等](motion_control)
-- **模块化**：
+- **目标**: 
+   - 支持尽可能多的 [传感器](position_sensors) + [电机](motors) + [驱动器](drivers) + [电流检测](current_sense)   组合
+   - 提供包含 API 引用和示例的最新且深入的文档
+- **易于设置和配置**: 
+  - 简单的硬件配置
+  - 每个硬件组件都是一个 C++ 对象（易于理解）
+  - 轻松 [调整控制回路](motion_control)
+  - [*Simple**FOC**Studio*](studio) 配置 GUI 工具
+  - 内置通信和监控
+- **跨平台**：
   - 支持尽可能多的  [传感器，无刷直流电机和驱动器板](supported_hardware) 组合
+  - 从一个微控制器系列到另一个系列的无缝代码传输
   - 支持多种 [MCU架构](microcontrollers)：
-     - Arduino: UNO, MEGA, 任何带有 ATMega328 芯片的电路板
-     - STM32 板子： [Nucleo](https://www.st.com/en/evaluation-tools/stm32-nucleo-boards.html), [Bluepill](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html) ...
+     - Arduino: UNO, MEGA, DUE, Leonardo ...
+     - STM32 
      - ESP32
-     - Teensy 板子
-- **即插即用**：Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
+     - Teensy 
+     - 其他
 
 
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <i><small>v2.0.4</small></i>
