@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Build Flags
+title: 构建标志
 nav_order: 2
 permalink: /cheetsheet/build_flags
 parent: 选项查阅
@@ -10,7 +10,7 @@ has_toc: False
 ---
 
 
-# Build flags
+# 构建标志
 
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 支持一些高级用户可能会感兴趣的编译器选项。 它们如下所述。
 

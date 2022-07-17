@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Options Reference
+title: 选项
 nav_order: 1
 permalink: /cheetsheet/options_reference
 parent: 选项查阅
@@ -10,7 +10,7 @@ has_toc: False
 ---
 
 
-# Options
+# 选项
 
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 有许多选项，下表总结了重要的选项供您立即参考。
 
