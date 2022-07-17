@@ -3,7 +3,7 @@ layout: default
 title: Options Reference
 nav_order: 1
 permalink: /cheetsheet/options_reference
-parent: Options Cheat Sheet
+parent: 选项查阅
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: False
 has_toc: False

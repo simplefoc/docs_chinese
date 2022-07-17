@@ -3,7 +3,7 @@ layout: default
 title: Build Flags
 nav_order: 2
 permalink: /cheetsheet/build_flags
-parent: Options Cheat Sheet
+parent: 选项查阅
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: False
 has_toc: False
