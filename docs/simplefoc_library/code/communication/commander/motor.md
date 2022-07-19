@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 完整电机配置
+title: 完整是电机配置指令表
 nav_order: 4
 permalink: /commander_motor
 parent: Commander 接口
@@ -9,7 +9,7 @@ grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-# 使用 Commander 的完整电机配置
+# 完整的电机配置指令表
 
 <img src="extras/Images/motor_cmd.png" class="img150">
 
