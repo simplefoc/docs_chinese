@@ -4,8 +4,8 @@ title: 标量变量
 nav_order: 1
 permalink: /commander_scalar
 parent: Commander 接口
-grand_parent: Communication
-grand_grand_parent: Writing the Code
+grand_parent: 内置通信接口
+grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
