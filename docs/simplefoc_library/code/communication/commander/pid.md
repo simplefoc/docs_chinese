@@ -1,9 +1,9 @@
 ---
 layout: default
-title: PID config
+title: PID 配置
 nav_order: 2
 permalink: /commander_pid
-parent: Commander Interface
+parent: Commander 接口
 grand_parent: Communication
 grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>

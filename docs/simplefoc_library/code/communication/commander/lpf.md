@@ -1,9 +1,9 @@
 ---
 layout: default
-title: LPF config
+title: LPF 配置
 nav_order: 3
 permalink: /commander_lpf
-parent: Commander Interface
+parent: Commander 接口
 grand_parent: Communication
 grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>

@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Scalar variable
+title: 标量变量
 nav_order: 1
 permalink: /commander_scalar
-parent: Commander Interface
+parent: Commander 接口
 grand_parent: Communication
 grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>

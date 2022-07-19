@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Custom commands
+title: 自定义命令
 nav_order: 6
 permalink: /commander_custom
-parent: Commander Interface
+parent: Commander 接口
 grand_parent: Communication
 grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
