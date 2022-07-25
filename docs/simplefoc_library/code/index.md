@@ -390,22 +390,22 @@ In this example we will use Stepper motor:
 //  StepperMotor( int pole_pairs , (phase_resistance, KV_rating optional))
 StepperMotor motor = StepperMotor(50);
  
-// instantiate driver
-// instantiate sensor 
-// instantiate current sensor   
+ // 实例化驱动器
+ // 实例化传感器 
+ // 实例化电流检测   
 
 void setup() {  
-  // init sensor
-  // link the motor to the sensor
+  // 初始化传感器
+  // 连接电机和传感器
   motor.linkSensor(&sensor);
 
-  // init driver
-  // link the motor to the driver
+  // 初始化驱动器
+  // 连接电机和驱动器
   motor.linkDriver(&driver);
   
-  // set control loop type to be used
+  // 设置要使用的控制回路类型
   motor.controller = MotionControlType::velocity;
-  // initialize motor
+  // 初始化电机
   motor.init();
 
 }
