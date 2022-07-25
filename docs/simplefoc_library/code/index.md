@@ -27,10 +27,24 @@ parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</
  - [编码器](encoder): 支持光学、电容式、磁编码器 （ABI方式）
  - [磁性传感器](magnetic_sensor): 支持SPI, I2C, PWM以及Analog （模拟输出）
  - [霍尔传感器](hall_sensors): 3x霍尔探头, 磁性传感器 （UVW 接口）
+ - [通用传感器](generic_sensor) **新📢**：简化传感器的实现，用于添加自定义传感器
 
 选择恰当的位置传感器运行以下例程：
 
-<a href ="javascript:showMagnetic();" id="mag" class="btn btn-primary">磁性传感器</a> <a href="javascript:showEncoder();" id="enc" class="btn">编码器</a> 
+<script type="text/javascript">
+    function show(id,cls){
+        Array.from(document.getElementsByClassName(cls)).forEach(
+        function(e){e.style.display = "none";});
+        document.getElementById(id).style.display = "block";
+        Array.from(document.getElementsByClassName("btn-"+cls)).forEach(
+        function(e){e.classList.remove("btn-primary");});
+        document.getElementById("btn-"+id).classList.add("btn-primary");
+    }
+</script>
+
+<a href="javascript:show(0,'sensor');" id="bnt-0 " class="btn btn-sensor btn-primary">编码器</a> 
+<a href ="javascript:show(1,'sensor');" id="btn-1" class="btn btn-sensor">磁性传感器</a> 
+<a href ="javascript:show(2,'sensor');" id="btn-2" class="btn btn-sensor"> 霍尔传感器</a> 
 
 ```c
 #include <SimpleFOC.h>
@@ -55,7 +69,21 @@ void loop() {
 }
 ```
 
-```c++
+Encoders as position sensors are implemented in the class `Encoder` and are defined by its:
+
+位置传感器的编码器在`Encoder`类中实现，并由其定义：
+
+  - `A` 和 `B` 通道的引脚编号： `2` 和 `3`
+  - 编码器  `PPR` (每转脉冲数)： `2048`
+  - `Index` 引脚数量 *（可选）*
+
+</div>
+
+
+
+
+
+```cpp
 #include <SimpleFOC.h>
 
 // SPI 例程
@@ -72,26 +100,51 @@ void loop() {
 }
 ```
 
-<div id="enc_p" class="hide_p">
-例程中以编码器作为位置传感器在类 <code class="highlighter-rouge">Encoder</code> 中的实现与定义如下：
-  <ul>
-    <li> <code class="highlighter-rouge">A</code> 和 <code class="highlighter-rouge">B</code> 通道的引脚编号: <code class="highlighter-rouge">2</code> 和 <code class="highlighter-rouge">3</code></li>
-    <li> 编码器  <code class="highlighter-rouge">PPR</code> (每转脉冲数): <code class="highlighter-rouge">2048</code></li>
-    <li> <code class="highlighter-rouge">I</code> 引脚 <i>（可选）</i> </li>
-  </ul> 
+这是连接到引脚  `10` 的基于 14 位 SPI 的磁传感器 <a href="https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D">（例如AS5047u） <i class="fa fa-external-link"></i></a>  的示例初始化。<br>
+通信的磁传感器在`MagneticSensorSPI`类中实现，并由其定义
+
+ - `chip_select` 引脚: `10`
+ - ht 传感器整体的位分辨率 `12`   `CPR`  可以计算为 `CPR = 2^14bit =16384` 
+ - `angle` SPI 寄存器: `0x3FFF`
+
 </div>
 
 
-<div id="mag_p" class="hide_p">
-在例程中，我们使用了14 位磁性传感器进行设置，比如：<a href="https://www.mouser.fr/ProductDetail/ams/AS5X47U-TS_EK_AB?qs=sGAEpiMZZMve4%2FbfQkoj%252BBDLPCj82ZLyYIPEtADg0FE%3D">AS5047u<i class="fa fa-external-link"></i></a>, 并将其与引脚<code class="highlighter-rouge">10</code>连接。<br>
-磁性传感器使用SPI方式通讯，在类<code class="highlighter-rouge">MagneticSensorSPI</code>中的实现与定义如下：
-  <ul>
-    <li><code class="highlighter-rouge">chip_select</code> 引脚: <code class="highlighter-rouge">10</code> </li>
-    <li> 传感器总 <code class="highlighter-rouge">CPR</code>（每圈脉冲数）:   <code class="highlighter-rouge">CPR = 2^14bit =16384</code></li>
-    <li> <code class="highlighter-rouge">angle</code> SPI 寄存器: <code class="highlighter-rouge">0x3FFF</code></li> 
-  </ul>
-</div>
 
+```cpp
+#include <SimpleFOC.h>
+
+// 霍尔传感器实例
+// HallSensor(int hallA, int hallB , int hallC , int pp)
+//  - hallA, hallB, hallC    - HallSensor A, B and C pins
+//  - pp                     - pole pairs
+HallSensor sensor = HallSensor(2, 3, 4, 11);
+
+// 中断程序初始化
+// 通道 A and B 回调
+void doA(){sensor.handleA();}
+void doB(){sensor.handleB();}
+void doC(){sensor.handleC();}
+
+void setup() {
+  // 初始化传感器硬件
+  sensor.init();
+  // 硬件中断
+  sensor.enableInterrupts(doA, doB, doC);
+}
+
+void loop() {
+
+}
+```
+
+这是一个霍尔位置传感器连接到 `11` 极对电机的例子。<br>
+霍尔传感器实现了 `HallSensors` 类，并由其定义 
+
+ -  引脚 `hallA`, `hallB` 和 `hallC`：`2`, `3` 和 `4`
+ - 电机极对数： `11`
+
+</div>
 
 
 执行 `sensor.init()`，初始化传感器硬件引脚
@@ -100,11 +153,17 @@ void loop() {
 
 
 ## 步骤2 <a href="drivers_config" class="remove_dec">设置驱动器</a>
-配置好位置传感器后，我们开始初始化和配置驱动器。该库支持由类`BLDCDriver3PWM` 和 `BLDCDriver6PWM`  控制的无刷直流电机驱动器以及由类`StepperDriver4PWM` 控制的步进电机驱动器。
+配置好位置传感器后，我们开始初始化和配置驱动器。该库支持由类`BLDCDriver3PWM` 和 `BLDCDriver6PWM`  控制的[无刷直流电机驱动器](bldcdriver)以及由类  `StepperDriver2PWM` 和  `StepperDriver4PWM` 控制的 [步进电机驱动器](stepperdriver) 。
 
-类`BLDCDriver3PWM`的实例化需要以下参数 ：
+<a href="javascript:show('0d','driver');" id="btn-0d" class="btn-driver btn btn-primary">BLDC Driver - 3PWM</a> 
 
--  `A`, `B` 和 `C` 相对应的引脚编号
+<a href ="javascript:show('1d','driver');" id="btn-1d" class="btn-driver btn">Stepper Driver 4PWM</a>
+
+
+
+类`BLDCDriver3PWM` 的实例化需要以下参数 ：
+
+-  用于 `A`, `B` 和 `C` 相对应的 pwm 引脚
 - `enable` 的引脚编号 *（可选）*
 
 例如：
@@ -120,9 +179,13 @@ void setup() {
 
   // 初始化传感器
 
-  // 电源电压
+  // pwm 频率 [Hz]
+  driver.pwm_frequency = 20000;
+  // 电源电压 [V]
   driver.voltage_power_supply = 12;
-  // 初始化驱动器
+  // 允许的最大直流电压-默认电压
+  driver.voltage_limit = 12;
+  // 初始化 driver
   driver.init();
 
 }
@@ -132,12 +195,59 @@ void loop() {
 }
 ```
 
+</div>
+
+<div id="1d" class="driver" markdown="1" style="display:none">
+
+`StepperDriver4PWM` 的实例化需要以下参数 ：
+
+- 相位 `1` 的 pwm 引脚号: `1A`, `1B`
+- 相位 `2` 的 pwm 引脚号: `2A`, `2B`
+- 每个相位的使能引脚 *（可选）*: `EN1` 和 `EN2`
+
+例如：
+
+```cpp
+#include <SimpleFOC.h>
+
+// 步进 driver 实例
+StepperDriver4PWM driver = StepperDriver4PWM(5, 6, 9,10, 7, 8);
+
+// 实例化传感器 
+
+void setup() {
+  
+  // 初始化传感器
+
+  // pwm频率 [Hz]
+  driver.pwm_frequency = 20000;
+  // 电源电压 [V]
+  driver.voltage_power_supply = 12;
+  // 允许的最大直流电压 - 默认电压
+  driver.voltage_limit = 12;
+  
+  // 初始化 driver
+  driver.init();
+
+}
+
+void loop() {
+
+}
+```
+
+</div>
 
 完整的设置和参数配置文件，请访问 <a href="drivers_config"> 驱动器 docs <i class="fa fa-external-link"></i></a>。
 
 
 ## 步骤3 <a href="current_sense" class="remove_dec">设置电流检测</a>
-配置好位置传感器及驱动器后，如果驱动器支持电流检测的话，就要初始化和配置电流检测。如果不支持的话，可以跳过这一步。 该库暂时仅支持在线电流检测 `InlineCurrentSense`这一种电流检测方式。 
+配置好位置传感器及驱动器后，如果驱动器支持电流检测的话，就要初始化和配置电流检测。如果不支持的话，可以跳过这一步。 该库支持两种类型的电流检测架构：
+
+- 在线电流检测 `InlineCurrentSense`. 
+- 低端电流检测 `LowsideCurrentSense`. 
+
+
 
 类`InlineCurrentSense` 的实例化需要以下参数：
 - 采样电阻的阻值 `shunt_resistance`
@@ -151,7 +261,7 @@ void loop() {
 // 实例化驱动器
 // 实例化传感器
 
-//  InlineCurrentSense(shunt_resistance分流电阻, gain增益, adc_a, adc_b)
+//  InlineCurrentSense(shunt_resistance, gain, adc_a, adc_b)
 InlineCurrentSense current_sense = InlineCurrentSense(0.01, 50, A0, A2);
 
 
@@ -161,6 +271,8 @@ void setup() {
 
   // 初始化驱动器
 
+  // 连接 driver 和电流检测
+  current_sense.linkDriver(&driver);        
   // 初始化电流检测
   current_sense.init();
 
@@ -171,30 +283,69 @@ void loop() {
 }
 ```
 
+</div>
+
+
+<div id="1cs" class="cs" markdown="1" style="display:none">
+
+
+`LowsideCurrentSense` class is instantiated by providing:
+
+- shunt resistor value `shunt_resistance`
+- amplifier gain `gain`
+- analog pin numbers for phases `A`, `B` (and optionally `C`) 
+
+For example:
+
+```cpp
+#include <SimpleFOC.h>
+
+// 实例化 driver
+// 实例化传感器
+
+//  LowsideCurrentSense(shunt_resistance, gain, adc_a, adc_b, adc_c)
+LowsideCurrentSense current_sense = LowsideCurrentSense(0.01, 50, A0, A1, A2);
+
+
+void setup() {  
+
+  // 初始化传感器
+
+  // 初始化 driver
+
+  // 连接 driver 和电流检测
+  current_sense.linkDriver(&driver);
+  // 初始化电流检测
+  current_sense.init();
+
+}
+
+void loop() {
+
+}
+```
+
+</div>
 
 完整的设置和参数配置文件，请访问<a href="current_sense"> 电流检测 docs <i class="fa fa-external-link"></i></a>。
 
 
 
 ## 步骤4 <a href="motors_config" class="remove_dec">设置电机</a>
-配置好位置传感器及驱动器后，我们开始初始化和配置电机。 该库支持由 `BLDCMotor` 类控制的无刷直流电机以及由 `StepperMotor` 类控制的步进电机。仅需填入电机极对数就能实现这两个类的控制。
+配置好位置传感器及驱动器后，我们开始初始化和配置电机。 该库支持由 `BLDCMotor` 类控制的无刷直流电机以及由 `StepperMotor` 类控制的步进电机。通过电机的 `pole_pairs` 以及可选的电机相电阻和 KV 额定值来实例化这两个类。
 
-```cpp
-// StepperMotor(int pole_pairs极对数)
-StepperMotor motor = StepperMotor(50);
-```
-```cpp 
-// BLDCMotor(int pole_pairs极对数)
-BLDCMotor motor = BLDCMotor(11);
-```
+<a href="javascript:show('0m','motor');" id="btn-0m" class="btn-motor btn btn-primary">BLDC motor</a> 
+<a href ="javascript:show('1m','motor');" id="btn-1m" class="btn-motor btn">Stepper motor</a>
+
+<div id="0m" class="motor" markdown="1" style="display:block">
 
 
 在这一例程，我们使用了无刷直流电机：
 ```cpp
 #include <SimpleFOC.h>
 
-//  BLDCMotor( int pole_pairs极对数 )
-BLDCMotor motor = BLDCMotor( 11);
+//  BLDCMotor( pole_pairs , ( phase_resistance, KV_rating  optional) )
+BLDCMotor motor = BLDCMotor(11, 9.75);
  
 // 实例化驱动器
 // 实例化传感器 
@@ -208,14 +359,53 @@ void setup() {
   // 初始化驱动器
   // 连接电机和驱动器
   motor.linkDriver(&driver);
+  // 连接 driver 和电流检测
   
-  // 初始化电流检测
-  // 连接其至电机
+  // 连接电机和电流检测
   motor.linkCurrentSense(&current_sese);
 
   // 设置控制环类型
   motor.controller = MotionControlType::velocity;
   // 初始化电机
+  motor.init();
+    
+  // 初始化电流检测
+
+}
+
+void loop() {
+
+}
+```
+
+</div>
+
+<div id="1m" class="motor" markdown="1" style="display:none">
+
+In this example we will use Stepper motor:
+
+```cpp
+#include <SimpleFOC.h>
+
+//  StepperMotor( int pole_pairs , (phase_resistance, KV_rating optional))
+StepperMotor motor = StepperMotor(50);
+ 
+// instantiate driver
+// instantiate sensor 
+// instantiate current sensor   
+
+void setup() {  
+  // init sensor
+  // link the motor to the sensor
+  motor.linkSensor(&sensor);
+
+  // init driver
+  // link the motor to the driver
+  motor.linkDriver(&driver);
+  
+  // set control loop type to be used
+  motor.controller = MotionControlType::velocity;
+  // initialize motor
   motor.init();
 
 }
@@ -224,6 +414,8 @@ void loop() {
 
 }
 ```
+
+</div>
 
 在 创建`motor` 实例后，我们需要用`motor.linkSensor()` 连接传感器，用 `motor.linkDriver()`连接驱动器。  <br>下一步是配置电机。在这个配置例子中，我们仅用到了运动控制：
 
@@ -261,13 +453,15 @@ void setup() {
 
   // 初始化驱动器
   // 连接电机和驱动器
+  // 连接 driver 和电流检测
 
-  // 初始化电流检测
   // 连接电机和电流检测
 
   // 配置电机
   // 初始化电机
 
+  // 初始化电流检测    
+    
   // 校准编码器，启用FOC
   motor.initFOC();
 }
@@ -298,13 +492,14 @@ void loop() {
 // 实例化驱动器
 // 实例化传感器
 
-void setup() {  
+void setup() {  lly in order to configure the control algorithm, set the target values and get the state variables in the user-friendly way (not just dumping as using motor.monitor()) Arduino SimpleFOClibrary provides you wit
   
   // 初始化传感器
   // 连接电机和传感器
 
   // 初始化驱动器
   // 连接电机和驱动器
+  // 连接 driver 和电流检测 
 
   // 初始化电流检测
   // 连接电机和电流检测
@@ -316,6 +511,7 @@ void setup() {
   
   // 配置电机
   // 初始化电机
+  // 初始化电流检测
   
   // 校准编码器，启用FOC
 }
@@ -336,6 +532,14 @@ void loop() {
 
 最后，为了配置控制算法，设定目标值，以用户友好的方式获得状态变量（不只是像使用`motor.monitor()`那样的转储）。Arduino <span class="simple">Simple<span class="foc">FOC</span>库</span>  为你提供像通信接口一样的 G 代码，组成类 `Commander` 。
 
+
+
+<a href="javascript:show('0c','commander');" id="btn-0c" class="btn-commander btn btn-primary">完整的电机 commander</a> 
+<a href ="javascript:show('1c','commander');" id="btn-1c" class="btn-commander btn">仅电机目标值</a>
+<a href ="javascript:show('2c','commander');" id="btn-2c" class="btn-commander btn">运动控制目标+Led控制</a>
+
+<div id="0c" class="commander" markdown="1" style="display:block">
+
 以下代码是用户使用接口进行通信的基础实现：
 
 ```cpp
@@ -355,6 +559,7 @@ void setup() {
 
   // 初始化驱动器
   // 连接电机和驱动器
+  // 连接 driver 和电流检测
 
   // 初始化电流检测
   // 连接电机和电流检测
@@ -365,6 +570,59 @@ void setup() {
   commander.add('M',doMotor,"motor");
 
   // 初始化电机
+  
+  // 初始化电流检测
+    
+  // 校准编码器，启用FOC
+}
+
+void loop() {
+  
+  // 执行FOC
+  // 运动控制环
+  // 电机变量
+
+  // 读取用户命令
+  commander.run();
+}
+```
+</div>
+
+<div id="1c" class="commander" markdown="1" style="display:none">
+
+使用 commander 设置电机目标值的基本实现的代码：
+
+```cpp
+#include <SimpleFOC.h>
+
+// 实例化电机
+// 实例化传感器
+
+//实例化 commander
+Commander commander = Commander(Serial);
+void doTarget(char* cmd){commander.scalar(&motor.target, cmd);}
+
+void setup() {  
+  
+  // 初始化传感器
+  // 连接电机和传感器
+
+  // 初始化 driver
+  // 连接电机和 driver
+  // 连接 driver 和电流检测
+
+
+  // 初始化电流检测
+  // 连接电机和电流检测
+  
+  // 启用监控
+  
+  // 订阅电机命令
+  commander.add('T',doTarget,"target");
+
+  // 初始化电机
+
+  // 初始化电流检测
   
   // 校准编码器，启用FOC
 }
@@ -379,50 +637,12 @@ void loop() {
   commander.run();
 }
 ```
+
+</div>
+
+
+
 完整的设置和参数配置文件，请访问 <a href="communication"> 通信 docs</a>。
-
-
-<script type="text/javascript">
-    hideClass('language-c');
-    document.getElementById("enc_p").style.display = "none";
-
-    function showMagnetic(){
-        document.getElementById("enc").classList.remove("btn-primary");
-        document.getElementById("mag").classList.add("btn-primary");
-        hideClass('language-c');
-        showClass('language-c++');
-        hideClass('hide_p');
-        document.getElementById("mag_p").style.display = "block";
-
-
-        return 0;
-    }
-    
-    function showEncoder(){
-        document.getElementById("mag").classList.remove("btn-primary");
-        document.getElementById("enc").classList.add("btn-primary");
-        showClass('language-c');
-        hideClass('language-c++');
-        hideClass('hide_p');
-        document.getElementById("enc_p").style.display = "block";
-    
-        return 0;
-    }
-
-  function hideClass(class_name){
-    var elems = document.getElementsByClassName(class_name);
-    for (i = 0; i < elems.length; i++) {
-        elems[i].style.display = "none";
-    }
-  }
-  function showClass(class_name){
-    var elems = document.getElementsByClassName(class_name);
-    for (i = 0; i < elems.length; i++) {
-        elems[i].style.display = "block";
-    }
-  }
-
-</script>
 
 
 ## 步骤8 [分步使用教程](example_from_scratch)
