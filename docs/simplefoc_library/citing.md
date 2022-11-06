@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Citing SimpleFOC
+title: 引用 SimpleFOC
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 nav_order: 9
 permalink: /citing
