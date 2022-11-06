@@ -10,7 +10,7 @@ has_children: true
 has_toc: false
 ---
 
-# 支持的无刷直流电机
+# 支持的BLDC无刷直流电机
 
 <div class="width60">
 <img src="extras/Images/mot2.jpg" style="width:20%;display:inline"><img src="extras/Images/bigger.jpg" style="width:20%;display:inline"><img src="extras/Images/mot.jpg" style="width:20%;display:inline"><img src="extras/Images/nema17_2.jpg" style="width:20%;display:inline"><img src="extras/Images/nema17_1.jpg" style="width:20%;display:inline">
@@ -23,7 +23,7 @@ Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> �
 - [步进电机 <i class="fa fa-external-link"></i>](stepper_motors) 
   - 2相（4线）
 
-# 📢在确定使用何种类型驱动之前一定要读一下这篇文章!
+# 📢在确定使用何种类型电机之前一定要读一下这篇文章!
 
 在用SFOC运行任何无刷电机前请首先确保你的运行硬件能够通过足够大的电机所需的电流。
 
