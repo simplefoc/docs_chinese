@@ -21,26 +21,29 @@ has_toc: False
 - 让初学者用简单的方法学习如何控制无刷直流电机和步进电机
 - 方便高级用户深入研究FOC算法和为其特定应用程序/硬件优化代码
 
-## 特征
-- **Arduino 兼容性**：
-   - Arduino库代码
-  - Arduino库集成管理器
+### 特征
+- **易于安装**: 
+   - Arduino IDE: Arduino库集成管理器
+   - PlatformIO
 - **开源**: github上提供了完整的代码和文档
-- **容易安装和配置**：
+- **目标**: 
+   - 尽可能支持更多不同组合的 [传感器](position_sensors) + [电机](motors) + [驱动器](drivers) + [电流检测](current_sense) 。
+   - 提供带API参考和例程示范、与时俱进且有深度的技术文档。
+- **易于安装和配置**：
   - 简易硬件配置
+  - 每个硬件模块都是一个C++对象（易于理解）
   - 简单的 [调整控制回路](motion_control)
-- **模块化**：
-  - 支持多个电机：
-     - 无刷直流电机
-     - 步进电机
-  - 支持多个 [传感器和驱动板](supported_hardware)
-  - 支持多个 [微型控制器体系](microcontrollers):
-     - Arduino: UNO, MEGA, any board with ATMega328 chips
-     - STM32 boards: [Nucleo](https://www.st.com/en/evaluation-tools/stm32-nucleo-boards.html), [Bluepill](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html) ...
-     - ESP32
-     - Teensy boards
-- **一插即用**: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 
-
+  - 具备 [*Simple**FOC**Studio*](studio) GUI配置工具
+  - 内置通讯和监控功能
+- **跨平台兼容**:
+   - 实现代码由一个单片机系列到另一个单片机系列的无缝迁移
+   - 支持多种 [MCU 架构](microcontrollers):
+      - Arduino: UNO, MEGA, DUE, Leonardo ....
+      - STM32
+      - ESP32
+      - Teensy
+      - 其他
+      
 ## YouTube演示视频
 <iframe class="youtube" src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 本视频演示了 <span class="simple">Simple<span class="foc">FOC</span>library </span>的基本用法、接线和基本功能。
