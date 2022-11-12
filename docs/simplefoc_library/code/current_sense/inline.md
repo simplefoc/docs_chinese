@@ -12,9 +12,27 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 
 在线电流检测技术是最易用和精确的一种。采样电阻与电机相串联，无论PWM占空比的状态如何，在这些采样电阻上测量的电流都是电机相位电流。因此，这种方法非常适合于 Arduino 设备，因为adc可以在任何时候进行采样以获得电流，并且adc采集持续时间与其他电流传感方法同样重要。这种方法的短板在于硬件上，这种电流检测结构要求高精度双向放大器具有比常规低侧或高侧放大器更好的PWM抑制。
 
-<img src="extras/Images/in-line.png" class="width60">
+<img src="extras/Images/in-line.png" class="width60"><img src="extras/Images/comparison_cs.png" class="width30">
 
-## 步骤1.硬件配置
+
+## 电流检测支持的MCU
+
+SimpleFOClibrary的在线电流检测现已支持几乎所有的MCU架构。仅不支持没带有两个ADC引脚的ESP8266，无法使其正常运行FOC。 
+单片机 | 在线电流检测 
+--- | --- 
+Arduino (8-bit) | ✔️ 
+Arduino DUE  | ✔️ 
+stm32  | ✔️ 
+stm32 B_G431B_ESC1 | ✔️ 
+esp32 | ✔️ 
+esp8266 | ❌  
+samd21 | ✔️  
+samd51 | ✔️  
+teensy | ✔️ 
+Raspberry Pi Pico | ✔️ 
+Portenta H7 | ✔️ 
+
+## 硬件配置
 
 ```cpp
 // InlineCurrentSensor 构型
@@ -27,9 +45,29 @@ InlineCurrentSense current_sense  = InlineCurrentSense(0.01, 20, A0, A1, A2);
 ```
 要使用 <span class="simple">Simple<span class="foc">FOC</span>library </span>实例化在线电流检测，只需创建`InlineCurrentSense`实例。此类将采样电阻值`shunt_resistor`、放大增益 `gain` 和两个或三个ADC通道引脚作为参数（具体取决于可用测量的硬件）。为正确的驱动器/电机相位指定正确的adc通道非常重要。因此，如果你的针脚`A0`测量相电流`A`，针脚 `A1` 测量相电流`B`，请确保顺序是`A0`,`A1`。
 
-<blockquote class="info">
-FOC算法可以以2相或3相电流检测来运行
-</blockquote>
+### 检测三相电流中的两相
+FOC算法能进行两相或者三相的电流检测，如果想要检测三相中的两相，你可以在定义 `InlineCurrentSense` 类时，把没有使用到的相值放上标志 `_NC` (即不连接)。
+
+例如，你想检测A相电流 (模拟引脚 A0) 以及C相电流 (模拟引脚 A1) ，而不检测B相电流，那么你就可以这样定义电流检测类：
+
+```cpp
+// InlineCurrentSensor构型
+InlineCurrentSense current_sense  = InlineCurrentSense(shunt_resistor, gain, A0, _NC, A1);
+```
+
+更多例程如下：
+
+```cpp
+// InlineCurrentSensor构型
+InlineCurrentSense current_sense  = InlineCurrentSense(shunt_resistor, gain, _NC, A0, A1); // 当检测B，C相时，不检测A相
+
+// InlineCurrentSensor构型
+InlineCurrentSense current_sense  = InlineCurrentSense(shunt_resistor, gain, A0, A1, _NC); // 当检测A，B相时，不检测C相
+// 或者
+InlineCurrentSense current_sense  = InlineCurrentSense(shunt_resistor, gain, A0, A1); // 当检测A，B相时，不检测C相
+```
+
+### 自定义增益
 
 `InlineCurrentSense`的构造函数仅允许你指定一个采样电阻值和一个放大增益。如果你的硬件配置对于不同的相位具有不同的分流/amp值，你可以通过更改`gain_x`属性来指定它们：
 
@@ -47,44 +85,86 @@ current_sense.gain_c = 1.0 / shunt_resistor / gain;
 current_sense.gain_b *= -1;
 ```
 
+## 初始化电流检测
+
 电流检测创建后需要进行初始化。此`init（）`函数配置ADC硬件以进行读取，并为每个通道查找ADC的零偏移量。
 
 ```cpp
 // 初始化电流检测
 current_sense.init();
 ```
+
+初始化函数作用：
+- 为电流检测配置 ADC 
+- 校准 - 去除偏移 
+
+如果由于某种原因ADC配置失败，该函数将返回`0`，如果一切正常，该函数将返回`1`。所以我们建议你在继续之前检查 init 函数是否被成功执行:
+
+```cpp
+// 初始化电流检测
+if (current_sense.init())  Serial.println("Current sense init success!");
+else{
+  Serial.println("Current sense init failed!");
+  return;
+}
+```
 电流感应初始化和校准后，就可以开始测量电流了！
 
 ## 使用电流传感和FOC算法
-要将`InlineCurrentSense`与FOC算法结合使用，只需将其添加到与你希望使用的`BLDCMotor`的链接中：
+要将`InlineCurrentSense`与FOC算法结合使用，首先你需要连接电流检测到`BLDCDriver`：
+```cpp
+// 连接电流检测和驱动器
+current_sense.linkDriver(&driver);
+```
+电流检测将根据不同的驱动器参数进行不同的同步和校准程序。
+<blockquote class="warning">
+<p class="heading"> API 改变 - <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.2</p>
+版本v2.2.2引入了连接电流检测和驱动器程序，以便ADC和PWM计时器不同的硬件也能普遍适用，实现电流检测高级同步。
+</blockquote>
 
+
+驱动器连接上电流检测后，接下来就是连接电流检测到你想要使用的无刷电机上：
 ```cpp
 // 连接电机和电流检测
 motor.linkCurrentSense(&current_sense);
 ```
-`initFOC（）`函数中的`BLDCMotor`类用于对齐所有传感器，他也将`InlineCurrentSense`与链接到电机的`BLDCDriver`对齐。
+### 那么应该在FOC代码的哪个地方加入 `电流检测` 配置呢？
+
+在`BLDCMotor` 和 `BLDCDriver` 初始化函数调用后调用电流检测初始化函数是尤为重要的。这能够保证电流检测校准时驱动器处于启用状态。此外，在用`initFOC`函数启动foc算法前调用电流检测初始化函数也是十分重要的。
+
+因此建议代码结构如下：
+
 
 ```cpp
-// 为 FOC 准备传感器
-motor.initFOC();
+void loop(){
+  .... 
+  // 初始化驱动器
+  driver.init();
+  // 连接驱动器和电流检测
+  current_sense.linkDriver(&driver);
+  ....
+  // 初始化电机
+  motor.init();
+  .... 
+  // 初始化电流检测
+  current_sense.init();
+  // 连接电流检测和电机
+  motor.linkCurrentSense(&current_sense);
+  ...
+  // 启动FOC
+  motor.initFOC();
+}
 ```
-函数`initFOC（）`调用两个重要的测量函数：
 
-- `current_sense.driverSync(...)`
-- `current_sense.driverAlign(...)`
-
-### 驱动程序同步`driverSync(...)`
-<img src="extras/Images/comparison_cs.png" class="width40">
-
-由于在线电流检测技术不需要触发ADC采集的事件，`driverSync（）`函数实际上什么都不做。如上图所示，此功能对于低侧和高侧电流感应非常重要。
+为确保 `BLDCDriver`和 `CurrentSense` 两个类能很好的对齐，函数 `initFOC()`必须保证电流检测的 `A` 相对应驱动器的 `A` 相，电流检测的 `B` 相对应驱动器的 `B` 相， `C`相亦是如此。为证实这点， `initFOC`将调用电流检测函数`current_sense.driverAlign(...)`.
 
 ### 与电机相位对齐 `driverAlign(...)`
 
-通过调用以下函数完成对齐：
+通过调用以下函数完成`initFOC`里的电流检测与驱动器对齐：
 ```cpp
-current_sense.driverAlign(&driver, voltage_sensor_align);
+current_sense.driverAlign(voltage_sensor_align);
 ```
-此函数用于向电机的每一相施加电压，而后检查所检测的电流是否与所施加的电压方向相对应。此函数可以纠正：
+此函数用于向驱动器（用`current_sense.linkDriver(&driver)`连接电流检测）的每一相施加电压（用`motor.voltage_sensor_align`设置），而后检查所检测的电流是否与所施加的电压方向相对应。此函数可以纠正：
 
 - 不正确的adc引脚顺序
 - 不正确的增益（正或负）
@@ -109,13 +189,34 @@ current_sense.skip_align = true;
 例如，Arduino <span class="simple">simple<span class="foc">foc</span>Shield </span>v2，你的代码类似：
 
 ```cpp
-// 调转b相增益
-current_sense.gain_b *=-1;
-// 跳过校准
-current_sense.skip_align = true;
-...
-// 校准所有传感器
-motor.initFOC();
+// 对于SimpleFOCShield v2, 电流检测引脚的可能组合方案
+// 分流电阻 - 10milliOhm
+// 增益  - 50 V/V 
+InlineCurrentSense current_sense  = InlineCurrentSense(0.01, 50.0, A0, A2);
+
+voi loop(){
+  .... 
+  // 初始化驱动器
+  driver.init();
+  // 连接驱动器和电流检测
+  current_sense.linkDriver(&driver);
+  ....
+  // 初始化电机
+  motor.init();
+  .... 
+  // 初始化电流检测
+  current_sense.init();
+  // 连接电流检测和电机
+  motor.linkCurrentSense(&current_sense);
+  ...
+  // 调转B相增益
+  current_sense.gain_b *=-1;
+  // 跳过校准
+  current_sense.skip_align = true;
+  ... 
+  // 启动FOC
+  motor.initFOC();
+}
 ```
 
 
@@ -125,8 +226,6 @@ motor.initFOC();
 ```cpp
 PhaseCurrent_s  current = current_sense.getPhaseCurrents();
 ```
-This function returns the `PhaseCurrent_s` structure that which has three variables `a`, `b` and `c`. So you can print them out for example;
-
 此函数返回的结构体`PhaseCurrent_s`包括`a`, `b` 和 `c`三个变量。例如，你可以把它们打印出来；
 
 ```cpp
