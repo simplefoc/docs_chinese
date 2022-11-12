@@ -1,11 +1,11 @@
 ---
 layout: default
-title: ESP boards
+title: ESP 控制板
 nav_order: 3
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /esp_mcu
-parent: Microcontrollers
-grand_parent: Supported Hardware
+parent: 单片机
+grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 

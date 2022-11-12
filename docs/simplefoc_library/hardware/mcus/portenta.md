@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Portenta H7 boards
+title: Portenta H7 开发板
 nav_order: 8
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /portenta_mcu
-parent: Microcontrollers
-grand_parent: Supported Hardware
+parent: 单片机
+grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 

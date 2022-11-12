@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Microcontrollers
+title: 单片机
 nav_order: 4
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /microcontrollers
-parent: Supported Hardware
+parent: 支持的硬件
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: true
 has_toc: false
