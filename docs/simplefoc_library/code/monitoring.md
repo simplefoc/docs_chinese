@@ -7,8 +7,6 @@ parent: 代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
-# Monitoring (telemetry) functionality
-
 # 监控功能（遥测）
 
  `BLDCMotor` 和 `StepperMotor` 都支持使用串口进行基础遥测。
