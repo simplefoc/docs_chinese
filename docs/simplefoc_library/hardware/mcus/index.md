@@ -1,27 +1,28 @@
 ---
 layout: default
-title: 单片机
+title: Microcontrollers
 nav_order: 4
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /microcontrollers
-parent: 支持的硬件
+parent: Supported Hardware
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: true
 has_toc: false
 ---
 
 
-
 # 支持的单片机
 
 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>支持：
 
-- [Arduino UNO/MEGA, Arduino DUE](arduino_mcu) 
+- [Arduino UNO/MEGA, Leonardo, Arduino DUE](arduino_mcu) 
 - [STM32](stm32_mcu)
-- [ESP32](esp32_mcu)
+- [ESP32 and ESP8266](esp_mcu)
 - [Teensy](teensy_mcu)
 - [SAMD21/SAMD51](samd_mcu)
-- [Raspberry Pi Pico](rpi_mcu) ——*初始支持*
+- [Raspberry Pi Pico](rpi_mcu) - *初始支持*
+- [Portenta H7](portenta_mcu) - *初始支持*
+- [nRF52](nRF52_mcu) - *初始支持*
 
 通常现成且能用Arduino IDE的设备，少许小修改就能够完成库的移植…😃
 
@@ -35,15 +36,18 @@ Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>支
 
 这是不同种类单片机PWM特性实现的比较：
 
-MCU | 2路PWM模式 | 4路PWM模式 | 3路PWM模式 | 6路PWM模式 | pwm频率配置 
---- | --- |--- |--- |--- |--- 
-Arduino (8-bit) | ✔️ | ✔️ | ✔️ | ✔️ | ❌ (32kHz)
-Arduino DUE  | ✔️ | ✔️ | ✔️ | ❌ | ✔️
-stm32 | ✔️ | ✔️ | ✔️ | ✔️ | ✔️
-esp32 | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ 
-samd21/51 | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ 
-teensy | ✔️ | ✔️ | ✔️ | ❌ | ✔️ 
-Raspberry Pi Pico | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ 
+| MCU               | 2路PWM模式 | 4路PWM模式 | 3路PWM模式 | 6路PWM模式 | pwm频率配置 |
+| ----------------- | ---------- | ---------- | ---------- | ---------- | ----------- |
+| Arduino (8-bit)   | ✔️          | ✔️          | ✔️          | ✔️          | ❌ (32kHz)   |
+| Arduino DUE       | ✔️          | ✔️          | ✔️          | ❌          | ✔️           |
+| stm32             | ✔️          | ✔️          | ✔️          | ✔️          | ✔️           |
+| esp32             | ✔️          | ✔️          | ✔️          | ✔️          | ✔️           |
+| esp8266           | ✔️          | ✔️          | ✔️          | ❌          | ✔️           |
+| samd21/51         | ✔️          | ✔️          | ✔️          | ✔️          | ✔️           |
+| teensy            | ✔️          | ✔️          | ✔️          | ❌          | ✔️           |
+| Raspberry Pi Pico | ✔️          | ✔️          | ✔️          | ✔️          | ✔️           |
+| Portenta H7       | ✔️          | ✔️          | ✔️          | ❌          | ✔️           |
+| nRF52       | ✔️          | ✔️          | ✔️          | ✔️          | ✔️           |
 
 从这个表格中你可以看到，如果你的应用程序需要6路PWM模式，你应该避免使用Teensy和Arduino DUE板。
 
@@ -65,11 +69,38 @@ Nano 33 | SAMD21  | 200us (ipr = 0), ~800us (ipr > 50000) | 300us | ~1000us
 
 在上表中，你可以比较不同MCU的FOC循环的执行时间。当你决定使用哪个MCU与你的项目，请确保你的循环执行时间 `loopFOC() + move()`，在最坏的情况下，不能大于3-4ms。为了获得最佳性能，循环时间应该小于2ms。如果你需要通过一个控制板控制多个电机，还需要考虑多个电机的情况。
 
+
+
+各型MCU架构对电流检测的支持如下表所示：
+
+| MCU                | 在线电流检测 | 低压侧电流检测 | 高压侧电流检测 |
+| ------------------ | ------------ | -------------- | -------------- |
+| Arduino (8-bit)    | ✔️            | ❌              | ❌              |
+| Arduino DUE        | ✔️            | ❌              | ❌              |
+| stm32 (in general) | ✔️            | ❌              | ❌              |
+| stm32f1 系列       | ✔️            | ✔️（单电机）    | ❌              |
+| stm32f4 系列       | ✔️            | ✔️（单电机）    | ❌              |
+| stm32g4 系列       | ✔️            | ✔️（单电机）    | ❌              |
+| stm32 B_G431B_ESC1 | ✔️            | ✔️              | ❌              |
+| esp32              | ✔️            | ✔️              | ❌              |
+| esp8266            | ❌            | ❌              | ❌              |
+| samd21             | ✔️            | ✔️（单电机）    | ❌              |
+| samd51             | ✔️            | ❌              | ❌              |
+| teensy             | ✔️            | ❌              | ❌              |
+| Raspberry Pi Pico  | ✔️            | ❌              | ❌              |
+| Portenta H7        | ✔️            | ❌              | ❌              |
+| nRF52              | ✔️            | ❌              | ❌              |
+
+多数开发板将会支持在线电流检测模式，esp32, samd21和 stm32 B_G431B_ESC1开发板初步支持低端电流检测模式。 
+
+
+
 # 现成的云台控制器
 
 如果你没有高的动力要求，现成的云台控制器是运行FOC算法与你的云台电机最简单便宜的方案。它们能完美支持位置/速度控制。但是也有缺点，主要就是它们使用了所有外部中断引脚以生成PWM信号，因此导致引脚不足，你通常没有多余的引脚做外部控制。这意味着，即使你只需要一个电机(3路PWMs)，你仍然不能使用ABI编码器。如果你想要将编码器使用在这些板，你只能用到软件中断。软件中断虽然也能让这些编码器跑起来，但是会降低其响应能力。所以，IIC和SPI编码器相对于ABI编码器有时更适合用在这些电机上面。
 
 <blockquote class="warning">所以，买之前最好确保你的云台控制器有你需要的通信接口引脚。</blockquote>
+
 ## Arduino MCUs
 
 Arduino设备，如UNO,MEGA,NANO，可能是最常见的单片机。因此用这些单片机去跑SFOC库估计比其他单片机的步骤要少很多，也简洁很多。但是有一点需要注意，如果你想使用Arduino设备运行这个库，我肯定会建议你考虑使用磁传感器而不是编码器。编码器是非常低效的传感器(至少在Arduino UNO和MEGA里面是这样)，由于需要不断计算编码器的中断信号，这必然会导致影响FOC算法的运行效率。
@@ -93,6 +124,7 @@ Stm32设备可能是实现FOC的单片机里的最佳选择。它们非常强大
 开源社区里用STM32问题是32的编程比较复杂。但由于现在32也是可以用Arduino的，所以这应该也不算是一个问题了。Arduino <span>Simple<span>FOC</span>library</span>的代码和STM32的代码实际上是完全一致的，只是有些接口不一样，因此，如果你想用32实现SFOC不失也为一个上乘主义。😃
 
 <blockquote class="info"> Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>从1.3.1版本的开源板起，板子硬件上完全兼容STM32 Nucleo-64设备，你甚至能堆叠2个电机开源板在Nucleo板上。</blockquote>
+
 ## ESP32 设备
 
 对于运行这个库，ESP32设备是非常有趣的选择。它们有极好的通信接口，并且能提升用户和电机的交互。理论上讲，ESP32设备能够同时运行4个无刷直流电机。而且它们的性能会比传统Arduino设备好得多。特别是它们没有外部中断限制的问题。
@@ -113,6 +145,6 @@ Stm32设备可能是实现FOC的单片机里的最佳选择。它们非常强大
         <i class="fa fa-external-link-square fa-2x"></i>
     </a>
 </div>
-如果你已经将库移植到另一个设备上，或者你正在寻找移植到某些特定的设备上的帮助，不要犹豫，在[社区论坛](https://community.simplefoc.com)发布消息。
+如果你已经将库移植到另一个设备上，或者你正在寻找移植到某些特定的设备上的帮助，不要犹豫，在社区论坛发布消息。
 
 参与讨论对于开发是很有帮助的，你可能会发现很多问题已有答案！

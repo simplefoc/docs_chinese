@@ -22,9 +22,11 @@ SAMD51 | ✔️ | ✔️ | ✔️ | ✔️ | ✔️
 ---- | --- | --- | --- | --- 
 [<img src="extras/Images/mkr1000.jpg" class="imgtable150">](https://store.arduino.cc/arduino-mkr1000-wifi) | Arduino MKR1000 WIFI | SAMD21 Cortex®-M0+  <br>- 3.3V logic<br> - 12 PWMs<br> - 10 interrupts <br>- 7 adc pins<br>- 48Mhz|[Arduino Store](https://store.arduino.cc/arduino-mkr1000-wifi) | 30€ 
 [<img src="extras/Images/mkr1010.jpg" class="imgtable150">](https://store.arduino.cc/arduino-mkr-wifi-1010) | Arduino MKR1010 WIFI | SAMD21 Cortex®-M0+ <br>- 3.3V logic<br> - 13 PWMs<br> - 10 interrupts <br>- 7 adc pins<br>- 48Mhz|[Arduino Store](https://store.arduino.cc/arduino-mkr-wifi-1010) | 30€ 
-[<img src="extras/Images/nano33.png" class="imgtable150">](https://store.arduino.cc/arduino-nano-33-iot) | Arduino NANO 33 IOT | SAMD21 Cortex®-M0+ <br>- 3.3V logic<br> - 11 PWMs<br> - interrupts all pins <br>- 8 adc pins<br>- 48Mhz|[Arduino Store](https://store.arduino.cc/arduino-nano-33-iot) | 16€ 
+[<img src="extras/Images/nano33.png" class="imgtable150">](https://store.arduino.cc/arduino-nano-33-iot) | Arduino MKR1000 WIFI | SAMD21 Cortex®-M0+  <br>- 3.3V logic<br> - 12 PWMs<br> - 10 interrupts <br>- 7 adc pins<br>- 48Mhz| [Arduino Store](https://store.arduino.cc/arduino-nano-33-iot) | 16€ 
+[<img src="extras/Images/sparkfun_samd21.jpg" class="imgtable150">](https://www.sparkfun.com/products/13672) |SparkFun SAMD21 Dev Breakout | SAMD21 Cortex®-M0+ <br>- 3.3V logic<br> - 10 PWMs<br> - interrupts all pins <br>- 14 adc pins<br>- 48Mhz|[Sparkfun Store](https://www.sparkfun.com/products/13672) | 25€ 
 [<img src="extras/Images/feather_basic.jpg" class="imgtable150">](https://www.adafruit.com/product/2772) | Adafruit Feather M0 Basic | SAMD21 Cortex®-M0 <br>- 3.3V logic<br> - all pins PWMs<br> - interrupts all pins <br>- 12 adc pins<br>- 48Mhz|[Adafruit Store](https://www.adafruit.com/product/2772) | 20€ 
 [<img src="extras/Images/feather_express.jpg" class="imgtable150">](https://www.adafruit.com/product/2772) | Adafruit Feather M4 Express | SAMD51 Cortex®-M4 <br>- 3.3V logic<br> - all pins PWMs<br> - interrupts all pins <br>- 16 adc pins<br>- 120Mhz|[Adafruit Store](https://www.adafruit.com/product/3857) | 20€ 
+[<img src="extras/Images/metro-m4.jpg" class="imgtable150">](https://learn.adafruit.com/adafruit-metro-m4-express-featuring-atsamd51) | Adafruit Feather M4 Express | SAMD51 Cortex®-M4 <br>- 3.3V logic<br> - 22 pins PWMs<br> - interrupts all pins <br>- 8 adc pins<br>- 120Mhz|[Adafruit Store](https://www.adafruit.com/product/3382) | 25€ 
 
 
 ## Arduino IDE 支持包

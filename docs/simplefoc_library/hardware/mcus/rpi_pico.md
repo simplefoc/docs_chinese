@@ -24,8 +24,9 @@ MCU | 2路PWM模式 | 4路PWM模式 | 3路PWM模式 | 6路PWM模式 | pwm频率�
 [<img src="extras/Images/pico.jpg" class="imgtable150">](https://www.adafruit.com/product/4883) | Raspberry Pi Pico RP2040 | Dual ARM Cortex-M0+  <br>- 3.3V logic<br> - 16 PWMs<br> - DMA controller <br>- 4 adc pins<br>- 133MHz |[Adafruit Store](https://www.adafruit.com/product/4883) | 5€ 
 
 <blockquote class="warning"> <p class="heading">注意：当前实现的局限性⚠️</p>
-Raspberry Pi Pico只得到了早期阶段的支持。PWM功能工作得很好，并已经过测试，大多数传感器将工作得很好，但SPI磁传感器目前不支持!
+Raspberry Pi Pico只得到了早期阶段的支持。PWM功能工作得很好，并已经过测试，大多数传感器都工作得很好
 </blockquote>
+
 
 # Arduino IDE支持包
 
