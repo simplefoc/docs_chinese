@@ -16,6 +16,10 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
  ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ 
  <img src="extras/Images/nucleo.jpg" class="imgtable150">     | <img src="extras/Images/l298n.jpg" class="imgtable150">      | <img src="extras/Images/enc1.png" class="imgtable150">       | <img src="extras/Images/nema17_2.jpg" class="imgtable150">   
 
+点击[这里](extras/gm4108_encoder_mount.zip)下载STL 文件 - 图片和Youtube视频中用于STEP安装在 nema17 上 amt103 支架的 solidworks 项目
+
+
+
 # 连接所有硬件
 
 这是 L298N 和 Nucleo-64 的连接范例：

@@ -15,6 +15,9 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 --- | --- | --- | --- | --- 
 <img src="extras/Images/arduino_uno.jpg" class="imgtable150"> |  <img src="extras/Images/shield_to_v13.jpg" class="imgtable150">  | <img src="extras/Images/enc1.png" class="imgtable150"> | <img src="extras/Images/as5600.jpg" class="imgtable150">  | <img src="extras/Images/mot.jpg" class="imgtable150"> 
 
+点击[这里](extras/gm4108_encoder_mount.zip)下载STL 文件 - 图片和Youtube视频中用于STEP的 IPower GM4108H-120T 电机 3d 打印支架以及CUI amt103 编码器支架的solidworks 项目文件。
+
+
 
 ## 连接所有硬件
 下面图片是本项目使用的初始设置。接下来，请查看 Arduino 代码看下对应的引脚数字。
