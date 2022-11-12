@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 完整是电机配置指令表
+title: 完整的电机配置指令表
 nav_order: 4
 permalink: /commander_motor
 parent: Commander 接口
