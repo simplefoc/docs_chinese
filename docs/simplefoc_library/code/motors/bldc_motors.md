@@ -18,25 +18,55 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 - 直流无刷电机 FOC 算法
 - 运动控制
 - 监控
-- 通信接口
+
+  
 
 ## 步骤1. 创建无刷直流电机的实例
 要实例化无刷直流电机，我们需要创建 `BLDCMotor` 类的实例并为其提供电机的极对数 `pole pairs` 。
 ```cpp
-//  BLDCMotor(int pp, (optional R))
+//  BLDCMotor(int pp, (optional R, KV))
 //  - pp  - 极对数
 //  - R   - 相电阻值 - 可选的
-BLDCMotor motor = BLDCMotor(11 , 10.5);
+//  - KV  - 电机KV值 [rpm/V] - 可选的
+BLDCMotor motor = BLDCMotor(11, 10.5, 120);
 ```
 
-<blockquote class="info"><p class="heading">极对数 </p>
-如果你不确定电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number ）。library 库提供了一个 实例 <code class="highlighter-rouge">find_pole_pairs_number.ino</code> 来计算你电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number）。
- </blockquote>
-<blockquote class="info"><p class="heading">相位电阻 </p>
-如果你提前知道你的电机的相位电阻值 <code class="highlighter-rouge">R</code>，我们建议你把它提供给 library 库。然后 library 库会计算内部电压值，用户只需要处理电流。不过这算是一个可选的功能。
- </blockquote>
+<blockquote class="info"><p class="heading">极对数 </p>如果你不确定电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number ）。library 库提供了一个 实例 <code class="highlighter-rouge">find_pole_pairs_number.ino</code> 来计算你电机的极对数（ <code class="highlighter-rouge">pole_paris</code> number）。
+
+<blockquote class="warning" markdown="1">
+<p class="heading">经验法则：KV值</p>
+我们建议将提供给库的KV值设置为比数据表中给定或实验的数值高50-70%。根据电机的力学，在电机额定KV值的100%到200%之间都为适当值。
+</blockquote>
+
+<blockquote class="info" markdown="1">
+<p class="heading">获取额定KV值 </p>如果不知道你电机的<code class="highlighter-rouge">KV值</code>。通过在电压力矩控制中设定电压为1V，就可以轻易获取到KV值，即为当时电机转速-1V时电机转速。额定KV值的单位是 rpm/V, 而<span class="simple">Simple<span class="foc">FOC</span>library</span>显示速度单位为rad/s。获取到1V时电机转速后，需乘以30/π≈10，将其转化为rpm。
+
+
+```cpp
+KV = velocity_at_one_volt * 30/pi
+```
+你也可以用library库给定的例程 `examples/utils/calibration/find_KV_rating.ino`.
+
+
+
+### 相电阻和KV值
+提供相电阻和KV值能使用户能够不用测量就能控制电机电流。（不经常用于基于电流的力矩模式`foc_current` 和 `dc_current`）。在电压控制模式下，用户能够控制（和限制）电机的假定电流。更多信息，请查阅[力矩控制文档](voltage_torque_mode)。
+
+在许多方面来说，基于电流运行会比电压更好。因为无刷直流电机的力矩与电流而不是与电压成比例，特别是相同的电压值在不同的电机上会产生不同的电流（由于相电阻不同）。一旦设置了相电阻后，用户就可以该无刷直流电机的电流限制，而不是电压限制。
+
+值得一提的是，由于电压值和电流值属于不同的概念，如果你设置了相电阻的阻值，很可能需要重新调整速度控制或者位置控制参数。一般的经验是将所有的P，I和D的数值除以`motor.phase_resistance` 值，基于这个点开始调可能会比较好。
+
+最后，如果想要在基于电压（电压模式）和基于电流（DC current或FOC current）的力矩控制之间实时切换的话，建议添加相电阻这个参数，因为上述的力矩控制会以电流值作为数目（目标值），因此用户无需改变运功控制参数（PID值）。
+
+<blockquote class="info">
+<p class="heading">开环运动控制会用到KV值和相电阻值</p>
+KV值和相电阻值也会用在开环控制中，让用户限制电机电流，而非电压。详情请参阅 <a href="open_loop_motion_control">开环运动控制文档</a>.
+</blockquote>
+
+
 
 ## 步骤2. 连接传感器
+
 定义好 `motor` 和初始化传感器后，执行以下代码来连接 `motor` 和 `sensor` ：
 ```cpp
 // 连接电机和传感器
@@ -112,21 +142,18 @@ motor.sensor_offset = 0; // 默认 0 rad
 ```
 这个参数可实时修改。
 
-### 步骤5.3 电机相电阻
-电机相电阻是一个可选参数，对于基于电流的力矩模式来说不是很重要，但如果使用电压模式并且设置了相电阻 `motor.phase_resistance` （可以在构造函数或者setup()中设置），该库使用当前电流来实现控制，它会自动计算所需的电压。在setup函数中，你可以设置以下值来改变这个参数：
+### 步骤5.4 电机相电阻和KV值
+电机相电阻和KV值是一个可选参数，对于基于电流的力矩模式来说不是很重要，这两个变量用于电压力矩模式和开环运动模式中预估电机电流。如果设定了相电阻 `motor.phase_resistance`和电机KV值 `motor.KV_rating`（可以在构造函数或者setup()中设置），library库会使用当前电流来实现控制，它会自动计算所需的电压。在setup函数中，你可以设置以下值来改变这个参数：
+
 ```cpp
 // 电机相电阻 [Ohms]
 motor.phase_resistance = 2.54; // Ohms - 没有设置默认值
+// 电机KV值 [rpm/V]
+motor.KV_rating = 100; // rpm/volt - 没有设置默认值
 ```
-在许多方面来说，基于电流运行会比电压更好。因为无刷直流电机的力矩与电流而不是与电压成比例，特别是相同的电压值在不同的电机上会产生不同的电流（由于相电阻不同）。一旦设置了相电阻后，用户就可以该无刷直流电机的电流限制，而不是电压限制。
+详情请参阅 [力矩控制文档](voltage_torque_mode).
 
-要注意，由于电压值和电流值属于不同的概念，如果你设置了相电阻的阻值，很可能需要重新调整速度控制或者位置控制参数。一般的经验是将所有的P，I和D的数值除以`motor.phase_resistance` 值，基于这个点开始调可能会比较好。
-
-最后，如果想要在基于电压（电压模式）和基于电流（DC current或FOC current）的力矩控制之间实时切换的话，建议添加相电阻这个参数，因为上述的力矩控制会以电流值作为数目（目标值），因此用户无需改变运功控制参数（PID值）。
-
-相电阻可以实时改变。
-
-### 步骤 5.4 力矩控制模式
+### 步骤 5.5 力矩控制模式
 在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的力矩控制模式：
 - [voltage模式](voltage_mode)
 - [DC current模式](dc_current_torque_mode)
@@ -143,10 +170,10 @@ motor.phase_resistance = 2.54; // Ohms - 没有设置默认值
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-### 步骤5.5. 电机控制参数 
+### 步骤5.6 电机控制参数 
 
 在 Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中有3种不同的闭环控制策略：
-- [力矩控制](voltage_loop)
+- [力矩控制](torque_control)
 - [速度运动控制](velocity_loop)
 - [位置/角度运动控制](angle_loop)
 
@@ -167,7 +194,6 @@ motor.controller = MotionControlType::angle;
 <blockquote class="warning"><p class="heading"> 注意！</p>该参数没有默认值，实时执行之前必须要设置这个值。</blockquote>
 每种运动控制策略都有自己的参数，更多信息请参阅 [运动控制文档](motion_control) 。
 
-下面是所有运动控制配置参数的列表：
 ```cpp
 // 设置要使用的控制回路类型
 motor.controller = MotionControlType::angle;
@@ -176,19 +202,12 @@ motor.controller = MotionControlType::angle;
 motor.PID_velocity.P = 0.2;
 motor.PID_velocity.I = 20;
 motor.PID_velocity.D = 0.001;
-// 电压/秒或安培/秒
-// 对于大多数应用程序，不需要更改
-motor.PID_velocity.output_ramp = 1e6;
 
 // 速度低通滤波时间常数
 motor.LPF_velocity.Tf = 0.01;
 
 // 角度环控制器
 motor.P_angle.P = 20;
-motor.P_angle.I = 0; // 通常设置为0 - 仅需使用P控制器
-motor.P_angle.D = 0; // 通常设置为0 - 仅需使用P控制器
-// 加速度限制
-motor.P_angle.output_ramp = 1e6;
 
 // 运动控制限制
 // 角度环速度极限
@@ -196,10 +215,10 @@ motor.velocity_limit = 50;
 // 或者电压限制
 motor.voltage_limit = 12; // 电压-默认为驱动器电压限制
 // 或电流限制-如果相位电阻设置
-motor.current_limit = 12; // 安培-默认0.5安培
+motor.current_limit = 1; // 安培 -  默认为2安培
 ```
 
-### 步骤5.6 完成配置
+### 步骤5.7 完成配置
 最后，通过运行 `init()` 函数完成初始化配置，该函数使用所配置的值初始化所有的硬件和软件电机组件。
 ```cpp
 // 初始化电机
@@ -322,7 +341,7 @@ motor.move(target);
 它接收当前用户定义的目标值参数 `float target` 。
 - 如果用户运行 [速度环](velocity_loop) 或 [速度开环](velocity_openloop)， `move` 函数把 `target` 作为目标速度来解释。
 - 如果用户运行 [角度环](angle_loop) or [角度开环](angle_openloop), `move` 函数把 `target` 作为目标角度来解释。
-- 如果用户运行 [力矩环](voltage_loop), `move` 函数把 `target` 作为电压 <i>u<sub>q</sub></i> 或电流 <i>i<sub>q</sub></i> （如果提供了相位电阻）。
+- 如果用户运行 [力矩环](torque_control), `move` 函数把 `target` 作为电压 <i>u<sub>q</sub></i> 或电流 <i>i<sub>q</sub></i> （如果提供了相位电阻）。
 
  `target` 参数是可选的，如果未设置，则由公用的电机变量 `motor.target` 设置目标值，代码是：
 
