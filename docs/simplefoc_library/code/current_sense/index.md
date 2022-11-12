@@ -1,3 +1,13 @@
+---
+layout: default
+title: 电流检测
+nav_order: 5
+parent: 代码
+permalink: /current_sense
+grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+has_children: True
+has_toc: False
+---
 
 # 电流检测
 
