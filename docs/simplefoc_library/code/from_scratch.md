@@ -58,7 +58,7 @@ BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
 void setup() {
   // PWM 频率 [Hz]
-  driver.pwm_frequency = 50000;
+  driver.pwm_frequency = 20000;
   // 电源电压 [V]
   driver.voltage_power_supply = 12;
   // 允许最大直流电压 - 默认为电源电压
@@ -82,7 +82,7 @@ void loop() {
 确保所有相位输出的是 PWM 信号，可以尝试在每个相位和地之间连接一个小的led 灯或者使用万用表测量它。</blockquote>
 
 ## 步骤2 测试驱动器+电机组合-开环
-如果你已经连接了电机，而且驱动器工作良好，我们建议你使用实例 `examples/motion_control/open_loop_motion_control`中的开环运动控制实例来测试电机+驱动器组合。如果你的驱动程序与实例中提供的不一样，请浏览 [驱动程序文档](drivers_config) ，并查找你需要的驱动程序和代码。此外，你可以浏览在 `examples/utils/driver_standalone_test` 文件夹中的实例，并查看如何使用。
+如果你已经连接了电机，而且驱动器工作良好，我们建议你使用实例 `examples/motion_control/open_loop_motion_control`中的开环控制实例来测试电机+驱动器组合。如果你的驱动程序与实例中提供的不一样，请浏览 [驱动程序文档](drivers_config) ，并查找你需要的驱动程序和代码。此外，你可以浏览在 `examples/utils/driver_standalone_test` 文件夹中的实例，并查看如何使用。
 
 下面是 `BLDCDriver3PWM` 开环速度控制的一个实例：
 ```cpp
@@ -146,7 +146,7 @@ void loop() {
 <blockquote class="info"> <p class="heading">☑️ 简单的测试</p> 1. 在速度模式下，将你的目标速度设置为 <b>6.28 rad/s</b>，这应该正好是每秒旋转一周。<br>2. 在位置模式下，设置目标位置为 <b>6.28 rad</b>，应该正好旋转一周。 <br> 如果不是，这意味着你的极对数可能不是很对，试着改变它，直到你恰好旋转一周（或在速度模式下每秒旋转一周）</blockquote>
 ## 步骤3 闭环控制 - 使用电压控制力矩
 
-当你有一个工作传感器、工作电机和驱动器的时候，你就可以继续进行闭环运动控制测试。第一个要测试的是使用电压控制力矩控制的模式，这是 <span class="simple">Simple<span class="foc">FOC</span>library</span> 中闭环控制的最简单形式。你可以在库实例的文件夹中找到不同传感器的该模式实例： `examples/motion_control/torque_control` 。
+当你有一个工作传感器、工作电机和驱动器的时候，你就可以继续进行闭环控制测试。第一个要测试的是使用电压控制力矩控制的模式，这是 <span class="simple">Simple<span class="foc">FOC</span>library</span> 中闭环控制的最简单形式。你可以在库实例的文件夹中找到不同传感器的该模式实例： `examples/motion_control/torque_control` 。
 下面是 `BLDCMotor3PWM` 驱动器和 `Encoder` 作为位置传感器的一个实例：
 
 ```cpp

@@ -7,79 +7,53 @@ parent: 代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
 ---
 
+# Monitoring (telemetry) functionality
 
-# 监控功能
+# 监控功能（遥测）
 
- `BLDCMotor` 和 `StepperMotor` 类支持使用 `Serial` 进行监控：
+ `BLDCMotor` 和 `StepperMotor` 都支持使用串口进行基础遥测。
+
+这种遥测（在下文中也称为监控）支持使用Arduino IDE串行绘图仪或[ simple  foc Studio tool](/ Studio)等工具可视化电机的关键参数。
+
+<span class="simple">Simple<span class="foc">FOC</span>library</span>监控是电机变量到串行终端的实时标签分离输出。它通过在 `setup` 函数中添加以下这行启用:
 
 ```cpp
 motor.useMonitoring(Serial);
 ```
 
-监控有两个主要目标：
-- [在初始化和校准过程中显示电机的状态](#monitoring-the-motor-init) 
-- [实时监控电机的变量](#real-time-motor-variables-monitoring)
+<blockquote class="info">
+注意：你也可以使用其他串口，例如：你MCU也支持的串口1和串口2。
+</blockquote>
 
-## 监控电机初始化过程
-初始化`motor.init()` 和校准过程 `motor.initFOC()`期间，电机将向串口输出其状态。启用此功能不会直接影响实时性能，因为在 `motor.loopFOC()` 和`motor.move()`函数中没有预定义的实时循环监控。
+<blockquote class="warning">
+此时，使用 <code class="highlighter-rouge">motor.useMonitoring</code> 启用监控功能会进行调试输出。更多信息，请参阅 [debugging]。
 
-这是一个电机正常初始化监控输出实例：
+在未来的版本中会分开调试输出和遥测输出，<code class="highlighter-rouge">motor.useMonitoring</code> 函数可能会被弃用。
 
-```sh
-MOT: Monitor enabled!
-MOT: Init
-MOT: Enable driver.
-MOT: Align sensor.
-MOT: sensor direction==CW
-MOT: PP check: OK!
-MOT: Zero elec. angle: 4.28
-MOT: Align current sense.
-MOT: Success: 2
-MOT: Ready.
-```
+如果调试输出结果不理想，你可以像以下这样禁用调试输出（但保持监控）：
 
-位置传感器导致电机初始化失败：
-```sh
-MOT: Monitor enabled!
-MOT: Init
-MOT: Enable driver.
-MOT: Align sensor.
-MOT: Failed to notice movement
-MOT: Init FOC failed.
-```
-
-以及电流传感导致的电机初始化失败：
-```sh
-MOT: Monitor enabled!
-MOT: Init
-MOT: Enable driver.
-MOT: Align sensor.
-MOT: sensor direction==CW
-MOT: PP check: OK!
-MOT: Zero elec. angle: 4.28
-MOT: Align current sense.
-MOT: Fail!
-MOT: Init FOC failed.
+```cpp
+motor.useMonitoring(Serial);
+SimpleFOCDebug::enable(NULL);
 ```
 
 ## 电机变量实时监控
 
-监控的第二个作用是实时标签分离输出电机变量到串行终端。它是启用的，包括这行循环函数：
-
-监控的第二个作用是将电机变量实时以选项卡分隔的方式输出到串行终端。 在`loop()`中执行以下函数来启动：
+通过添加以下这行代码到`loop`函数，你可以获得实时监控输出。
 
 ```cpp
 motor.monitor()
 ```
 
-监控功能可输出7种不同的电机具体变量:：
-- `target` - 当前目标值，具体到所使用的运动控制（电流、电压、速度或位置）
+监控功能可输出7种不同的电机具体变量:
+
+- `target` - 当前目标值，具体到所使用的运动控制（电流 [A]、电压 [V]、速度 [rad/s] 或位置 [rad]）
 - `voltage.q` - 设置 电压分量q
 - `voltage.d` - 设置电压分量d
-- `current.q` - 电流分量q的测量值（如果电流传感可用）
-- `current.d` - 电流分量d的测量值（如果电流传感可用）
-- `shaft_velocity` - 电机速度
-- `shaft_angle` - 电机位置
+- `current.q` - 电流分量q的测量值 [mA]（如果电流检测可用）或者预测电流（如果电流检测不可用且给定相电阻）
+- `current.d` - 电流分量d的测量值 [mA]（如果电流检测可用）
+- `shaft_velocity` - 电机速度 [rad/s] 
+- `shaft_angle` - 电机位置  [rad]
 
 设置监视的首选值，可以在`setup()` 函数中更改 `motor.monitoring_variables` 参数。
 
