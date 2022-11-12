@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 选项查阅
+title: Options Cheat Sheet
 nav_order: 9
 permalink: /options_cheetsheet
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>

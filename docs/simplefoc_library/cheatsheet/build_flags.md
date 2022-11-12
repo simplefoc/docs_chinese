@@ -1,16 +1,16 @@
 ---
 layout: default
-title: 构建标志
+title: Build Flags
 nav_order: 2
 permalink: /cheetsheet/build_flags
-parent: 选项查阅
+parent: Options Cheat Sheet
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: False
 has_toc: False
 ---
 
 
-# 构建标志
+# Build flags
 
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 支持一些高级用户可能会感兴趣的编译器选项。 它们如下所述。
 

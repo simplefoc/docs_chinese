@@ -1,16 +1,16 @@
 ---
 layout: default
-title: 选项
+title: Options Reference
 nav_order: 1
 permalink: /cheetsheet/options_reference
-parent: 选项查阅
+parent: Options Cheat Sheet
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: False
 has_toc: False
 ---
 
 
-# 选项
+# Options
 
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 有许多选项，下表总结了重要的选项供您立即参考。
 
