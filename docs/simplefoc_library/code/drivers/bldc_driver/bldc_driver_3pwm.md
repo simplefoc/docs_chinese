@@ -44,16 +44,31 @@ BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8, 7, 6);
 ```
 
+### 低端电流检测注意事项
+
+由于ADC转换必须与所有相位产生的PWM同步，因此很重要的一点是所有相位产生的PWM必须对齐。由于微控制器通常在其引脚上有多个定时器用于产生PWM，不同的微控制器架构在不同定时器产生的PWM之间有不同程度的对齐。
+
+<blockquote class="info">
+<p class="heading">经验法则：PWM 计时器引脚</p>
+为了最大限度地提高低侧电流传感的效果，建议驱动器选择的PWM引脚都属于同一个定时器。
+
+需要花时间在 MCU 数据表中，找出哪些引脚属于不同的定时器😄
+You can also always ask the community for help您也可以随时向社区寻求帮助 - <a href="https://community.simplefoc.com/">community link</a>!
+</blockquote>
+
 ## 步骤2.1 PWM 配置
+
 ```cpp
 // PWM 频率 [Hz]
 // atmega328 的频率固定为 32kHz
 // esp32/stm32/teensy 配置
-driver.pwm_frequency = 50000;
+driver.pwm_frequency = 20000;
 ```
 <blockquote class="warning">
 ⚠️ 基于 ATMega328 芯片的 Arduino  设备的 pwm 频率固定为 32kHz。
 </blockquote>
+
+
 
 
 下面是  Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 中使用的不同单片机及其PWM频率和分辨率表。
@@ -61,14 +76,29 @@ driver.pwm_frequency = 50000;
 MCU | default frequency（默认频率） | MAX frequency（最大频率） | PWM resolution（分辨率） | Center-aligned（中心对齐） | Configurable freq（可配置的频率） 
 --- | --- | --- | --- | --- | --- 
 Arduino UNO(Atmega328) | 32 kHz | 32 kHz | 8bit | yes | no
-STM32 | 50kHz | 100kHz | 14bit | yes | yes
-ESP32 | 40kHz | 100kHz | 10bit | yes | yes
-Teensy | 50kHz | 100kHz | 8bit | yes | yes
+STM32 | 25kHz | 50kHz | 14bit | yes | yes
+ESP32 | 30kHz | 50kHz | 10bit | yes | yes
+Teensy | 25kHz | 50kHz | 8bit | yes | yes
 
 这些设置都在 library 库的源文件的 `drivers/hardware_specific/x_mcu.cpp/h` 中定义。
 
+### 低侧电流传感注意事项
+
+由于ADC转换需要一些时间来完成，而且这种转换只能在特定的时间窗内发生(所有相位接地-低边mosfet是ON)，因此使用适当的PWM频率是很重要的。PWM频率将决定PWM的每个周期有多长，以及低侧开关处于ON状态的时间。PWM频率越高，ADC读取电流值的时间就越短。
+
+另一方面，具有更高的 PWM 频率会产生更平滑的操作，所以这里肯定有一个权衡。
+
+<blockquote class="info">
+<p class="heading">经验法则：PWM频率</p>
+The rule of thumb is to stay arround 20kHz.经验法则是保持在 20kHz 左右。
+
+<code class="highlighter-rouge">
+driver.pwm_frequency = 20000;
+</code>
+</blockquote>
 
 ## 步骤2.2 电压
+
 ` Driver` 类可以设置输出引脚的 pwm 占空比，而这需要知道输入的电源电压值。此外，通过` Driver` 类可以设置驱动器输出引脚的限压 。
 
 ```cpp
@@ -115,7 +145,7 @@ BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 void setup() {
   
   // PWM 频率 [Hz]
-  driver.pwm_frequency = 50000;
+  driver.pwm_frequency = 20000;
  // 电源电压 [V]
   driver.voltage_power_supply = 12;
  // 最大允许直流电压 - 默认为电源电压
@@ -148,7 +178,7 @@ BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8, 7, 6);
 void setup() {
   
   // PWM 频率 [Hz]
-  driver.pwm_frequency = 50000;
+  driver.pwm_frequency = 20000;
   // 电源电压 [V]
   driver.voltage_power_supply = 12;
   // 允许最大直流电压 - 默认为电源电压

@@ -39,7 +39,7 @@ StepperDriver4PWM driver = StepperDriver4PWM(5, 6, 9, 10, 7,  8);
 // PWM 频率 [Hz]
 // atmega328 的频率固定为 32kHz
 // esp32/stm32/teensy 配置
-driver.pwm_frequency = 50000;
+driver.pwm_frequency = 20000;
 ```
 <blockquote class="warning">
 ⚠️ 基于 ATMega328 芯片的 Arduino  设备的 pwm 频率固定为 32kHz。
@@ -106,7 +106,7 @@ StepperDriver4PWM driver = StepperDriver4PWM(5, 6, 9,10, 7, 8);
 void setup() {
   
   // PWM 频率 [Hz]
-  driver.pwm_frequency = 50000;
+  driver.pwm_frequency = 20000;
   // 电源电压 [V]
   driver.voltage_power_supply = 12;
   // 允许最大直流电压 - 默认为电源电压
