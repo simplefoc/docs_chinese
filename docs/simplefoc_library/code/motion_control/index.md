@@ -12,17 +12,19 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 # 运动控制
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 有两个主要参数来定义要使用的运动控制架构(每个参数都可以实时修改):
 
-- [Torque control mode](torque_mode) - `motor.torque_controller`
 - 运动控制模式 - `motor.controller`
     - [Closed-loop motion control](closed_loop_motion_control) - -带有位置传感器
     - [Open-loop motion control](open_loop_motion_control) - 无位置传感器
+- [力矩控制模式](torque_control) - `motor.torque_controller`
+      - 仅用于闭环控制模式
 
 ## 力矩控制模式
 在<span class="simple">Simple<span class="foc">FOC</span>library</span>中有三种扭矩控制类型: 
 - 电压 - `TorqueControlType::voltage`
 - 直流电流 - `TorqueControlType::dc_current`
-- 当前的FOC - `TorqueControlType::foc_current`
-<blockquote class="warning"> ⚠️ This parameter is not used if the open-loop motion control is chosen.</blockquote>
+- FOC电流 - `TorqueControlType::foc_current`
+<blockquote class="warning"> ⚠️ 这个参数不用于开环控制下</blockquote>
+
 它们可以通过改变运动属性来设置 `torque_controller`.
 ```cpp
 // 设置力矩模式
@@ -32,13 +34,13 @@ grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>lib
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-有关不同扭矩模式的更深入的解释，请访问 [torque mode docs](torque_mode)
+有关不同扭矩模式的更深入的解释，请访问 [torque mode docs](torque_control)
 
 ## 运动控制模式
 <span class="simple">Simple<span class="foc">FOC</span>library</span> 有两种运动控制模式:
 
-- [Closed-loop motion control](closed_loop_motion_control) - 带位置传感器
-- [Open-loop motion control](open_loop_motion_control) - 无位置传感器
+- [Closed-loop control](closed_loop_motion_control) - 带位置传感器
+- [Open-loop control](open_loop_motion_control) - 无位置传感器
 
 ###  闭环运动控制
 在<span class="simple">Simple<span class="foc">FOC</span>library</span>的闭环有三种控制类型: 
@@ -55,9 +57,9 @@ motor.torque_controller = TorqueControlType::foc_current;
 // MotionControlType::angle
 motor.controller = MotionControlType::angle;
 ```
-如果了解更多关于不同闭环运动控制回路的深入解释，请访问: [closed-loop control docs](closed_loop_motion_control)
+如果了解更多关于不同闭环控制的深入解释，请访问: [closed-loop control docs](closed_loop_motion_control)
 
-###  开环运动控制
+###  开环控制
 此外，你可以运行电机在开环，没有位置传感器反馈，以及:
 - 速度开环控制- `MotionControlType::velocity_openloop`
 - 位置开环控制 - `MotionControlType::angle_openloop`
@@ -70,6 +72,6 @@ motor.controller = MotionControlType::angle;
 // MotionControlType::angle_openloop       - 开环位置控制
 motor.controller = MotionControlType::angle_openloop;
 ```
-关于不同的闭环运动控制回路的更深入的解释，请访问[open-loop control docs](open_loop_motion_control)
+关于不同的闭环控制的深入解释，请访问[open-loop control docs](open_loop_motion_control)
 
 有关运动控制策略的源代码实现的更多信息，请查看 [library source code documentation](motion_control_implementation)

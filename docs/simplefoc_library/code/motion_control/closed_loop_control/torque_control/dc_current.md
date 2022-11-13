@@ -3,11 +3,11 @@ layout: default
 title: 基于直流电流
 permalink: /dc_current_torque_mode
 nav_order: 2 
-parent: 力矩控制
-grand_parent: 运动控制
-grand_grand_parent: 代码
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
-description: "Arduino Simple Field Oriented Control (FOC) library ."
+parent: Torque Control
+grand_parent: Closed-Loop control
+grand_grand_parent: Motion Control
+grand_grand_grand_parent: Writing the Code
+grand_grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 
 ---
 
@@ -66,7 +66,7 @@ InlineCurrentSense current_sense = InlineCurrentSense(0.01, 50.0, A0, A2);
 
 // commander实例化
 Commander command = Commander(Serial);
-void doTarget(char* cmd) { command.variable(&motor.target, cmd); }
+void doTarget(char* cmd) { command.scalar(&motor.target, cmd); }
 
 void setup() { 
   

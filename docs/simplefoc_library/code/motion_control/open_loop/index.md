@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 开环运动控制
+title: 开环控制
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /open_loop_motion_control
 nav_order: 3
@@ -12,9 +12,23 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 ---
 # 开环运动控制
 
-<img src="extras/Images/open_loop.gif">
+<script type="text/javascript">
+    function show(id){
+        Array.from(document.getElementsByClassName('gallery_img')).forEach(
+        function(e){e.style.display = "none";});
+        document.getElementById(id).style.display = "block";
+        Array.from(document.getElementsByClassName("btn-primary")).forEach(
+        function(e){e.classList.remove("btn-primary");});
+        document.getElementById("btn-"+id).classList.add("btn-primary");
+    }
+</script>
+<a href ="javascript:show(0);" id="btn-0" class="btn">位置控制</a>
+<a href ="javascript:show(1);" id="btn-1" class="btn  btn-primary">速度控制</a>
 
-<span class="simple">Simple<span class="foc">FOC</span>library </span>提供2种不同的开环控制策略：
+<img style="display:none" id="0" class="gallery_img width80" src="extras/Images/opneloop_0001_Layer 0.jpg"/>
+<img style="display:block" id="1" class="gallery_img  width80" src="extras/Images/opneloop_0000_Layer 2.jpg"/>
+
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 为你提供两种不同的开环控制方法，控制方法无需位置传感器
 
 - [开环速度控制](velocity_openloop)
 - [开环位置控制](angle_openloop)

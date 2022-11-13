@@ -3,9 +3,9 @@ layout: default
 title: 索引搜索程序
 nav_order: 3
 permalink: /index_search_loop
-parent: 开环运动控制
-grand_parent: 运动控制
-grand_grand_parent: 代码
+parent: Open-Loop control
+grand_parent: Motion Control
+grand_grand_parent: Writing the Code
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 

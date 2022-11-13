@@ -4,7 +4,7 @@ title: 位置控制环
 description: "Arduino Simple Field Oriented Control (FOC) library 。"
 nav_order: 3
 permalink: /angle_loop
-parent: 闭环运动控制
+parent: 闭环控制
 grand_parent: 运动控制
 grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>

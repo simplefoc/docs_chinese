@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 闭环运动控制
+title: 闭环控制
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /closed_loop_motion_control
 nav_order: 2
@@ -12,13 +12,32 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 ---
 # 闭环运动控制
 
-控制<img src="extras/Images/closed_loop.gif">
++<script type="text/javascript">
+    function show(id){
+        Array.from(document.getElementsByClassName('gallery_img')).forEach(
+        function(e){e.style.display = "none";});
+        document.getElementById(id).style.display = "block";
+        Array.from(document.getElementsByClassName("btn-primary")).forEach(
+        function(e){e.classList.remove("btn-primary");});
+        document.getElementById("btn-"+id).classList.add("btn-primary");
+    }
+</script>
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span> 给你使用3种不同的闭环运动控制策略的选择：
+<a href ="javascript:show(0);" id="btn-0" class="btn">位置控制</a>
+<a href ="javascript:show(1);" id="btn-1" class="btn">速度控制</a>
+<a href ="javascript:show(2);" id="btn-2" class="btn  btn-primary">力矩控制</a>
 
-- [Torque control loop](voltage_loop)
-- [Velocity motion control](velocity_loop)
-- [Position/angle motion control](angle_loop)
+<img style="display:none" id="0" class="gallery_img" src="extras/Images/closedloop_0000_Layer 3.jpg"/>
+<img style="display:none" id="1" class="gallery_img" src="extras/Images/closedloop_0001_Layer 2.jpg"/>
+<img style="display:block" id="2"  class="gallery_img" src="extras/Images/closedloop_0002_Layer 1.jpg"/>
+
+<span class="simple">Simple<span class="foc">FOC</span>library</span> 提供给你三种不同的闭环控制方法：
+
+- [力矩控制环](torque_control)
+
+- [力矩控制环](voltage_loop)
+- [速度运动控制](velocity_loop)
+- [位置/角度运动控制](angle_loop)
 
 你可以通过改变 `motor.controller` 变量。如果你想控制电机的角度，你可以设置 `controller` 到 `MotionControlType::angle`, 
 

@@ -4,7 +4,7 @@ title: 速度控制环
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /velocity_loop
 nav_order: 2
-parent: 闭环运动控制
+parent: 闭环控制
 grand_parent: 运动控制
 grand_grand_parent: 代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
