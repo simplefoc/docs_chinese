@@ -104,7 +104,7 @@ Esp32 的`MCPWM` 支持用于此类应用。每个 ep32 板有两个 `MCPWM` 通
 为了最大限度地提高低侧电流传感的效果，建议驱动器选择的PWM引脚都属于同一个定时器。
 
 需要花时间在 MCU 数据表中，找出哪些引脚属于不同的定时器😄
-You can also always ask the community for help您也可以随时向社区寻求帮助 - <a href="https://community.simplefoc.com/">community link</a>!
+您也可以随时向社区寻求帮助 - <a href="https://community.simplefoc.com/">community link</a>!
 </blockquote>
 
 ## 步骤 2.1 PWM 配置
@@ -139,7 +139,8 @@ Teensy | 25kHz | 50kHz | 8bit | yes | yes
 
 <blockquote class="info">
 <p class="heading">经验法则：PWM频率</p>
-The rule of thumb is to stay arround 20kHz.经验法则是保持在 20kHz 左右。
+经验法则是保持在 20kHz 左右。
+
 
 <code class="highlighter-rouge">
 driver.pwm_frequency = 20000;
