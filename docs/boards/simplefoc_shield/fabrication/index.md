@@ -3,6 +3,7 @@ layout: default
 title: 制作指南
 description: "Arduino SimpleFOCShield board fabrication"
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+grand_parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 nav_order: 2
 permalink: /arduino_simplefoc_shield_fabrication
 has_children: true
@@ -18,14 +19,14 @@ has_toc: false
         <p> <span class="simple">Simple<span class="foc">FOC</span>Shield</span> v1</p>
     </a>
 </div>
-
 <div class="image_icon width40" >
     <a href="arduino_simplefoc_shield_fabrication_v2" >
-        <img style="width:50%;display:inline" src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.2/images/top.png" > <img style="width:50%;display:inline" src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.2/images/bottom.png" >
+        <img style="width:50%;display:inline" src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.4/images/top.png" > <img style="width:50%;display:inline" src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.4/images/bottom.png" >
         <i class="fa fa-external-link-square fa-2x"></i>
         <p > <span class="simple">Simple<span class="foc">FOC</span>Shield</span> v2</p>
     </a>
 </div>
+
 
 ## Board releases（板子的版本）
 查看发布的时间表，点击 [这里](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 

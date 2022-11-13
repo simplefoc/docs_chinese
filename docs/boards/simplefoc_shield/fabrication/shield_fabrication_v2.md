@@ -1,29 +1,32 @@
 ---
 layout: default
-title: v2.0.2版本
+title: v2.0.4版本
 description: "Arduino SimpleFOCShield board fabrication"
 parent: 制作指南
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+grand_grand_parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 nav_order: 2
 permalink: /arduino_simplefoc_shield_fabrication_v2
 ---
-# <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v2.0.2</i></small> 的制作指南
-下面是一个如何制作 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V2.0.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 的快速指南。
+# <span class="simple">Simple<span class="foc">FOC</span>Shield</span> <small><i>v2.0.4</i></small> 的制作指南
+下面是一个如何制作 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> [version <i class="fa fa-tag"></i>V2.0.4](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 的快速指南。
 
 
 <p align="">
-<img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.2/images/top.png"  class="width30"><img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.2/images/bottom.png"  class="width30">
+<img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.4/images/top.png"  class="width30"><img src="https://raw.githubusercontent.com/simplefoc/Arduino-SimpleFOCShield/v2.0.4/images/bottom.png"  class="width30">
 </p>
+<blockquote class="info"> 📢 官方简易版 EDA 项目，请点击 <a href="https://oshwlab.com/the.skuric/simplefocshield"> 这里 <i class="fa fa-external-link"></i></a></blockquote>
 
 ## 驱动器的版本
 查看发布的时间表，点击 [这里](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) 
 
-Version  | link | Release date | Comment
+版本  | 链接 | 发布日期 | 说明 
 ----- | ----- | ---- | ----
 *Simple**FOC**Shield* v2.0 |[release v2.0](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v2.0) | 01/21 | - 3A 在线电流 <br/>- 5V 稳压器 <br/>- 新的引脚配置 
-*Simple**FOC**Shield* v2.0.1 |[release v2.0.1](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v2.0.1) | 01/21 | - 减少通孔尺寸 <br/> - configurable range > wait to translate 
+*Simple**FOC**Shield* v2.0.1 |[release v2.0.1](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v2.0.1) | 01/21 | - 减少通孔尺寸 <br/>- 可配置范围 
 *Simple**FOC**Shield* v2.0.2 |[release v2.0.2](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases) | 01/21 | 将 7805（连接到 5V）替换为 7808（连接到 VIN）以兼容 stm32 Nucleo-64 
-
+*Simple**FOC**Shield* v2.0.3 |[release v2.0.3](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v2.0.3) | 03/21 | - 缩短从ADC到电流检测的路径 <br>- 错字修复 : 对调底部标签 A 相和 B 相 
+*Simple**FOC**Shield* v2.0.4 |[release v2.0.4](https://github.com/simplefoc/Arduino-SimpleFOCShield/releases/tag/v2.0.4) | 09/21 | - 简化上拉电阻配置 <br>- 最大输入电压 35V <br>- 移除CL1 的 CAP2 <br>- 项目EDA 简易版本 
 
 
 
@@ -151,10 +154,10 @@ Version  | link | Release date | Comment
             <td><a href="https://eu.mouser.com/ProductDetail/STMicroelectronics/L7808ABD2T-TR/?qs=%2Fha2pyFaduhJaWWi9Q0Ux5qBhxdStDSDVBKjt6TWzIYi2UHCV3ncDg%3D%3D">L7808ABD2T-TR</a></td>
          </tr>
          <tr>
-             <td>CAP2</td>
-            <td>10 uF (Electrolytic)</td>
+             <td>CL1</td>
+            <td>0.1 uF</td>
             <td>1</td>
-            <td><a href="https://eu.mouser.com/ProductDetail/Lelon/VZH-100M1HTR-0606/?qs=%2Fha2pyFadug9fpMd9zS1WVuLY1XOmrV1BVzFD1joM%252BDTbPmM%252BxSOHg%3D%3D">VZH100M1HTR-0606</a></td>
+            <td><a href="https://eu.mouser.com/c/?q=C1206C104M5RECAUTO">C1206C104M5RECAUTO</a></td>
          </tr>
          <tr>
             <td colspan="4"><b>电流检测电路</b></td>

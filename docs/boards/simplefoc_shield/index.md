@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 description: "Arduino SimpleFOCShield board showcase."
-nav_order: 2
+nav_order: 1
 permalink: /arduino_simplefoc_shield_showcase
 has_children: true
 has_toc: false
@@ -20,12 +21,12 @@ has_toc: false
 <iframe class="youtube" src="https://www.youtube.com/embed/G5pbo0C6ujE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 ### 特性
 - **即插即用**：结合 Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
-- **低成本**: 15 欧元的价格 - [查看价格](https://www.simplefoc.com/shop) 
+- **低成本**: 15 -20欧元的价格 - [查看价格](https://www.simplefoc.com/simplefoc_shield_product) 
 - **在线电流传感**: 双向电流可达 3A/5Amps
    - 可选配置：3.3A - 3.3V adc, 5A - 5V adc
 - **集成 8V 调节器**: 
    - 通过焊盘启用/禁用
-- **最大功率 120W** - 最大电流 5A, 输入电源 12-24V
+- **最大功率 120W** - 最大电流 5A, 输入电源 12-24V（最高35V）
    - 适用于内阻 >10Ω 的云台电机. 
 - **可叠板**：同时叠加两块SimpleFOCShield，运行2个电机
 - **编码器/霍尔传感器接口**：集成的3.3kΩ上拉电阻（可选）
@@ -33,6 +34,14 @@ has_toc: false
 - **可配置的引脚**：硬件配置 - 通过焊接连接
 - **Arduino headers**：Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
 - **开源**：完全可用的制造文件 - [如何自制](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
+
+
+### 新特征
+ - 最大输入电压 35V
+ - 简化上拉电阻配置
+ - **官方 [简易 EDA 项目](https://oshwlab.com/the.skuric/simplefocshield)**
+
+
 
 <blockquote class="warning"> 
 <p class="heading">注意</p>

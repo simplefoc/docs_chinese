@@ -3,6 +3,7 @@ layout: default
 title: 开始上手
 description: "Getting started with Arduino SimpleFOCShield"
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+grand_parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 nav_order: 1
 permalink: /arduino_simplefoc_shield_installation
 has_children: true

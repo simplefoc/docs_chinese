@@ -6,6 +6,7 @@ description: "Connecting SimpleFOCShield with your hardware."
 nav_order: 2
 permalink: /foc_shield_connect_hardware
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+grand_grand_parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 ---
 
 # 连接硬件

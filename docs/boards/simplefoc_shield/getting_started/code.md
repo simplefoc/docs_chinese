@@ -6,6 +6,7 @@ description: "Writing the Arduino program for your SimpleFOCShield."
 nav_order: 3
 permalink: /foc_shield_code
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
+grand_grand_parent: <span class="simple">Simple<span class="foc">FOC</span> Boards</span>
 ---
 
 # 编写代码
