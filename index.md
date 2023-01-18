@@ -85,6 +85,38 @@ Journal of Open Source Software, 7(74), 4232<br>
 
 
 
+<blockquote class="info" markdown="1">
+   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.3 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.3">查看发布</a></p>
+- stm32 低侧电流感应 
+   - 支持 g4 
+   - 彻底测试 f1/f4/g4 - [#187](https://github.com/simplefoc/Arduino-FOC/issues/187)
+   - bg431b: 增加对 VBAT 和 TEMPERATURE 读数的支持 [#222](https://github.com/simplefoc/Arduino-FOC/pull/222)
+- bugfixing
+   - leonardo
+   - mega2560 [#190](https://github.com/simplefoc/Arduino-FOC/issues/190)
+   - 无驱动器的内联电流感应 [#188](https://github.com/simplefoc/Arduino-FOC/issues/188)
+   - bg431b 支持当前感应修复 [#210](https://github.com/simplefoc/Arduino-FOC/pull/210)
+   - `StepperDriver4PWM` 错误的初始化  [#182](https://github.com/simplefoc/Arduino-FOC/issues/182)
+   - 开环反电动势电压问题 [#219](https://github.com/simplefoc/Arduino-FOC/issues/219)
+   - SAMD51 编译问题 [#217](https://github.com/simplefoc/Arduino-FOC/issues/217)
+   - ESP32-S3 编译问题 [#198](https://github.com/simplefoc/Arduino-FOC/issues/198)
+   - ESP32 编译问题 [#208](https://github.com/simplefoc/Arduino-FOC/issues/208), [#207](https://github.com/simplefoc/Arduino-FOC/issues/207)
+   - 磁传感器测向更稳健 [#173](https://github.com/simplefoc/Arduino-FOC/issues/173), [#164](https://github.com/simplefoc/Arduino-FOC/pull/164)
+   - `StepDirListener` 改进timing [#169](https://github.com/simplefoc/Arduino-FOC/issues/169), [#209](https://github.com/simplefoc/Arduino-FOC/pull/209)
+   - `HallSensor` 速度计算修复 [#192](https://github.com/simplefoc/Arduino-FOC/issues/192) 
+- API changes
+   - `setPhaseVoltage` 现在是公有函数 
+   - `getVelocity` 现在可以根据用户的需要来多次调用 - [查看文档](encoder#standalone-sensor)
+      - 如果调用之间的时间比`min_elapsed_time`长，它会重新计算速度 - 默认0.1ms
+   - `HallSensor` 去除速度计算异常值，请使用最大期望速度 `velocity_max` 来实现- [查看文档](hall_sensors#step-21-velocity-outlier-removal)
+   - BG431 板只能和 `LowsideCurrentSense` 类一起使用 - [查看文档](current_sense#current-sensing-support-per-mcu-architecture)
+   - 如果当前电流未初始化，`initFOC` 将失败 - [查看文档](bldcdriver3pwm#step-23-initialisation)
+      - 驱动器和传感电流 必须很好地初始化 `initFOC` 才能启动 - [查看文档](bldcmotor#step-6-align-motor-and-all-the-sensors---field-oriented-control-init)
+      - `cs.init()` 和 `driver.init()` return `1` 如果初始化良好则返回1，如果失败则返回0 
+</blockquote>
+
+
+
 
 
 ## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.3</small></i>
