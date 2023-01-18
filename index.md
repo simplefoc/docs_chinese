@@ -42,49 +42,6 @@ A. Skuric, HS. Bank, R. Unger, O. Williams, D. González-Reyes<br>
 Journal of Open Source Software, 7(74), 4232<br>
 </blockquote>
 
-<blockquote class="info">
-   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.3 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.3">see release</a></p>
-   <ul>
-      <li>GenericCurrentSense 的错误修复和测试</li>
-      <li>修复错误 leonardo #170</li>
-      <li>错误修复 - 指定自然方向后没有索引搜索</li>
-      <li>Low level API 重构
-         <ul dir="auto">
-            <li>
-                驱动程序 API</li>
-            <li>电流检测 API</li>
-         </ul>
-      </li>
-      <li>新的调试界面 - <a href="debugging">查看文档</a>
-         <ul dir="auto">
-            <li>静态类 SimpleFOCDebug</li>
-         </ul>
-      </li>
-      <li>CurrentSense API 的变化 - 增加方法 <code class="highlighter-rouge">linkDriver()</code> - <a href="current_sense">查看文档</a></li>
-      <li>低端电流检测 - <a href="low_side_current_sense">查看文档</a>
-         <ul dir="auto">
-            <li>ESP32 对多电机的通用支持</li>
-            <li>为 stm32 添加了低侧电流检测支持 - 仅一个电机
-            <ul dir="auto">
-               <li>f1 family</li>
-               <li>f4 family</li>
-               <li>g4 family</li>
-            </ul>
-            </li>
-         </ul>
-      </li>
-      <li>New appraoch for current estimation for torque control using voltage使用电压控制扭来预测电流的新方法 - <a href="voltage_torque_mode">查看文档</a>
-         <ul dir="auto">
-            <li>支持电机 KV 额定值 - 反电动势估计</li>
-            <li>使用电机相电阻</li>
-         </ul>
-      </li>
-      <li>KV 额定值和相电阻也用于开环电流限制 - <a href="open_loop_motion_control">查看文档 </a> </li>
-   </ul>
-</blockquote>
-
-
-
 <blockquote class="info" markdown="1">
    <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.3 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.3">查看发布</a></p>
 - stm32 低侧电流感应 
