@@ -6,12 +6,14 @@ description: "Arduino Simple Field Oriented Control (FOC) project documentation.
 permalink: /
 ---
 # Arduino Simple Field Oriented Control (FOC) project - Chinese 😃🇨🇳
-
-![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)
-
 [![status](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d/status.svg)](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d)
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/simplefoc/arduino-foc)
+![GitHub Release Date](https://img.shields.io/github/release-date/simplefoc/arduino-foc?color=blue)
+![GitHub commits since tagged version](https://img.shields.io/github/commits-since/simplefoc/arduino-foc/latest/dev)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/simplefoc/arduino-foc/dev)
 
 时代的进步通常令人激动。现今，无刷电机已经进入各种爱好者DIY社区，并且出现了很多高质量且拥有优异性能的无刷电机驱动方案。
 
@@ -35,14 +37,13 @@ permalink: /
 
 <blockquote class="success">
 <p class="heading">新消息 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> 已经发表在开源软件杂志上 <a href="citing">阅读更多</a></p>
-
 SimpleFOC: A Field Oriented Control (FOC) Library for Controlling Brushless Direct Current (BLDC) and Stepper Motors.<br>
 A. Skuric, HS. Bank, R. Unger, O. Williams, D. González-Reyes<br>
 Journal of Open Source Software, 7(74), 4232<br>
 </blockquote>
 
 <blockquote class="info">
-   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.2 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.2">see release</a></p>
+   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.3 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.3">see release</a></p>
    <ul>
       <li>GenericCurrentSense 的错误修复和测试</li>
       <li>修复错误 leonardo #170</li>
@@ -85,7 +86,8 @@ Journal of Open Source Software, 7(74), 4232<br>
 
 
 
-## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.2</small></i>
+
+## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.3</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
