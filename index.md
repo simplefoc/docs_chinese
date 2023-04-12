@@ -6,6 +6,7 @@ description: "Arduino Simple Field Oriented Control (FOC) project documentation.
 permalink: /
 ---
 # Arduino Simple Field Oriented Control (FOC) project - Chinese 😃🇨🇳
+![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)
 [![status](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d/status.svg)](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d)
@@ -30,53 +31,47 @@ permalink: /
 - 🎯 揭开 FOC 算法的神秘面纱，制作一个强大而简单的 Arduino 库： [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> ](#arduino-simplefoclibrary-v160)
   - <i>此库要支持尽可能多的**电机+传感器+电流检测+驱动器+单片机 **，做到通用性</i>
 - 🎯 建立几套适应不同应用情况的低成本FOC驱动板：
-   - ***新*** 📢: *简化版* 无刷直流驱动器 (<3Amps) :   [<span class="simple">Simple<b>FOC</b>Mini</span> ](https://github.com/simplefoc/SimpleFOCMini).
+   - ***新*** 📢: *简化版* 无刷直流驱动器 (<3A) :   [<span class="simple">Simple<b>FOC</b>Mini</span> ](https://github.com/simplefoc/SimpleFOCMini).
    - 支持*小功率* 云台设备的板子（<5A）：   [Arduino <span class="simple">Simple<b>FOC</b>Shield</span> ](arduino_simplefoc_shield_showcase).
    - 支持*中等功率* 无刷直流电驱动器的板子（<30A）： [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
    - 另外 [@byDagor](https://github.com/byDagor) *也做了完全集成的* 基于ESP32 的板子，大家可以一看： [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
 
-<blockquote class="success">
-<p class="heading">新消息 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> 已经发表在开源软件杂志上 <a href="citing">阅读更多</a></p>
-SimpleFOC: A Field Oriented Control (FOC) Library for Controlling Brushless Direct Current (BLDC) and Stepper Motors.<br>
-A. Skuric, HS. Bank, R. Unger, O. Williams, D. González-Reyes<br>
-Journal of Open Source Software, 7(74), 4232<br>
-</blockquote>
+
 
 <blockquote class="info" markdown="1">
-   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.3 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.3">查看发布</a></p>
-- stm32 低侧电流感应 
-   - 支持 g4 
-   - 彻底测试 f1/f4/g4 - [#187](https://github.com/simplefoc/Arduino-FOC/issues/187)
-   - bg431b: 增加对 VBAT 和 TEMPERATURE 读数的支持 [#222](https://github.com/simplefoc/Arduino-FOC/pull/222)
-- bugfixing
-   - leonardo
-   - mega2560 [#190](https://github.com/simplefoc/Arduino-FOC/issues/190)
-   - 无驱动器的内联电流感应 [#188](https://github.com/simplefoc/Arduino-FOC/issues/188)
-   - bg431b 支持当前感应修复 [#210](https://github.com/simplefoc/Arduino-FOC/pull/210)
-   - `StepperDriver4PWM` 错误的初始化  [#182](https://github.com/simplefoc/Arduino-FOC/issues/182)
-   - 开环反电动势电压问题 [#219](https://github.com/simplefoc/Arduino-FOC/issues/219)
-   - SAMD51 编译问题 [#217](https://github.com/simplefoc/Arduino-FOC/issues/217)
-   - ESP32-S3 编译问题 [#198](https://github.com/simplefoc/Arduino-FOC/issues/198)
-   - ESP32 编译问题 [#208](https://github.com/simplefoc/Arduino-FOC/issues/208), [#207](https://github.com/simplefoc/Arduino-FOC/issues/207)
-   - 磁传感器测向更稳健 [#173](https://github.com/simplefoc/Arduino-FOC/issues/173), [#164](https://github.com/simplefoc/Arduino-FOC/pull/164)
-   - `StepDirListener` 改进timing [#169](https://github.com/simplefoc/Arduino-FOC/issues/169), [#209](https://github.com/simplefoc/Arduino-FOC/pull/209)
-   - `HallSensor` 速度计算修复 [#192](https://github.com/simplefoc/Arduino-FOC/issues/192) 
-- API changes
-   - `setPhaseVoltage` 现在是公有函数 
-   - `getVelocity` 现在可以根据用户的需要来多次调用 - [查看文档](encoder#standalone-sensor)
-      - 如果调用之间的时间比`min_elapsed_time`长，它会重新计算速度 - 默认0.1ms
-   - `HallSensor` 去除速度计算异常值，请使用最大期望速度 `velocity_max` 来实现- [查看文档](hall_sensors#step-21-velocity-outlier-removal)
-   - BG431 板只能和 `LowsideCurrentSense` 类一起使用 - [查看文档](current_sense#current-sensing-support-per-mcu-architecture)
-   - 如果当前电流未初始化，`initFOC` 将失败 - [查看文档](bldcdriver3pwm#step-23-initialisation)
-      - 驱动器和传感电流 必须很好地初始化 `initFOC` 才能启动 - [查看文档](bldcmotor#step-6-align-motor-and-all-the-sensors---field-oriented-control-init)
-      - `cs.init()` 和 `driver.init()` return `1` 如果初始化良好则返回1，如果失败则返回0 
+   <p class="heading">新发布 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.3.0 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.3.0">查看发布</a></p>
+ - Arduino Mega 6pwm 支持更多定时器
+ - Arduino 板子 - 支持频率更改，支持32kHz或4kHz
+ - Arduino Uno -   在3pwm和6pwm模式下具有同步定时器 [#71](https://github.com/simplefoc/Arduino-FOC/issues/71)
+ - Teensy 3.x 初始化支持 6pwm
+ - Teensy 4.x 初始化支持 6pwm
+ - v3.1 SimpleFOCShield 的示例
+ - RP2040 兼容性适用于earlehillpower核心 [#234](https://github.com/simplefoc/Arduino-FOC/pull/234) [#236](https://github.com/simplefoc/Arduino-FOC/pull/236)
+ - 更灵活的 monitoring API 
+   - 开始、结束和分隔符字符
+   - 小数点位数（可通过Commander进行设置）
+ - 在 `Commander` 中添加了机器可读的详细模式[#233](https://github.com/simplefoc/Arduino-FOC/pull/233)
+ - *Simple**FOC**WebController* - 基于Web的SimpleFOC用户界面 [@geekuillaume](https://github.com/geekuillaume) - [webcontroller.simplefoc.com](https://webcontroller.simplefoc.com)
+ - bugfix - 修复了`MagneticSensorPWM`的多个问题 - [#258](https://github.com/simplefoc/Arduino-FOC/pull/258)
+ - bugfix - 修复了电流传感器对齐的问题，在交换引脚时添加了偏移交换
+ - bugfix - 修复了梯形波150的问题
+ - bugfix - 修复了ESP8266上的4pwm问题 [#224](https://github.com/simplefoc/Arduino-FOC/pull/224)
+ - Additional `InlineCurrentSense` and `LowsideCurrentSense` constructor 构造函数使用每安毫伏进行设置 [#253](https://github.com/simplefoc/Arduino-FOC/pull/253)
+ - STM32L4xx 电流感应支持由 [@Triple6]提供(https://github.com/Triple6) (discord) [#257](https://github.com/simplefoc/Arduino-FOC/pull/257)
+ - 在6pwm模式下可以禁用相位 
+   - stm32 - 软件和硬件6pwm
+   - atmega328 
+   - atmega2560
+ - 使用电机电感进行滞后补偿 [#246](https://github.com/simplefoc/Arduino-FOC/issues/246)
+   - 通过电压转矩模式增强电流控制
+   - 扩展了 `BLDCMotor` 和 `StepperMotor` 构造函数以接收电感参数
+   - 也可以通过 `motor.phase_inductance` 或通过 `Commander`进行设置
 </blockquote>
 
 
 
 
-
-## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.2.3</small></i>
+## Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <i><small>v2.3.0</small></i>
 <iframe class="youtube"  src="https://www.youtube.com/embed/Y5kLeqTc6Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 这个视频演示了 Simple FOC 库的基本用法、电器连接并展示了它的性能。
 
