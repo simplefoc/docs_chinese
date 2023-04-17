@@ -124,7 +124,7 @@ driver.pwm_frequency = 20000;
 
 MCU | default frequency（默认频率） | MAX frequency（最大频率） | PWM resolution（分辨率） | Center-aligned（中心对齐） | Configurable freq（可配置的频率） 
 --- | --- | --- | --- | --- | --- 
-Arduino UNO(Atmega328) | 32 kHz | 32 kHz | 8bit | yes | no
+Arduino UNO(Atmega328) | 32 kHz | 32 kHz | 8bit | yes | yes (either 4kHz or 32kHz) 
 STM32 | 25kHz | 50kHz | 14bit | yes | yes
 ESP32 | 30kHz | 50kHz | 10bit | yes | yes
 Teensy | 25kHz | 50kHz | 8bit | yes | yes
