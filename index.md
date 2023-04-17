@@ -20,7 +20,7 @@ permalink: /
 
 相比于直流电机，无刷电机的优点可谓数不胜数，但同时它也拥有巨大的不足，那就是控制过于复杂。尽管身处工具链和PCB制造设计技术发达，设计自己的PCB变得很容易的年代，但一个低成本的无刷电机驱动方案却尚未出现。其中一个原因就是自行编写无刷电机的驱动方案太过复杂，尽管我们可以在网上找到很多成熟的FOC代码方案，但他们大部分都针对特定的硬件配置、特定的单片机；同时，现在很多的FOC算法和硬件开发尝试都是围绕着高功率无刷电机应用，低成本低功率的FOC硬件十分难找，甚至根本就找不到。
 
-**灯哥开源** 是SimpleFOC官方中文资料的维护者。作为中文官方，我不仅及时更新SimpleFOC的中文翻译和技术资料，还基于SimpleFOC库开发了全开源的基于ESP32的双路无刷电机控制器硬件[DengFOC](https://github.com/ToanTech/Deng-s-foc-controller)。作为SimpleFOC技术的提倡者,欢迎大家使用SimpleFOC开源技术，若对中文资料有翻译问题或者疑惑，也欢迎大家加入QQ交流群 (QQ群：471832283)。
+**灯哥开源** 是SimpleFOC官方中文资料的维护者。作为中文官方，我不仅及时更新SimpleFOC的中文翻译和技术资料，还基于SimpleFOC库开发了全开源的基于ESP32的双路无刷电机控制器硬件[DengFOC](https://github.com/ToanTech/Deng-s-foc-controller)。作为SimpleFOC技术的提倡者,欢迎大家使用SimpleFOC开源技术，若对中文资料有翻译问题或者疑惑，也欢迎大家联系我 (QQ群：471832283)。
 
 **如果在国内的朋友访问速度慢，可以访问中国国内中文文档镜像站**： [http://simplefoc.cn/](http://simplefoc.cn/#/)
 
