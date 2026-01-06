@@ -1,109 +1,175 @@
 ---
 layout: default
 title: 基于FOC电流
-parent: Torque Control
-grand_parent: Closed-Loop control
-grand_grand_parent: Motion Control
-grand_grand_grand_parent: Writing the Code
+parent: 力矩控制
+grand_parent: 闭环控制
+grand_grand_parent: 运动控制
+grand_grand_grand_parent: 编写代码
 grand_grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /foc_current_torque_mode
 nav_order: 3 
+toc: true
 ---
 
-# 基于FOC电流的力矩控制
-这种力矩控制模式是真正的无刷电机力矩控制，它需要电流检测来实现。用户设置目标电流I<sub>d</sub>，FOC会计算出所需的相电压 <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i>，并通过测量相电流(<i>i<sub>a</sub></i>, <i>i<sub>b</sub></i> 和 <i>i<sub>c</sub></i>)和角度 <i>a</i>来保持力矩。该模式设置如下：
 
-这种力矩控制模式允许你对无刷直流电机进行真正的力矩控制，它需要电流传感来做到这一点。用户设置目标电流 <i>I<sub>d</sub></i> 为FOC算法计算所需的相电压 <i>u<sub>a</sub></i> ,<i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> ，以便通过测量相电流(<i>i<sub>a</sub></i>, <i>i<sub>b</sub></i> 和 <i>i<sub>c</sub></i>)和转子角 <i>a</i>来维持它。这种模式是通过以下方式实现的:
+# 使用FOC电流进行扭矩控制
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">无刷直流电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s">步进电机</a>
 
-```cpp
-// FOC电流力矩控制模式
+
+<div class="type type-b" markdown="1">
+这种扭矩控制模式允许你对无刷直流电机进行真正的扭矩控制，并且需要电流传感来实现。用户设置目标电流$$I_d$$，FOC算法通过测量相电流（$$i_a$$、$$i_b$$和$$i_c$$）和转子角度$$a$$，计算出维持该电流所需的相电压$$u_a$$、$$u_b$$和$$u_c$$。启用此模式的方式如下：
+</div>
+
+<div class="type type-s hide" markdown="1">
+这种扭矩控制模式允许你对步进电机进行真正的扭矩控制，并且需要电流传感来实现。用户设置目标电流$$I_d$$，FOC算法通过测量相电流（$$i_a$$和$$i_b$$）和转子角度$$a$$，计算出维持该电流所需的相电压$$u_a$$和$$u_b$$。启用此模式的方式如下：
+</div>
+
+``` cpp
+// FOC current torque control mode
 motor.torque_controller = TorqueControlType::foc_current;
 ```
 
-## 它到底是如何工作的
- <a name="foc_image"></a><img src="extras/Images/foc_current_mode.png">
+## 具体工作原理
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">无刷直流电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s"> 步进电机</a>
 
-FOC电流力矩控制算法读取无刷直流电机(通常为<i>i<sub>a</sub></i> 和 <i>i<sub>b</sub></i>)的相电流。此外，该算法从位置传感器读取角度 <i>a</i> 。相电流通过逆Clarke和Park变换转换为 `d` 分量电流 <i>i<sub>d</sub></i> 和 `q`分量电流 <i>i<sub>q</sub></i> 。 而后，每个相PID控制器利用目标电流I<sub>d</sub>和测量电流值 <i>i<sub>q</sub></i> 和 <i>i<sub>d</sub></i>计算出相应的设置到电机的电压值U<sub>q</sub>和U<sub>d</sub>，以保持i<sub>q</sub>=I<sub>d</sub>,i<sub>d</sub>=0。最后，FOC利用Park和Clark（或空间矢量SpaceVector）变换设置合适的 <i>u<sub>a</sub></i>, <i>u<sub>b</sub></i> 和 <i>u<sub>c</sub></i> 。通过测量相电流，力矩控制算法能够确保这些电压生成在电机转子中产生合适的电流和磁力，并恰好与电机转子的永磁场保持<i>90度</i>偏移，从而保证最大转矩，这称为换向。
+<div class="type type-b">
+ <a name="foc_image"></a><img class="width60" src="extras/Images/foc_current_mode.png">
+</div>
+<div class="type type-s hide">
+ <a name="foc_image"></a><img class="width60" src="extras/Images/foc_current_stepper.png">
+</div>
 
-电机产生的力矩与q分量的电流 <i>i<sub>q</sub></i>成比例，这原理使这种力矩控制模式成为无刷直流电动真正的力矩控制。
+
+
+<div class="type type-b" markdown="1">
+FOC电流扭矩控制算法读取无刷直流电机的相电流（$$i_a$$、$$i_b$$和$$i_c$$）。相电流通过逆克拉克变换转换为电流$$i_\alpha$$和$$i_\beta$$。例如，如果测量到相电流$$i_a$$和$$i_b$$（由于三相电流之和为零，$$i_c=-i_a-i_b$$）：
+$$
+i_\alpha = i_a, \quad i_\beta = i_a\frac{1}{\sqrt{3}} + i_b\frac{2}{\sqrt{3}}
+$$
+
+</div>
+<div class="type type-s hide" markdown="1">
+FOC电流扭矩控制算法读取步进电机的相电流（$$i_a$$和$$i_b$$）。相电流通过逆克拉克变换转换为电流$$i_\alpha$$和$$i_\beta$$（对于步进电机来说，这一变换很简单）。
+
+$$
+i_\alpha = i_a, \quad i_\beta =i_b 
+$$
+
+</div>
+
+利用当前转子角度$$a$$以及电流$$i_\alpha$$和$$i_\beta$$，FOC算法通过逆帕克变换计算出电流的$$i_d$$和$$i_q$$分量。
+
+$$
+i_q =  i_\beta \cos(a) - i_\alpha \sin(a), \quad i_d = i_\alpha \cos(a) + i_\beta \sin(a)
+$$
+
+利用目标电流值$$I_d$$（d表示期望的）以及测量到的电流$$i_q$$和$$i_d$$，每个轴的PID控制器计算出要施加到电机的适当电压$$U_q$$和$$U_d$$，以维持$$i_q$$=$$I_d$$和$$i_d$$=0。
+
+$$
+U_q = \text{PID}_q(I_d - i_q), \quad U_d = \text{PID}_d(0-i_d)
+$$
+
+<div class="type type-b" markdown="1">
+最后，FOC算法使用帕克+克拉克（或空间矢量）变换，为电机设置适当的$$u_a$$、$$u_b$$和$$u_c$$电压。通过测量相电流，这种扭矩控制算法确保这些电压在电机转子中产生适当的电流和磁力，且与永磁体磁场正好成<i>90度</i>偏移，这保证了最大扭矩，这一过程称为换相。
+
+</div>
+<div class="type type-s hide" markdown="1">
+最后，FOC算法使用克拉克变换，为电机设置适当的$$u_a$$和$$u_b$$电压。通过测量相电流，这种扭矩控制算法确保这些电压在电机转子中产生适当的电流和磁力，且与永磁体磁场正好成<i>90度</i>偏移，这保证了最大扭矩，这一过程称为换相。
+
+</div>
+
+电机产生的扭矩与q轴电流$$i_q$$成正比（与扭矩常数$$K_t$$相关）。因此，对于任何目标电机扭矩$$\tau$$，目标电流$$I_d$$可计算为：
+
+$$
+I_d = \frac{\tau}{K_t}
+$$
+
 
 ## 配置参数
-为了可以平稳运行，用户需要配置PID控制器`PID_current_q`参数和低通滤波器`LPF_current_q`时间常数。
-
+为了使这个控制环平稳运行，用户需要配置`PID_current_q`的PID控制器参数和低通滤波器`LPF_current_q`的时间常数。
 ```cpp
-// Q轴
-// PID参数 - 默认
+// Q axis
+// PID parameters - default 
 motor.PID_current_q.P = 5;                       // 3    - Arduino UNO/MEGA
 motor.PID_current_q.I = 1000;                    // 300  - Arduino UNO/MEGA
 motor.PID_current_q.D = 0;
 motor.PID_current_q.limit = motor.voltage_limit; 
 motor.PID_current_q.ramp = 1e6;                  // 1000 - Arduino UNO/MEGA
-// 低通滤波器 - 默认 
+// Low pass filtering - default 
 LPF_current_q.Tf= 0.005;                         // 0.01 - Arduino UNO/MEGA
 
-// D轴
-// PID参数 - 默认
+// D axis
+// PID parameters - default 
 motor.PID_current_d.P = 5;                       // 3    - Arduino UNO/MEGA
 motor.PID_current_d.I = 1000;                    // 300  - Arduino UNO/MEGA
 motor.PID_current_d.D = 0;
 motor.PID_current_d.limit = motor.voltage_limit; 
 motor.PID_current_d.ramp = 1e6;                  // 1000 - Arduino UNO/MEGA
-// 低通滤波器 - 默认
+// Low pass filtering - default 
 LPF_current_d.Tf= 0.005;                         // 0.01 - Arduino UNO/MEGA
 ```
 
 
-## 力矩控制示例代码
+## 扭矩控制示例代码
 
-下面是一个利用了在线电流检测的基于FOC电流的力矩控制，可以在串行的commander接口设定目标值。
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">无刷直流电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s"> 步进电机</a>
+
+一个简单的基于 FOC 电流的扭矩控制示例，使用内置电流传感器并通过串行命令接口设置目标值。
+
+<div class="type type-b" markdown="1">
 
 ```cpp
 #include <SimpleFOC.h>
 
-// 无刷直流电机及驱动器实例
+// BLDC motor & driver instance
 BLDCMotor motor = BLDCMotor(11);
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-// 编码器实例
+// encoder instance
 Encoder encoder = Encoder(2, 3, 500);
-// 回调通道A和B
+// channel A and B callbacks
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
-// 电流检测
+// current sensor
 InlineCurrentSense current_sense = InlineCurrentSense(0.01, 50.0, A0, A2);
 
-// commander实例化
+// instantiate the commander
 Commander command = Commander(Serial);
 void doTarget(char* cmd) { command.scalar(&motor.target, cmd); }
 
 void setup() { 
   
-  // 初始化编码传感器硬件
+  // initialize encoder sensor hardware
   encoder.init();
   encoder.enableInterrupts(doA, doB); 
-  // 连接电机和传感器
+  // link the motor to the sensor
   motor.linkSensor(&encoder);
 
-  // 配置驱动器
-  // 电源电压 [V]
+  // driver config
+  // power supply voltage [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // 连接驱动器
+  // link driver
   motor.linkDriver(&driver);
+  // link the driver to the current sense
+  current_sense.linkDriver(&driver);
 
-  // 电流检测初始化硬件
+  // current sense init hardware
   current_sense.init();
-  // 连接电流检测器和电机
+  // link the current sense to the motor
   motor.linkCurrentSense(&current_sense);
 
-  // 设置力矩模式：
+  // set torque mode:
   motor.torque_controller = TorqueControlType::foc_current; 
-  // 设置运动控制环
+  // set motion control loop to be used
   motor.controller = MotionControlType::torque;
 
-  // foc电流控制参数 (Arduino UNO/Mega)
+  // foc current control parameters (Arduino UNO/Mega)
   motor.PID_current_q.P = 5;
   motor.PID_current_q.I= 300;
   motor.PID_current_d.P= 5;
@@ -111,17 +177,17 @@ void setup() {
   motor.LPF_current_q.Tf = 0.01; 
   motor.LPF_current_d.Tf = 0.01; 
 
-  // 监视串口
+  // use monitoring with serial 
   Serial.begin(115200);
-  // 如果不需要，可以注释掉此行
+  // comment out if not needed
   motor.useMonitoring(Serial);
 
-  // 初始化电机
+  // initialize motor
   motor.init();
-  // 校准编码器，启用FOC
+  // align sensor and start FOC
   motor.initFOC();
 
-  // 添加目标命令T
+  // add target command T
   command.add('T', doTarget, "target current");
 
   Serial.println(F("Motor ready."));
@@ -131,13 +197,105 @@ void setup() {
 
 void loop() {
 
-  // FOC算法主函数
+  // main FOC algorithm function
   motor.loopFOC();
 
-  // 运动控制函数
+  // Motion control function
   motor.move();
 
-  // 用户通信
+  // user communication
   command.run();
 }
 ```
+
+</div>
+
+<div class="type type-s hide" markdown="1">
+
+```cpp
+#include <SimpleFOC.h>
+
+// Stepper motor & driver instance
+StepperMotor motor = StepperMotor(50);
+StepperDriver2PWM driver = StepperDriver2PWM(9, 5, 6, 8);
+
+// encoder instance
+Encoder encoder = Encoder(2, 3, 500);
+// channel A and B callbacks
+void doA(){encoder.handleA();}
+void doB(){encoder.handleB();}
+
+// current sensor
+InlineCurrentSense current_sense = InlineCurrentSense(0.01, 50.0, A0, A2);
+
+// instantiate the commander
+Commander command = Commander(Serial);
+void doTarget(char* cmd) { command.scalar(&motor.target, cmd); }
+
+void setup() { 
+  
+  // initialize encoder sensor hardware
+  encoder.init();
+  encoder.enableInterrupts(doA, doB); 
+  // link the motor to the sensor
+  motor.linkSensor(&encoder);
+
+  // driver config
+  // power supply voltage [V]
+  driver.voltage_power_supply = 12;
+  driver.init();
+  // link driver
+  motor.linkDriver(&driver);
+  // link the driver to the current sense
+  current_sense.linkDriver(&driver);
+
+  // current sense init hardware
+  current_sense.init();
+  // link the current sense to the motor
+  motor.linkCurrentSense(&current_sense);
+
+  // set torque mode:
+  motor.torque_controller = TorqueControlType::foc_current; 
+  // set motion control loop to be used
+  motor.controller = MotionControlType::torque;
+
+  // foc current control parameters (Arduino UNO/Mega)
+  motor.PID_current_q.P = 5;
+  motor.PID_current_q.I= 300;
+  motor.PID_current_d.P= 5;
+  motor.PID_current_d.I = 300;
+  motor.LPF_current_q.Tf = 0.01; 
+  motor.LPF_current_d.Tf = 0.01; 
+
+  // use monitoring with serial 
+  Serial.begin(115200);
+  // comment out if not needed
+  motor.useMonitoring(Serial);
+
+  // initialize motor
+  motor.init();
+  // align sensor and start FOC
+  motor.initFOC();
+
+  // add target command T
+  command.add('T', doTarget, "target current");
+
+  Serial.println(F("Motor ready."));
+  Serial.println(F("Set the target current using serial terminal:"));
+  _delay(1000);
+}
+
+void loop() {
+
+  // main FOC algorithm function
+  motor.loopFOC();
+
+  // Motion control function
+  motor.move();
+
+  // user communication
+  command.run();
+}
+```
+
+</div>

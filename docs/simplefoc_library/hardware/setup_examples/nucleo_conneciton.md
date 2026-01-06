@@ -7,34 +7,35 @@ nav_order: 4
 permalink: /nucleo_connection
 grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+toc: true
 ---
 
 
-# Stm32 Nucleo-64 上使用 Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>
-SimpleFOC Shield是一个基于Arduino UNO开发的板子，兼容与Arduino UNO引脚排列一致的开发板直接插入使用，其中之一就是STM32 Nucleo-64
 
-这里是Arduino <span>Simple<span>FOC</span>Shield</span>连接范例：
+# 使用 Arduino <span class="simple">简易<span class="foc">FOC</span>扩展板</span>的 Stm32 Nucleo-64
+<span class="simple">简易<span class="foc">FOC</span>扩展板</span>作为 Arduino UNO 扩展板，与任何具有相同插针的板卡兼容，其中就包括 STM32 Nucleo-64 板卡。
+
+以下是 Arduino <span class="simple">简易<span class="foc">FOC</span>扩展板</span>的连接方案：
 
 <p><img src="extras/Images/foc_shield_v13_nucleo.png" class="img400"></p>
-## 连接器类型
- - 电机和编码器接线柱
-    - 电机相位为`a`、`b` 和 `c`
-    - 电源线（12V ~ 24V）
- - 编码器接线柱
-    - 集成上拉电阻
 
-更多信息请点击此链接：[Arduino Simple FOC Shield](arduino_simplefoc_shield_showcase)。
+## 连接器类型
+- 端子连接器
+  - 电机相线 `a`、`b` 和 `c`
+  - 电源电缆（12V 至 24V）
+- 编码器连接器
+  - 集成可配置上拉电阻
+
+更多信息请访问此链接：[Arduino 简易 FOC 扩展板](arduino_simplefoc_shield_showcase)。
 
 ## 编码器
+- 通道 `A` 和 `B` 连接到编码器连接器 `P_ENC` 的 `A` 和 `B` 端子。
+- 如果你的编码器有 `index` 信号，也可以将其连接到编码器连接器的 `I` 端子。
 
--  `A` 和 `B`连接到编码器接线柱`P_ENC`，`A` 和 `B`位置 。
--  如果你的编码器有`index`（基准） 信号，你也可以将它连接到编码器接线柱 `I`位置。
+<blockquote class="info"><p class="heading">注意</p> 在 STM32 板卡上，任何数字引脚都可以作为外部中断引脚。</blockquote>
 
 ## 电机
+- 电机相线 `a`、`b` 和 `c` 直接连接到电机端子连接器 `TB_M1`。
 
-- 电机`a`相, `b`相和 `c`相直接连接电机接线柱 `TB_M1`
-
-
-## 连接示例
-
+## 示例连接
 <p><img src="extras/Images/nucleo_foc_shield_connection.jpg" class="width60"></p>

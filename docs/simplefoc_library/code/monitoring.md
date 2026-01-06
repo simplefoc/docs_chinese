@@ -1,95 +1,96 @@
 ---
 layout: default
-title: 监控
+title: 监测
 nav_order: 7
 permalink: /monitoring
-parent: 代码
+parent: 编写代码
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
+toc: true
 ---
 
-# 监控功能（遥测）
 
- `BLDCMotor` 和 `StepperMotor` 都支持使用串口进行基础遥测。
 
-这种遥测（在下文中也称为监控）支持使用Arduino IDE串行绘图仪或[ simple  foc Studio tool](/ Studio)等工具可视化电机的关键参数。
+# 监控（遥测）功能
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span>监控是电机变量到串行终端的实时标签分离输出。它通过在 `setup` 函数中添加以下这行启用:
+`BLDCMotor` 和 `StepperMotor` 类都支持使用 `Serial` 端口的基本遥测功能。
+
+这种遥测（在以下文档中也称为“监控”）将允许你使用诸如 Arduino IDE 串行绘图仪或我们的 [<span class="simple">Simple<span class="foc">FOC</span>Studio</span> 工具](/studio) 等工具可视化电机的关键参数。
+
+<span class="simple">Simple<span class="foc">FOC</span>库</span> 监控是将电机变量以制表符分隔的形式实时输出到串行终端。通过在 `setup` 函数中包含以下行来启用它：
 
 ```cpp
 motor.useMonitoring(Serial);
 ```
 
 <blockquote class="info">
-注意：你也可以使用其他串口，例如：你MCU也支持的串口1和串口2。
+注意：你也可以使用其他串行端口，例如 Serial1、Serial2，具体取决于你的 MCU 支持情况。
 </blockquote>
 
-<blockquote class="warning">
-此时，使用 <code class="highlighter-rouge">motor.useMonitoring</code> 启用监控功能会进行调试输出。更多信息，请参阅 [debugging]。
+<blockquote class="warning" markdown=1>
 
-在未来的版本中会分开调试输出和遥测输出，<code class="highlighter-rouge">motor.useMonitoring</code> 函数可能会被弃用。
+目前，使用 <code class="highlighter-rouge">motor.useMonitoring</code> 启用监控时，<i>也会</i>启用调试输出 - 详见 [调试](debugging)。
 
-如果调试输出结果不理想，你可以像以下这样禁用调试输出（但保持监控）：
+在未来的版本中，调试输出和遥测输出将被分离，并且 <code class="highlighter-rouge">motor.useMonitoring</code> 函数可能会被弃用。
+
+如果不希望有调试输出或调试输出给你带来了问题，你可以这样禁用调试输出（但保留监控）：
+</blockquote>
 
 ```cpp
 motor.useMonitoring(Serial);
 SimpleFOCDebug::enable(NULL);
 ```
 
-## 电机变量实时监控
+## 实时电机变量监控
 
-通过添加以下这行代码到`loop`函数，你可以获得实时监控输出。
-
+要实际产生任何输出，你还必须在 loop 函数中添加以下行：
 ```cpp
 motor.monitor()
 ```
 
-监控功能可输出7种不同的电机具体变量:
+监控函数可以输出 7 种不同的电机特定变量：
+- `target` - 当前目标值，特定于所使用的运动控制（可以是电流 [A]、电压 [V]、速度 [rad/s] 或位置 [rad]）
+- `voltage.q` - [V] -  q 方向的设定电压
+- `voltage.d` - [V] - d 方向的设定电压
+- `current.q` - [mA] - q 方向的测量电流（如果有电流检测），如果没有电流检测但提供了相电阻，则为估算电流
+- `current.d` - [mA] -  d 方向的测量电流（如果有电流检测）
+- `shaft_velocity` - [rad/s] - 电机速度
+- `shaft_angle` - [rad] - 电机位置
 
-- `target` - 当前目标值，具体到所使用的运动控制（电流 [A]、电压 [V]、速度 [rad/s] 或位置 [rad]）
-- `voltage.q` - 设置 电压分量q
-- `voltage.d` - 设置电压分量d
-- `current.q` - 电流分量q的测量值 [mA]（如果电流检测可用）或者预测电流（如果电流检测不可用且给定相电阻）
-- `current.d` - 电流分量d的测量值 [mA]（如果电流检测可用）
-- `shaft_velocity` - 电机速度 [rad/s] 
-- `shaft_angle` - 电机位置  [rad]
-
-设置监视的首选值，可以在`setup()` 函数中更改 `motor.monitoring_variables` 参数。
-
+要设置要监控的首选值，你只需在 setup() 函数中更改 motor.monitoring_variables 参数：
 ```cpp
-motor.monitor_variables = _MON_TARGET | _MON_VEL | _MON_ANGLE; // 默认 _MON_TARGET | _MON_VOLT_Q | _MON_VEL | _MON_ANGLE
+motor.monitor_variables = _MON_TARGET | _MON_VEL | _MON_ANGLE; // default _MON_TARGET | _MON_VOLT_Q | _MON_VEL | _MON_ANGLE
 ```
-默认情况下，监控的变量为 `target`,`voltage.q`,`velocity`,`angle`。该参数是一个7bit值，其中每个位代表 `bool` 标志信号，来表示变量应该输出 (1) 还是不输出 (0)，。因此，我们定义了一组帮助监控常量，可以组合起来更容易地处理监控：
-
+默认情况下，监控的变量是 target、voltage.q、velocity、angle。该参数是一个 7 位数字的位图，其中每一位表示一个 bool 标志，指示是否应输出该变量（1 表示输出，0 表示不输出）。因此，我们定义了一组有用的监控常量，你可以组合它们以更轻松地处理监控：
 ```cpp
-#define _MON_TARGET 0b1000000 // 监视器目标值
-#define _MON_VOLT_Q 0b0100000 // 监视器电压q值
-#define _MON_VOLT_D 0b0010000 // 监视器电压d值
-#define _MON_CURR_Q 0b0001000 // 监视器电流q值 - 如有测量
-#define _MON_CURR_D 0b0000100 // 监视器电流d值 - 如有测量
-#define _MON_VEL    0b0000010 // 监视器速度值
-#define _MON_ANGLE  0b0000001 // 监视器角度值
+#define _MON_TARGET 0b1000000 // monitor target value
+#define _MON_VOLT_Q 0b0100000 // monitor voltage q value
+#define _MON_VOLT_D 0b0010000 // monitor voltage d value
+#define _MON_CURR_Q 0b0001000 // monitor current q value - if measured
+#define _MON_CURR_D 0b0000100 // monitor current d value - if measured
+#define _MON_VEL    0b0000010 // monitor velocity value
+#define _MON_ANGLE  0b0000001 // monitor angle value
 ```
 
-此外，使用`motor.monitor()` 函数输出实时执行变量在许多情况下会对电机性能产生负面影响，因此，应该尽可能减少对该函数的调用，特别是在低波特率时输出很多变量。你可以通过参数`motor.monitor_downsample`来设置：
-
+此外，使用 motor.monitor() 函数输出实时执行变量在很多情况下可能会对电机性能产生负面影响，因此尽可能减少该函数的调用次数非常重要，特别是在以较低波特率显示许多变量时。你可以通过设置参数 motor.monitor_downsample 轻松实现：
 ```cpp
-// 下采样
-motor.monitor_downsample = 100; // 默认为10
+// downsampling
+motor.monitor_downsample = 100; // default 10
 ```
-这个变量告诉 `motor.monitor()` 直到计数到`monitor_downsample`时才将变量输出到串行。也就是说每到一次`monitor_downsample`循环才会输出一次变量。
-下面是一个完整的配置代码实例：
 
+该变量告诉 motor.monitor() 每调用 monitor_downsample 次时将变量输出到串行端口。简而言之，它会在每 monitor_downsample 次循环调用时将变量输出到串行端口。
+
+以下是完整配置代码的示例：
 ```cpp
 ...
 void setup(){
     ...
 
-    Serial.begin(115200); // 越高越好
+    Serial.begin(115200); // the higher the better
     motor.useMonitoring(Serial);
-    //显示变量
+    //display variables
     motor.monitor_variables = _MON_TARGET | _MON_VEL | _MON_ANGLE; 
-    // 下采样
-    motor.monitor_downsample = 100; // 默认为10
+    // downsampling
+    motor.monitor_downsample = 100; // default 10
     
     ...
 }
@@ -103,11 +104,11 @@ void loop(){
 
 
 
-实时监控功能主要用于实时可视化，特别适用于Arduino IDE的`Serial Plotter`
+实时监控功能旨在用于实时可视化，特别适合 Arduino IDE 的 Serial Plotter
 
 <img class="width60" src="extras/Images/plotter.jpg">
 
-或者在 `Serial Terminal`
+或者在 Serial Terminal 中
 ```sh
 ...
 voltage,target,velocity
@@ -135,44 +136,67 @@ voltage,target,velocity
 ...
 ```
 
-<blockquote class="warning"><p class="heading"> 执行时间障碍</p>
-这个方法的目的是在主循环函数中顺着<code class="highlighter-rouge">loopFOC()</code>和<code class="highlighter-rouge">move()</code>函数调用。因此，<code class="highlighter-rouge">motor.monitor()</code>将会影响执行性能，降低FOC算法的采样频率，因此在运行代码时要考虑这个因素。  </blockquote>
+<blockquote class="warning"><p class="heading"> 执行时间影响</p>此方法旨在与 <code class="highlighter-rouge">loopFOC()</code> 和 <code class="highlighter-rouge">move()</code> 函数一起在主循环函数中调用。因此，<code class="highlighter-rouge">motor.monitor()</code> 会影响执行性能并降低 FOC 算法的采样频率，因此在运行代码时请考虑到这一点。</blockquote>
 
 
-## 自定义串行终端监控
+## 监控输出格式
 
-如果希望实现自己的监控功能或只是将电机变量输出到`Serial`串行终端，这里有`BLDCMotor`和`StepperMotor` 类的公共变量，可以随时访问。
+SimpleFOC库 允许格式化监控输出。它允许你设置起始字符、结束字符、值分隔符以及用于变量监控的小数位数。
 
 ```cpp
-// 电流目标值
+motor.monitor_start_char = '\0'; //!< monitor starting character
+motor.monitor_end_char = '\0'; //!< monitor outputs ending character 
+motor.monitor_separator = '\t'; //!< monitor outputs separation character
+```
+初始参数的设置是为了让 Arduino IDE 的串行绘图仪能够很好地解析变量。但是如果你希望使用其他一些串行绘图仪应用程序，例如[CieNTi/serial_port_plotter](https://github.com/CieNTi/serial_port_plotter)，你可以轻松调整监控格式，以便在其中可视化电机变量
+
+```cpp
+motor.monitor_separator= ' ';
+motor.monitor_end_char= ';';
+motor.monitor_start_char= '$';
+```
+
+或者例如对于[nathandunk/BetterSerialPlotter](https://github.com/nathandunk/BetterSerialPlotter)，我们只需要将分隔符值更改为空格字符。
+```cpp
+motor.monitor_separator= ' ';
+```
+
+此外，可以使用 monitor_decimals 变量更改用于显示监控变量的小数位数。默认设置为 4。
+```cpp
+motor.monitor_decimals = 4; //!< monitor outputs decimal places
+``` 
+## 自定义串行终端监控
+
+如果你希望实现自己的监控功能，或者只是将电机变量输出到 Serial 终端，以下是 BLDCMotor 和 StepperMotor 类的公共变量，你可以随时访问它们。
+```cpp
+// current target value
 float target;
-// 当前电机角度
+// current motor angle
 float shaft_angle;
-// 当前电机速度
+// current motor velocity 
 float shaft_velocity;
-// 当前目标速度
+// current target velocity
 float shaft_velocity_sp;
-// 当前目标角度
+// current target angle
 float shaft_angle_sp;
 
-// 当前设置的电机电压 (voltage.q, voltage.d)
+// current voltage set to the motor (voltage.q, voltage.d)
 DQVoltage_s voltage;
-// 当前电机电流 (current.q, current.d) - 如有测量
+// current (if) measured on the motor (current.q, current.d)
 DQCurrent_s current;
-// 相电压
+// phase voltages 
 float Ua, Ub, Uc;
 
 ```
-在此之前可以通过添加`motor`来访问这些变量中的任何一个。例如：
-
+你可以通过在变量前添加 motor. 来访问这些变量中的任何一个。例如：
 ```cpp
-Serial.println(motor.shaft_angle);// 打印当前电机位置至串口终端
-// 或者
-Serial.println(motor.Ua); // 打印相电压Ua至串口终端
+Serial.println(motor.shaft_angle);// print current motor position to the serial terminal
+// or
+Serial.println(motor.Ua); // print phase voltage Ua to the serial terminal
 ```
 
-监视只能在一个方向上工作，并且假设它实现用户通信。
+如你所见，监控仅在一个方向上工作，并且假设你将自己实现用户通信。
 
-## 使用电机命令实时用户通信
-
-为了在用户和电机之间进行双向通信， Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>  为你提供了 [电机命令接口](communication)。
+## 使用电机命令进行实时用户通信
+  
+为了实现用户和电机之间的双向通信，Arduino SimpleFOC库 为你提供了 [电机命令接口](communication)。

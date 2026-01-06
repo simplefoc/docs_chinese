@@ -7,126 +7,139 @@ permalink: /velocity_openloop
 nav_order: 1
 parent: 开环控制
 grand_parent: 运动控制
-grand_grand_parent: 代码
-grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
+grand_grand_parent: 编写代码
+grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+toc: true
 ---
 
-# 开环速度控制
-该模式无需设置任何位置传感器，而控制无刷直流电机达到所期望的速度。开环速度控制模式设置如下：
 
+# 速度开环控制
+此控制环允许您在不使用位置传感器的情况下以期望的速度旋转 BLDC 电机。通过以下方式启用此模式：
 ```cpp
-// 设置开环速度控制模式
+// set velocity control open-loop mode
 motor.controller = MotionControlType::velocity_openloop;
 ```
 
-<script type="text/javascript">
-    function show(id){
-        Array.from(document.getElementsByClassName('gallery_img')).forEach(
-        function(e){e.style.display = "none";});
-        document.getElementById(id).style.display = "block";
-        Array.from(document.getElementsByClassName("btn-primary")).forEach(
-        function(e){e.classList.remove("btn-primary");});
-        document.getElementById("btn-"+id).classList.add("btn-primary");
-    }
-</script>
-<a href ="javascript:show(0);" id="btn-0" class="btn  btn-primary">电压限制</a>
-<a href ="javascript:show(1);" id="btn-1" class="btn">电流限制</a>
-<a href ="javascript:show(2);" id="btn-2" class="btn ">带反电动势能补偿的电流限制</a>
+选择电机类型：
 
-<img style="display:display" id="0" class="gallery_img " src="extras/Images/open_loop_velocity (3).png"/>
-<img style="display:none" id="1" class="gallery_img " src="extras/Images/open_loop_velocity (2).png"/>
-<img style="display:none" id="2" class="gallery_img " src="extras/Images/open_loop_velocity (1).png"/>
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">BLDC 电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s"> 步进电机</a>
 
-你可以通过运行`motion_control/openloop_motor_control/` 文件夹中的例程来测试这个算法。
+选择电压控制类型： 
 
-这种控制算法非常简单。 用户可以设定期望的目标速度 <i>v<sub>d</sub></i>，算法会对目标速度进行积分，计算出所需设置到电机a<sub>c</sub>的值， 然后，通过 `SinePWM` 或者 `SpaceVectorPWM` 调制，在a<sub>c</sub>的方向上施加电机的最大允许电压 `motor.voltage_limit` 。
+<a href ="javascript:show(0,'loop');" id="btn-0" class="btn btn-loop btn-primary">电压限制</a>
+<a href ="javascript:show(1,'loop');" id="btn-1" class="btn btn-loop">电流限制</a>
+<a href ="javascript:show(2,'loop');" id="btn-2" class="btn btn-loop">带反电动势补偿的电流限制</a>
 
-这是计算下一时刻设置到电机的角度的简化版:
+<div class="type type-b">
+<img class="loop loop-0 width60" src="extras/Images/open_loop_velocity (3).png"/>
+<img class="loop loop-1 width60 hide" src="extras/Images/open_loop_velocity (2).png"/>
+<img class="loop loop-2 width60 hide" src="extras/Images/open_loop_velocity (1).png"/>
 
-```cpp
-next_angle = past_angle + target_velocity*d_time;
-```
-你需要知道  `target_velocity`，采样时间 `d_time` 和你设置的电机角度 `past_angle` 的上一时刻的值。
+</div>
+<div class="type type-s hide">
+
+<img  class="loop width60 loop-0" src="extras/Images/open_loop_vel_steppe3.jpg"/>
+<img class="loop width60 loop-1 hide" src="extras/Images/open_loop_vel_steppe2.jpg"/>
+<img class="loop width60 loop-2 hide" src="extras/Images/open_loop_vel_steppe1.jpg"/>
+
+</div>
+
+您可以通过运行 `motion_control/openloop_motor_control/` 文件夹中的示例来测试此算法。
+
+该控制算法非常简单。用户可以设置想要达到的目标速度$$v_d$$，算法将在时间上对其进行积分，以找出需要设置给电机的角度$$a_c$$以实现该速度。然后，最大允许电压 `motor.voltage_limit` 将使用 `SinePWM` 或 `SpaceVectorPWM` 调制沿$$a_c$$方向施加。
+
+以下是计算要设置给电机的下一个角度的简化版本：
+
+$$
+a_c = a_c + v_d\Delta t;
+$$
+
+您需要知道目标速度$$v_d$$、采样时间$$\Delta t$$以及您设置给电机的角度$$a$$的过去值。
 
 ## 配置
-以下是开环速度控制三个主要参数：
+速度开环控制只有三个主要参数
 ```cpp
-// 选择FOC调制类型（可选的） - SinePWM or SpaceVectorPWM
+// choose FOC modulation (optional) - SinePWM or SpaceVectorPWM
 motor.foc_modulation = FOCModulationType::SinePWM;
 
-// 限制电压
+// limiting voltage 
 motor.voltage_limit = 3;   // Volts
-// 限制电流 - 如果相电阻给定
+// or current  - if phase resistance provided
 motor.current_limit = 0.5 // Amps
 ```
 
-这种运动控制类型是很低效的，因此 `motor.voltage_limit`尽量不要设太高。我们建议你设置相电阻 `phase_resistance` 然后设置电机的电流限制 `motor.current_limit` 来代替电压限制。这个所设定的电流可能会超，但至少你清楚电机运行时的电流近似值。你可以通过电机相电阻`phase_resistance` 来估算出大致的电流:
+速度开环控制（如果未提供相电阻）将向电机施加等于 `motor.voltage_limit`（$$U_{limit}$$）的电压
 
-角度开环控制（如果没有提供相电阻）需设置电机电压等于 `motor.voltage_limit`
+$$
+U_{limit}  \quad [Volts]
+$$
 
-```cpp
-voltage = voltage_limit; // Volts
-```
-由于不同电机相电阻不同，在相同电压值下会产生截然不同的电流，因此这种方式是很低效的。
-
-对云台电机来说，由于它的相电阻通常为5-15欧姆，因此在电压限制为5-10V的开环电路中运行，它的电流能达到0.5-2A。而对无人机电机来说，由于它的相电阻仅为0.05-0.2欧姆，因此电压限制应低于1伏。
+这是非常低效的，因为对于具有不同相电阻的不同电机，相同的电压值会产生截然不同的电流。
+对于云台电机，您可以在 5-10 伏特的电压限制下开环运行，由于其相电阻为 5-15 欧姆，它将达到 0.5-2 安培的电流。对于无人机电机，电压限制应保持在很低的水平，低于 1 伏特。因为它们的相电阻为 0.05 至 0.2 欧姆。
 
 ### 电流限制方法
 
-我们建议你设置相电阻 `phase_resistance` ，然后设置电机的电流限制 `motor.current_limit` 来代替电压限制。这个所设定的电流可能会超，但至少你清楚电机运行时的电流近似值。你可以通过电机相电阻`phase_resistance` 来估算出大致的电流：
+我们建议您向电机类提供 `phase_resistance`（$$R$$）值，并设置 `motor.current_limit`（$$I_{limit}$$）而不是电压限制。此电流可能会被超过，但至少您会知道电机消耗的大致电流。您可以通过检查电机电阻 `phase_resistance` 并评估来计算电机将要产生的电流：
+
+$$
+U_{limit} = I_{limit}\cdot R  \quad  [Volts ]
+$$
+
+使用此控制策略的最佳方式是同时提供相电阻值和电机的 KV 额定值。这样，库将能够计算反电动势电压，并更精确地估计消耗的电流。借助电流和反电动势电流，库可以为电机设置更合适的电压。
+
+$$
+U_{limit} = I_{limit}\cdot R + \frac{v_d}{KV}  \quad  [ Volts ]
+$$
+
+### 实时更改限制
+
+此外，如果您的应用程序需要这种行为，您可以实时更改电压/电流限制。
+
+## 速度开环控制示例
+
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">BLDC 电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s"> 步进电机</a>
+
+以下是一个完整配置的速度开环控制的基本示例。该程序将设置 `2 RAD/s` 的目标速度并保持该速度，用户可以使用串行终端更改目标速度。
+
+
+<div class="type type-b" markdown="1">
 
 ```cpp
-voltage = current_limit * phase_resistance; // Amps
-```
-
-使用这种控制策略的最佳方式是提供电机相电阻值和KV值。这样 Library 库能够计算出反电动势电压和预测出更加精确的消耗电流。有了电流和反电动势电流，Library 库能够给电机设定更加合适的电压。
-
-```cpp
-voltage = current_limit*phase_resistance + desired_velocity/KV; // Amps
-```
-
-### 实时改变限制
-
-此外，有需要的话，你可以实时更改电压/电流限制。
-
-## 开环速度控制实例
-
-这里是一个基本的开环速度控制以及完整的配置的例程。该例程将目标速度设定并保持在 `2 RAD/s` ，用户可以通过串口终端改变目标速度。
-
-```cpp
-// 开环电机控制实例
+// Open loop motor control example
 #include <SimpleFOC.h>
 
-// 无刷直流电机及驱动器实例
-// BLDCMotor( pp number极对数 , phase resistance相电阻)
+// BLDC motor & driver instance
+// BLDCMotor( pp number , phase resistance, KV rating)
 BLDCMotor motor = BLDCMotor(11 , 12.5, 100); 
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 5, 6, 8);
 
-// commander实例化
+// instantiate the commander
 Commander command = Commander(Serial);
 void doTarget(char* cmd) { command.scalar(&motor.target, cmd); }
 void doLimitCurrent(char* cmd) { command.scalar(&motor.current_limit, cmd); }
 
 void setup() {
 
-  // 配置驱动器
-  // 电源电压 [V]
+  // driver config
+  // power supply voltage [V]
   driver.voltage_power_supply = 12;
   driver.init();
-  // 连接电机和驱动器
+  // link the motor and the driver
   motor.linkDriver(&driver);
 
-  // 限制电机电流 （电阻给定的话）
+  // limiting motor current (provided resistance)
   motor.current_limit = 0.5;   // [Amps]
  
-  // 配置开环控制
+  // open loop control config
   motor.controller = MotionControlType::velocity_openloop;
 
-  // 初始化电机
+  // init motor hardware
   motor.init();
   motor.initFOC();
 
-  // 添加目标命令T
+  // add target command T
   command.add('T', doTarget, "target velocity");
   command.add('C', doLimitCurrent, "current limit");
 
@@ -138,12 +151,73 @@ void setup() {
 
 void loop() {
   motor.loopFOC();
-  // 开环速度运动
-  // 使用电机电压限制和电机速度限制
+  // open loop velocity movement
+  // using motor.current_limit and motor.velocity_limit
   motor.move();
 
-  // 用户通信
+  // user communication
   command.run();
 }
 
 ```
+
+</div>
+
+<div class="type type-s hide" markdown="1">
+
+```cpp
+// Open loop motor control example
+#include <SimpleFOC.h>
+
+// Stepper motor & driver instance
+// StepperMotor( pp number , phase resistance)
+StepperMotor motor = StepperMotor(50 , 1.5); 
+StepperDriver2PWM driver = StepperDriver2PWM(9, 5, 6, 8);
+
+// instantiate the commander
+Commander command = Commander(Serial);
+void doTarget(char* cmd) { command.scalar(&motor.target, cmd); }
+void doLimitCurrent(char* cmd) { command.scalar(&motor.current_limit, cmd); }
+
+void setup() {
+
+  // driver config
+  // power supply voltage [V]
+  driver.voltage_power_supply = 12;
+  driver.init();
+  // link the motor and the driver
+  motor.linkDriver(&driver);
+
+  // limiting motor current (provided resistance)
+  motor.current_limit = 0.5;   // [Amps]
+ 
+  // open loop control config
+  motor.controller = MotionControlType::velocity_openloop;
+
+  // init motor hardware
+  motor.init();
+  motor.initFOC();
+
+  // add target command T
+  command.add('T', doTarget, "target velocity");
+  command.add('C', doLimitCurrent, "current limit");
+
+  Serial.begin(115200);
+  Serial.println("Motor ready!");
+  Serial.println("Set target velocity [rad/s]");
+  _delay(1000);
+}
+
+void loop() {
+  motor.loopFOC();
+  // open loop velocity movement
+  // using motor.current_limit and motor.velocity_limit
+  motor.move();
+
+  // user communication
+  command.run();
+}
+
+```
+
+</div>

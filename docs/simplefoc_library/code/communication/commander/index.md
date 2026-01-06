@@ -4,170 +4,134 @@ title: Commander 接口
 nav_order: 1
 permalink: /commander_interface
 parent: 内置通信接口
-grand_parent: 代码
+grand_parent: 编写代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 has_children: true
 has_toc: false
+toc: true
 ---
 
-# Commander 接口
 
-Commander是一个简单而灵活的监控，配置和控制接口，使用类似G代码的通信协议。由于是基于“ASCII”字符命令ID，从而在任何mcu上解析都简单高效。接收到命令ID后，将调用绑定到此命令的函数，并接收到命令字符后面的剩余字符串。
+# 命令器接口
+
+命令器（Commander）是一个简单灵活的接口，用于监控、管理、配置和控制，它采用类G代码的通信协议。该通信基于`ASCII`字符命令ID，这使得在任何微控制器（MCU）上解析都变得简单高效。当接收到命令ID后，与该命令关联的函数会被调用，并接收后续接收到的字符串作为参数。
 
 <img src="extras/Images/cmd_motor.gif" class="img100">
 <img src="extras/Images/cmd_motor_get.gif" class="img100">
 
-此类似于G代码的接口提供回调来配置和调整：
-
-- [PID 控制器](commander_pid)
+这种类G代码接口提供回调功能，可配置和调整以下各项：
+- [PID控制器](commander_pid)
 - [低通滤波器](commander_lpf)
 - [标量变量](commander_scalar)
-- [运动控制](commander_target) <b><i>新</i>📢</b>
-  - 立即设定目标值和限制（例如角速度扭矩）
-  - 改变运动和扭矩控制模式
+- [运动控制](commander_target) <b><i>新功能</i>📢</b>
+  - 同时设置目标值和限制（如角度、速度、扭矩）
+  - 更改运动和扭矩控制模式
   - 启用/禁用电机
-
-- 无刷直流或步进电机的[全集成配置](commander_motor)
+- [BLDC或步进电机的完全集成配置](commander_motor)
   - PID控制器
   - 低通滤波器
   - 运动控制
-  - 监测
-  - 约束
+  - 监控
+  - 限制
   - 启用/禁用
   - 传感器偏移
   - 相电阻
-  - ... 
+  - ...
 
-此外，利用commander接口可以轻松创建自己的命令，并以可能需要的任何方式扩展此接口。这里有关于如何制作[自定义命令](commander_custom)的链接 。
+此外，命令器使您能够轻松创建自己的命令，并以任何您特定应用所需的方式扩展此接口。
+有关如何[创建自定义命令](commander_custom)的文档链接在此。
 
 ## 当用户发送命令时会发生什么？
-commander收到字符串时：
+当命令器接收到字符串：
 
 <img src="extras/Images/cmd1.png" class="width20">
 
-它首先检查命令ID，发现是'M'，则将剩余字符串发送给电机回调函数处理。电机的回调函数进一步检查命令ID是什么，发现是'V'，则将剩余字符串发送到速度PID回调函数。然后速度PID回调函数扫描命令ID并发现它是'D'，因此会设置D环数值。
+它首先检查命令ID，识别出是`M`，然后将剩余字符串发送到电机处理回调函数。接着，电机回调函数检查命令ID，找到`V`，并将剩余字符串发送到速度PID回调函数。然后，速度PID回调函数扫描命令ID，发现是`D`（微分增益），并设置相应的值。
 
-Commander | 马达回调（cmd id`M`） | PID回调（cmd id`V`） 
+命令器 | 电机回调函数（命令ID `M`） | PID回调函数（命令ID `V`）
 --- | ---| ---
 <img src="extras/Images/cmd2.png" > | <img src="extras/Images/cmd3.png" > | <img src="extras/Images/cmd4.png" >
 
-另一个例子是，如果Commander收到：
+另一个例子是命令器接收到：
 
 <img src="extras/Images/cmd5.png" class="width20">
 
-它找到的第一个ID是'O'，比如是motor，则将剩余的字符串发送给此命令的回调函数（本例中为电机的回调函数）。然后，电机的回调函数发现是命令“E”，并获知这个命令是要获取还是设置其所指示的状态（已启用/已禁用）。它检查剩余的字符值是否为空，如果为空则意味着用户发送的是get请求。
+它找到的第一个ID是`O`，例如代表电机。它调用分配给该命令的回调函数（在这种情况下是电机回调函数），并传入剩余的字符串。然后，电机回调函数找到命令`E`，知道这是状态（启用/禁用）命令，可能是获取状态或设置状态。它检查值，发现值为空，这意味着用户发送了一个获取请求。
 
-Commander | Motor callback (cmd id `O` ) 
+命令器 | 电机回调函数（命令ID `O`）
 --- | ---
-<img src="extras/Images/cmd6.png" class="img100"> | <img src="extras/Images/cmd7.png" class="img100"> 
+<img src="extras/Images/cmd6.png" class="img100"> | <img src="extras/Images/cmd7.png" class="img100">
 
 
-## 使用Commander接口
-命令接口在`Commander` 类中实现。
-
+## 使用命令器接口
+命令接口在`Commander`类中实现。
 ```cpp
-// Commander 接口构型
-// - serial  - 可选择接收 HardwareSerial 或 Stream 实例
-// - eol     - 可选择接收 eol 字符 - 默认另起一行： "\n" 
-// - echo    - 可选的 echo 行结束符（命令行反馈）  - 默认 false
+// Commander interface constructor
+// - serial  - optionally receives HardwareSerial/Stream instance
+// - eol     - optionally receives eol character - by default it is the newline: "\n" 
+// - echo    - option echo last typed character (for command line feedback) - defualt false
 Commander commander = Commander(Serial, "\n", false);
 ```
-行结束符EOL是`Commander`类的可选输入，表示命令字符的结束。用户可以在此处定义自己的命令结束字符，但默认情况下使用的字符是换行符`\n`。比如
+行结束（eol）字符是Commander类的可选输入，代表命令结束字符。用户可以在此定义自己的命令结束字符，但默认使用的是换行符\n。例如
 
-<blockquote class="warning"><p class="heading">注意：EOL行结束符</p> 
-不同的操作系统有不同的默认行结束符。而换行符可能是最常见的字符，linux用户也有回车符'\r'。如果你希望用的是换行符作为命令字符的结束，请确保将它传给Commander类的构造函数中。</blockquote>
+<blockquote class="warning"><p class="heading">注意：EOL characters</p>不同的操作系统默认有不同的EOL字符。换行符可能是最常见的，但Linux用户还有回车符'\r'。如果您希望在设置中使用它，请确保将其提供给Commander类的构造函数！</blockquote>
 
-echo标志位可用作调试功能，但不建议用于实时电机控制和配置！
+回显标志可用作调试功能，但不建议在实时电机控制和配置中使用！
 
-
-
-下一步是添加commander函数，该函数将读取所绑定的`Serial`实例到Arduino`loop()`：
-
+下一步是将读取您提供的Serial实例的命令器函数添加到 Arduino 的loop()中：
 ```cpp
 void loop(){
   ...
-  commander.run(); // 从 constructor 读取 Serial 实例
+  commander.run(); // reads Serial instance form constructor
 }
 ```
 
-如果没有将`Serial`实例传给`Commander`构造函数，则可以将其绑定给 `run()` 函数。
-
+如果您没有向Commander构造函数提供Serial实例，可以将其提供给run()函数。
 ```cpp
 void loop(){
   ...
-  commander.run(Serial); // 从 run 读取 Serial 实例
+  commander.run(Serial); // reads Serial instance form run
 }
 ```
-或者，如果你希望使用不带 `Serial` 且仅使用字符串变量的commander，则可以向 `run()`函数提供和 `char*` 变量：
-
+或者，如果您希望不使用Serial，而只使用字符串变量，可以向run()函数提供char*变量：
 ```cpp
 char* my_string = "user command";
-commander.run(my_string); // 读取字符串
+commander.run(my_string); // reads the string
 ```
 
-<blockquote class="warning"><p class="heading"> 串口输出</p>
-<code class="highlighter-rouge">Commander</code> 类会尝试将输出打印到构造函数中提供的串口实例。如果在构造函数中没串口实例，则会始终在 <code class="highlighter-rouge">run()</code> 函数中的串口实例。如果以上都没有，则不会在任何地方输出，但用户仍然能够使用它。</blockquote>
+<blockquote class="warning"><p class="heading">串行输出</p><code class="highlighter-rouge">Commander</code>类将始终尝试向构造函数中提供的串行实例输出内容。如果在构造函数中没有接收到，它将使用在<code class="highlighter-rouge">run()</code>函数中提供的实例。如果两者都没有，它将不会输出到任何地方，但用户仍然可以使用它。</blockquote>
 
-
-
-### 配置
-Commander有两个配置参数：
-- `verbose`-串口输出模式
-- `decimal_places`-浮点数的小数位数
-
-通过设置参数`decimal_places`，可以轻松更改浮点数的小数位数：
-
-```cpp
-commander.decimal_places = 4; // 默认为3位小数
-```
-
-通过设置参数`verbose`，可以轻松更改串口输出模式
-
-```cpp
-// VerboseMode::nothing        - 不显示任何信息 - 适用于与监视器结合使用时
-// VerboseMode::on_request     - 仅显示用户请求的信息
-// VerboseMode::user_friendly  - 向用户显示文本信息（默认）
-commander.verbose = VerboseMode::user_friendly;
-```
-
-有三种类型的输出模式：
--  `VerboseMode:：nothing`-此模式不会向串口终端输出任何内容-例如，当`Commander`与 [monitoring](monitoring) 结合使用时，它就有效避免Arduino的串口绘图仪中出现未知值
-- `VerboseMode:：on_request`-此模式仅输出get和set命令的结果，不会输出任何其他不必要的（可读的）文本。
-- `VerboseMode:：user_friendly`-此模式是默认模式，适用于由用户使用串口监视器发送命令的情况。除了所有必要的get和set值外，该模式还将输出额外的文本，以便于用户理解。
 
 ### 添加命令
-你可以用`add()`来添加给定的命令字符的回调函数，该函数接收命令字符、函数指针和命令标签：
-
+为了向Commander添加给定命令字符的回调函数，您需要调用add()函数，该函数接收命令字符、函数指针和命令标签：
 ```cpp
-// 在 commander 中创建 command A 
-// - command id - 字符串
-// - 回调   - 函数指针 - 返回 void (char* cmd)
-// - 标签      - 命令标签 （可选）
+// creating the command A in the commander
+// - command id - character
+// - callback   - function pointer - void callback(char* cmd)
+// - label      - label of the command (optional) 
 commander.add('A',doSomething,"do something");
 ```
-对于可以用作回调函数的函数类型，唯一的实际要求是它们需要返回`void`，并且必须接收`char*`字符串：
-
+您可以用作回调的函数类型的唯一真正要求是，它们需要返回void，并且必须接收char*字符串：
 ```cpp
 void doSomething(char* cmd){ ... }
 ```
-使用这个简单的接口，你可以非常简单地创建自己的命令，并使用一行代码将它们订阅到`Commander`。
+通过这个简单的接口，您可以非常轻松地创建自己的命令，并只需一行代码就可以将它们注册到Commander。
 
-除了此用于添加通用回调的灵活接口之外，`Commander`类还为以下对象实现了标准化回调：
+除了这个用于添加通用回调的灵活接口外，Commander类还实现了标准化的回调，用于：
+- BLDC (`BLDCMotor`) or Stepper (`StepperMotor`) motor  - `commander.motor(&motor, cmd)` - [查看更多](commander_motor)
+- PID controller (`PIDController`) - `commander.pid(&pid, cmd)` - [查看更多](commander_pid)
+- Low pass filter (`LowPassFilter`) - `commander.lpf(&lpf, cmd)` - [查看更多](commander_lpf)
+- Any numeric variable (`float`) - `commander.scalar(&variable, cmd)` - [查看更多](commander_scalar)
+- Target setting control (`BLDCMotor` or `StepperMotor`) - `commander.target(&motor, cmd)` - [查看更多](commander_target)
+- Full motion control (`BLDCMotor` or `StepperMotor`) - `commander.motion(&motor, cmd)` - [查看更多](commander_target)
 
-- 无刷直流电动机 (`BLDCMotor`) 或者 步进电机  (`StepperMotor`)  - `commander.motor(&motor, cmd)`- [查看更多](commander_motor)
-- PID控制器(`PIDController`) - `commander.pid(&pid, cmd)`- [查看更多](commander_pid)
-- 低通滤波器 (`LowPassFilter`) - `commander.lpf(&lpf, cmd)`- [查看更多](commander_lpf)
-- 任何数值变量(`float`) - `commander.scalar(&variable, cmd)`- [查看更多](commander_scalar)
-- 目标设定控制 (`BLDCMotor` or `StepperMotor`) - `commander.target(&motor, cmd)` - [查看更多](commander_target)
-- 全运动控制 (`BLDCMotor` or `StepperMotor`) - `commander.motion(&motor, cmd)` - [查看更多](commander_target)
 
-例如，如果你想完整配置一个`motor`，你的代码可能如下所示：
-
+例如，如果您对一个motor的完整配置感兴趣，您的代码可能如下所示：
 ```cpp
 BLDCMotor motor = .....
 Commander commander = ....
 
-// 定义封装通用回调
+// defined wrapper for generic callback
 void onMotor(char* cmd){commander.motor(&motor, cmd);}
 
 void setup(){
@@ -180,13 +144,12 @@ void loop(){
   commander.run();
 }
 ```
-如果希望调整速度PID，更改电机的目标值，同时希望消除由于不需要的其他功能而产生的不必要的内存开销，那么你的代码可能如下所示：
-
+或者，您可能希望调整速度 PID，更改电机的目标值，并且希望消除由于不需要的其他功能而产生的不必要的内存开销，那么您的代码可能如下所示：
 ```cpp
 BLDCMotor motor = .....
 Commander commander = ....
 
-// 定义封装通用回调
+// defined wrappers for generic callbacks
 void onPid(char* cmd){commander.pid(&motor.PID_velocity, cmd);}
 void onLpf(char* cmd){commander.lpf(&motor.LPF_velocity, cmd);}
 void onTarget(char* cmd){commander.target(&motor, cmd);}
@@ -204,29 +167,25 @@ void loop(){
 }
 ```
 
+这个简单的接口为用户提供了一种简单的方式，在必要时可以同时通信和配置多个电机、PID 控制器、低通滤波器、标量变量和自定义命令。
+它也使自定义控制回路的调整变得更加容易，因为您可以很容易地用 PID 控制器PIDController闭合回路，并将其添加到命令器中进行实时调整。
 
-
-这个接口为用户提供了一种简单的方式，可以同时通信和配置多个电机、PID控制器、低通滤波器、标量变量或者自定义命令。它还能使自定义控制回路的调整更加容易，因为你可以非常轻松地使用pid控制器`PIDController`关闭回路，只需将其添加到commander即可实时调整。
-
-你可以在库examples`examples/utils/communication\u test/commander`文件夹中找到更多示例。
-
-### Commander 命令
-在你的程序中使用 `Commander`时，用户可以使用三个内置的默认命令：
-
-- `?` - 列出所有可用的命令
-- `#` - 获取/设置小数点位数
+您可以在库示例的examples/utils/communication_test/commander文件夹中找到更多示例。
+## 命令器内置命令
+在程序中使用Commander时，用户将有三个内置的默认命令可以使用：
+- `?` - 列出所有可用命令
+- `#` - 获取 / 设置小数位数
   - 示例：
-    - 小数点位数 `#`
-    - 设置小数点精确到后5位： `#5`
-- `@` - 获取/设置`Commander`的输出模式
+    - 获取小数位数: `#`
+    - 设置 5 位小数：`#5`
+- `@` - 获取 / 设置详细输出模式
   - 示例：
-    - 获取当前模式： `@`
-    - 设置user frinedly模式：`@3`
-    - 设置nothing模式：`@0`
-    - 设置on request模式： `@1`
+    - 获取模式： `@`
+    - 设置用户友好模式： `@2`
+    - 设置无输出模式: `@0`
+    - 设置请求时输出模式: `@1`
 
-list命令`?`会显示所有添加到`Commander`的命令和他的标签。比如如果我们添加了如下命令：
-
+列表命令`?`将显示所有已添加到Commander的命令及其标签。例如，如果我们添加了如下这些命令：
 ```cpp
 void setup(){
   ...
@@ -236,55 +195,91 @@ void setup(){
   ...
 }
 ```
-以下是以 *user-friendly*模式输出 `?` 的示例：
-
+以下是在用户友好模式下，列表`?`命令的输出示例：
 ```sh
 $ ?
 M: some motor
 P: some pid
 R: some other motor
+``` 
+
+### 配置命令
+Commander 类有两个配置参数：
+- `verbose` - 串行输出模式
+- `decimal_places` - 浮点数的小数位数
+
+可以通过设置`decimal_places`参数轻松更改浮点数的小数位数：
+```cpp
+commander.decimal_places = 4; // default 3
 ```
 
-### 可用命令列表
-所有内置命令和子命令都在库源代码中定义，位于文件 `src/communication/commands.h` 中。
+可以通过设置`verbose`参数轻松更改串行输出模式
+```cpp
+// VerboseMode::nothing           - display nothing - good for monitoring
+// VerboseMode::on_request        - display only on user request
+// VerboseMode::user_friendly     - display textual messages to the user (default)
+// VerboseMode::machine_readable  - display machine readable messages 
+commander.verbose = VerboseMode::user_friendly;
+```
 
-如果您想更改某个命令的字符 id 就按这里操作。 😄
+有四种输出模式：
+-  `VerboseMode::nothing` - 此模式不向串行终端输出任何内容 - 当Commander与[监控](monitoring)结合使用时非常有用，例如避免在 Arduino 的串行绘图仪中出现未知值
+```shell
+$ MLU1.2 # set voltage limit to 1.2V for the motor with the command id 'M'
+$        # no response   
+```
+- `VerboseMode::on_request` - 此模式仅输出获取和设置命令的结果，不会输出任何额外的（人类可读的）文本。
+```shell
+$ MLU1.2 # set voltage limit to 1.2V for the motor with the command id 'M'
+$ 1.2    # set value is 1.2  
+```
+- `VerboseMode::user_friendly` - 此模式是默认模式，适用于用户使用串行监视器发送命令的情况。除了所有必要的获取和设置值外，此模式还会输出额外的文本，以便人类用户更容易理解。
+```shell
+$ MLU1.2                  # set voltage limit to 1.2V for the motor with the command id 'M'
+$ Limits| volt: 1.2000    # human readable return - value is 1.2  
+```
+- `VerboseMode::machine_readable` - 此模式用于软件更轻松地解析返回值。此模式本质上与`VerboseMode::on_request`相同，但它会在返回值之前重复命令字符。
+```shell
+$ MLU1.2 # set voltage limit to 1.2V for the motor with the command id 'M'
+$ MLU1.2 # machine readable format, command repeated + set value is 1.2  
+```
 
-一般来说，我们可以将命令分为：
+## 可用命令列表
 
-- [Commander 命令](#commander-commands) - 特定于 `Commander` 类的命令
-- [PID 命令](commands_pid)  - 特定于 `PIDController` 类的命令
-- [Low pass filter 命令](command_lpf) - 特定于 `LowPassFilter` 类的命令
-- [Motor 命令](command_motor) - 特定于 `FOCMotor` 类的命令
+所有内置命令和子命令都在库源代码的`src/communication/commands.h`文件中定义。
+如果您希望更改某个命令的字符 ID，这就是要修改的地方。 😄
 
-将 `scalar` 变量添加到 command 或运动控制 `target` 时，唯一使用的命令字母是提供给 `commander.add` 的那个。
+通常，我们可以将命令分为：
+- [Commander commands](#commander-commands) - 特定于Commander类的命令
+- [PID commands](commander_pid)  - 特定于PIDController类的命令
+- [Low pass filter commands](commander_pid) - 特定于LowPassFilter类的命令
+- [Motor commands](commander_motor) - 特定于FOCMotor类的命令
 
-- [标量变量](commander_scalar) - 增加标量 `float` 变量
-- [运动控制和目标设定](commander_target) - 为 `FOCMotor` 类设置目标
+当向命令器添加scalar变量或运动控制target时，唯一使用的命令字母是提供给commander.add的字母。
+- [Scaler variable](commander_scalar) - 添加标量float变量
+- [Motion control and target setting](commander_target) - 为FOCMotor类设置目标
 
-Commander 提供了一种非常简单的方法来扩展命令列表并实现新的命令列表
-
-- [自定义命令](commander_custom) - 创建自己的回调
-
-##  Arduino IDE 中带串行监视器的命令
+命令器提供了一种非常简单的方式来扩展命令列表并实现新命令
+- [Custom commands](commander_custom) - 创建自己的回调函数
 
 
-将命令接口添加到代码后，您将能够使用 Arduino IDE 的串行监视器与其通信
+## 在 Arduino IDE 中使用带有串行监视器的命令器
 
-<img src="C:\QMQ\6GitHub\sfoc-\旧英（用新英文覆盖-对比）\code\communication\commander\extras\Images\commander.png">
 
-串行监视器中的命令参数与使用 `Serial` 的所有其他 Arduino 代码相同。
+一旦将命令器接口添加到代码中，您就能够使用 Arduino IDE 的串行监视器与它通信
 
-确保：
+<img src="extras/Images/commander.png">
 
-- 将波特率设置为与 `ino` 文件中相同的值：例如，如果在 `ino` 文件中有 `Serial.begin(115200)`，则波特率应为 `115200` 
-- 确保将终止字符设置为  `newline`
+串行监视器中的命令器参数与其他任何使用Serial的 Arduino 代码相同。
+确保:
+- 设置波特率与ino文件中的相同：例如，如果在ino文件中有Serial.begin(115200)，则波特率应设置为115200
+- 确保将终止字符设置为newline（换行）
 
-## *Simple**FOC**Studio* by [@JorgeMaker](https://github.com/JorgeMaker)
+## *Simple**FOC**Studio* 作者[@JorgeMaker](https://github.com/JorgeMaker)
 
-SimpleFOCStudio是由[@JorgeMaker](https://github.com/JorgeMaker) 构建的一个很棒的应用程序我们会尽量在没有库的情况下保持最新。它是一个python应用程序，使用commander接口来调试和配置电机。
+SimpleFOCStudio 是一个很棒的应用程序，由[@JorgeMaker](https://github.com/JorgeMaker)开发，我们将努力使其与我们的库保持同步。这是一个使用命令器接口来调整和配置电机的 python 应用程序。
 
 <img src="https://raw.githubusercontent.com/JorgeMaker/SimpleFOCStudio/main/DOC/new_gif.gif" class="width80">
 
-有关如何安装和使用此应用程序的更多信息，请访问 docs <i class="fa fa-external-link"></i>](studio). 
+有关如何安装和使用此应用程序的更多信息，请访问工作室[文档 <i class="fa fa-external-link"></i>](studio). 
 

@@ -1,94 +1,104 @@
 ---
 layout: default
-title: 技术路线
+title: 工作路线
 parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 nav_order: 8
 permalink: /roadmap
-
 ---
 
-#  技术路线
+#  功能路线图
+
+本页面并未严格维护，可能有些过时。
+
+<div class="image_icon" >
+    <a href="https://simplefoc.notion.site/Developement-4149a181ea5b4383964cc8cc250e7d11" >
+        <img src="extras/Images/roadmap.png" >
+        <i class="fa fa-external-link-square fa-2x"></i>
+        <p >Notion上的路线图</p>
+    </a>
+</div>
+<div class="image_icon" >
+    <a href="https://github.com/simplefoc/Arduino-FOC/releases" >
+        <img src="extras/Images/releases.png" >
+        <i class="fa fa-external-link-square fa-2x"></i>
+        <p >Github更新日志</p>
+    </a>
+</div>
 
 有关库版本功能的更多信息，请访问 [github releases <i class="fa fa-tag"></i>](https://github.com/simplefoc/Arduino-FOC/releases). 
 
-这个页面并没有时常维护，有时可能会过时。
+# 旧路线图
+<details markdown=1>
 
-## 运动控制与FOC算法
-- [ ] 电机控制：低压侧电流感应-No.1
-- [ ] 错误修正：浮点角度溢出- No.2
-- [ ] 电机控制：带DMA的内联电流感应 - No.3
-- [ ] 电机控制：高压侧电流感应
-- [x] 电机控制：内联电流感应
-- [x] 电机控制：支持步进电机
-- [x] 电机控制：支持霍尔传感器换向
-- [x] 电机控制：支持完全开环操作（无传感器）
-- [x] 添加对加速斜坡的支持
+## 运动控制与 FOC 算法
+- [x] **电机控制：低边电流采样** - 第 1 项
+- [ ] **电机控制：带 DMA 的串联电流采样** - 第 2 项
+- [ ] 电机控制：高边电流采样
+- [x] **错误修复：浮点角度溢出** 
+- [x] 电机控制：串联电流采样
+- [x] **电机控制：支持步进电机**
+- [x] 电机控制：支持霍尔传感器换相
+- [x] 电机控制：支持全开环运行（无传感器）
+- [x] 添加加速度斜坡支持
 - [x] 速度低通滤波器
-- [x] 计时器中断执行，而不是在`loop()`中”：❌ 没有真正的性能改进
-- [x] 正弦波查找表的实现
-- [X] 实现空间矢量调制的方法：SVM
-- [x] 实现空间矢量调制的方法：PWM-SVM
+- [x] 定时器中断执行而非在loop()中：❌ 无实际性能提升
+- [x] 正弦波查找表实现
+- [X] 实现空间矢量调制方法：纯 SVM
+- [x] 实现空间矢量调制方法：PWM SVM
 
-## MCU 支持
-- [ ] Raspberry pi Pico - [PR #78](https://github.com/simplefoc/Arduino-FOC/pull/78)
+## 微控制器（MCU）支持
+- [ ] ESP8266 - 初步支持 
+- [ ] Portenta H7 - 初步支持 
+- [ ] Renesas support - 初步支持
+- [x] Arduino leonardo 
+- [x] Raspberry pi Pico - [PR #78](https://github.com/simplefoc/Arduino-FOC/pull/78)
 - [x] SAM - Arduino DUE
 - [x] SAMD21/51
 - [x] Teensy support
 - [x] ESP32 support
 - [x] STM32 Nucleo support
-- [x] STM32 BLuepill support
-- [x] 特定于硬件的代码分离 : 更容易在设备之间进行转移 `hardware_utils.cpp/.h`
+- [x] STM32 Bluepill support
+- [x] nRF52 support
+- [x] 硬件特定代码分离：更易于设备间移植 `hardware_utils.cpp/.h`
 
 ## 驱动器支持
-- [ ] 支持: 在6PWM模式下禁用PAHSE
-- [x] 支持: 对高低侧MOSFET的控制
-- [x] 支持: DRV8302 borads
+- [x] 驱动器支持：在 6PWM 模式下禁用相位
+- [x] 驱动器支持：实现对 MOSFET 高低对的控制支持
+- [x] 驱动器支持：DRV8302 开发板
 
-## 传感器 support
-
-- [ ] IMU 作为位置传感器
-- [ ] 支持Back-EMF
-- [ ] 支持Senosrless-FOC
-- [ ] 支持磁性编码器SSI
-- [x] 支持磁性编码器PWM
-- [x] 支持磁编码器模拟
-- [x] 支持磁性编码器I2C
-- [x] 支持磁性编码器ABI
-- [x] 支持磁性编码器SPI
-- [x] 霍尔传感器
-- [x] 合适的编码器索引
-
+## 传感器支持
+- [ ] 作为位置传感器的惯性测量单元（IMU）
+- [ ] 反电动势（Back-EMF）支持
+- [ ] 无传感器 FOC 支持
+- [ ] 支持磁性编码器 SSI
+- [x] 支持磁性编码器 PWM
+- [x] 支持磁性编码器模拟量
+- [x] 支持磁性编码器 I2C
+- [x] 支持磁性编码器 ABI
+- [x] 支持磁性编码器 SPI
+- [x] 霍尔传感器支持
+- [x] 编码器索引正确实现
 ## 用户交互
-
-- [ ] Commander为内存较低的设备制作最低版本
-- [ ] 瞬时位置、速度、扭矩设定的目标设定界面（例如`q 10 20 1`）
-- [x] 执行电机指令
+- [ ] 为低内存设备制作精简版命令器（Commander）
+- [ ] 制作瞬时位置、速度、扭矩设置的目标设置接口（例如 q 10 20 1）
+- [x] 实现电机命令 
 - [x] 支持监控
 
-## 可用性
-
+## 易用性
 - [ ] 更多文档和示例
-- [x] <span class="simple">Simple<span class="foc">FOC</span>library</span> 入门页面
-- [x] <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 入门页面
-- [x] 在Arduino库管理器中访问库
-- [x] 制作arduino代码的最低版本-全部包含在一个arduino文件中
-- [x] 文档与 自述文件 README 的分离
-- [x] Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span> 的介绍
+- [x] SimpleFOClibrary 入门页面
+- [x] SimpleFOCShield 入门页面
+- [x] 使库可在 Arduino 库管理器中获取
+- [x] 制作 Arduino 代码的精简版 - 单个 Arduino 文件包含所有内容
+- [x] 从 README 中分离文档
+- [x] 正确介绍 Arduino SimpleFOCShield
 
-## 视频  
+## 视频 
+- [ ] 视频：发布使用该库和示例的视频教程 
+- [ ] 视频：编码设置和流程视频
+- [x] 视频：HMBGC 示例上运行的两个电机
+- [x] 视频：简单演示的初始视频
 
-- [ ] 视频：发布使用库和示例的视频教程
-- [ ] 视频：编码设置和程序视频
-- [x] 视频：HMBGC上运行的两个电机示例
-- [x] 视频：简单演示的视频
-
-
-
-
-
-
-
-
-
+</details>
 
 

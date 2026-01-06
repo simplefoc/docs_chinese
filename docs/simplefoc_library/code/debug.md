@@ -1,25 +1,28 @@
 ---
 layout: default
-title: Debugging
+title: 调试
 nav_order: 9
 permalink: /debugging
-parent: Writing the Code
-grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>  
+parent: 编写代码
+grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> 
+toc: true
 ---
 
-#  <span class="simple">Simple<span class="foc">FOC</span>library</span>  Sketch 调试
 
-当你把一切都接好，下载好sketch，连上电源，然后…...发现电机纹丝不动。或者出现另一种常见的情况：电机突然转动，发出可怕的声音。
+# 调试 <span class="simple">Simple<span class="foc">FOC</span>库</span> 程序
 
-别担心！相信我们，我们经历过。*每个人*都有这样的经历，*没有人*可以第一次尝试时就有一个可行的设置。控制BLDC无刷电机并不总是一帆风顺的，犯错是不可避免的。
+你连接好所有线路，下载了程序，接通电源，然后……什么都没发生。或者另一种常见情况：电机抽搐并发出刺耳的声音。
 
-有许多不同技巧可以帮助你发现软件问题，其中一个非常有用的方法是进行一些调试输出。寻找问题时，在`串行`终端查看调试输出是非常有意义的。
+别担心！相信我们，我们也经历过这种情况。*每个人*都会有这样的经历，*没有人*能一次就成功设置好。无刷直流电机控制并不总是那么容易，过程中可能会犯很多错误。
 
-## 功能调试
+有多种技术可以帮助你排查软件方面的问题，但其中一个非常有用的方法是生成一些调试输出，而通过“串口终端”查看调试输出在排查问题时会非常有价值。
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span>库使用串口提供调试输出，该串口是通过添加以下行到`setup`函数来启用的。
+## 调试功能
 
-在`setup` 函数前面部分调用这一函数，可以查看电机初始化的调试输出，对帮你发现设置中的问题至关重要。
+<span class="simple">Simple<span class="foc">FOC</span>库</span>通过“串口（Serial）”提供调试输出，只需在`setup`函数中添加以下代码行即可启用。
+
+将这个函数调用放在`setup`函数的早期，以便查看电机初始化的调试输出，这对于帮助你发现设置中的问题很重要。
+
 
 
 ```cpp
@@ -32,15 +35,14 @@ SimpleFOCDebug::enable(&Serial);
 ```
 
 <blockquote class="info">
-注意：你也可以使用MCU支持的其他串口，例如：串口1，串口2。
+注意：你也可以使用其他串口，例如Serial1、Serial2，具体取决于你的微控制器支持情况。
 </blockquote>
 
+### 调试电机初始化
 
-### 电机初始化调试
+电机在初始化`motor.init()`和校准过程`motor.initFOC()`中会生成关于其状态的调试输出。启用此功能不会直接影响实时性能，因为在`motor.loopFOC()`和`motor.move()`函数的实时循环中没有调试输出。
 
-在初始化`motor.init()` 以及校准`motor.initFOC()`期间， `motor` 会进行状态调试输出。由于函数`motor.loopFOC()`和 `motor.move()`在实时回路中没有调试输出，因此启用此功能并不会直接影响实时性能。
-
-以下为可行的电机初始化监控输出例程：
+以下是电机初始化监控输出正常的示例：
 ```sh
 MOT: Monitor enabled!
 MOT: Init
@@ -54,7 +56,7 @@ MOT: Success: 2
 MOT: Ready.
 ```
 
-由于位置传感器，电机初始化失败：
+由于位置传感器导致电机初始化失败的情况：
 ```sh
 MOT: Monitor enabled!
 MOT: Init
@@ -64,7 +66,7 @@ MOT: Failed to notice movement
 MOT: Init FOC failed.
 ```
 
-由于电流检测问题，电机初始化失败：
+由于电流检测导致电机初始化失败的情况：
 ```sh
 MOT: Monitor enabled!
 MOT: Init
@@ -78,9 +80,9 @@ MOT: Fail!
 MOT: Init FOC failed.
 ```
 
-### 写调试说明
+### 编写自定义调试语句
 
-你可以用 <span class="simple">Simple<span class="foc">FOC</span>library</span>  库简单的达到目的：
+你可以轻松地将<span class="simple">Simple<span class="foc">FOC</span>库</span>用于自己的调试需求：
 
 ```cpp
 SIMPLEFOC_DEBUG("Hello world!");
@@ -88,61 +90,61 @@ SIMPLEFOC_DEBUG("Float value: ", fval);
 SIMPLEFOC_DEBUG("Int value: ", ival);
 ```
 
-使用宏有许多好处， 请查阅以下 FlashStringHelper, 全局禁用和理论意义
+使用这个宏有几个优点，详见下面的 “FlashStringHelper”、“全局禁用” 和 “原理” 部分。
 
-所有可行方法，请查阅 [SimpleFOCDebug class header](https://github.com/simplefoc/Arduino-FOC/blob/master/src/communication/SimpleFOCDebug.h) 。
+查看[SimpleFOCDebug class header](https://github.com/simplefoc/Arduino-FOC/blob/master/src/communication/SimpleFOCDebug.h) 了解所有可用方法。
 
 ### FlashStringHelper
 
-SimpleFOCDebug 宏自带 FlashStringHelper 。你不需要在提供给`SIMPLEFOC_DEBUG`宏的字符串上使用F()宏。
+`SimpleFOCDebug `宏会自动使用 FlashStringHelper，因此你不应该对提供给SIMPLEFOC_DEBUG宏的字符串使用 F () 宏。
 
 ### 调试 - 全局禁用
 
-通过使用构建标志`SIMPLEFOC_DISABLE_DEBUG` ，你可以全局禁用所有调试输出结果。如果内存不足，这也许能省下些程序空间。
+通过编译标志`SIMPLEFOC_DISABLE_DEBUG`可以全局禁用所有调试输出，如果内存不足，这可能还能节省几个字节的程序空间。
 
-### 理论意义
+### 原理
+为什么要有自己的`SimpleFOCDebug`？为什么不直接使用`Serial.println`？
 
-为什么要用`SimpleFOCDebug`? 而不直接用`Serial.println`呢？
+由于SimpleFOC库支持多种硬件平台，我们不能假设`Serial`对象一定可用。虽然它是 `Arduino` 框架的一个相当标准的功能，但特定的开发板可能不支持它，或者出于某种原因可能有不同的名称。我们也不能假设你想要使用哪个`Serial`对象。有些微控制器支持 6 个或更多的串口。
 
-<span class="simple">Simple<span class="foc">FOC</span>library</span>现已支持许多硬件平台，我们不能提前假定`串行`对象可用。即使它是Arduino框架相当标准的功能，但某个板还是可能不支持它，又或者出于某些原因给它取了不同的名称。我们也不能想当然的假定你想要使用的是哪个`串行` 对象。某些MCU支持6个甚至6个以上串口。
-
-同时，我们也喜欢它提供的抽象概念，使我们更容易将<span class="simple">Simple<span class="foc">FOC</span>library</span>移植到其他平台或框架上。在不久的将来，我们可能会将调试输出功能进一步抽象一个级别，允许通过SPI、MQTT或其他协议进行调试输出。出于这个原因，分离调试和`串行`也是很好的选择。
+我们也喜欢它提供的抽象层，这使得将SimpleFOC库移植到其他平台 / 框架更加容易。未来我们可能会进一步抽象调试输出功能，允许通过 SPI、MQTT 或其他协议进行调试输出。因此，将调试与`Serial`分开也是很好的做法。
 
 ## 其他调试方法
 
-### 古早的普通方法 Serial.println
+### 常规的Serial.println
 
-我可不可以像之前一样在<span class="simple">Simple<span class="foc">FOC</span>library</span> sketch使用`串行`输出？
+我可以在SimpleFOC库程序中像平常一样使用`Serial`输出吗？
 
-是的，可以，这完全没有问题……在sketch调用Serial.println()是完全没有问题的，你可以不必像上述那样被迫使用我们的调试工具。
+可以，但也有注意事项…… 在程序中调用 Serial.println () 没有问题，你不必强制使用上面描述的调试工具。
 
-*但是* 你必须注意不要在`串行`输出耗费太多时间。函数`move`和`loopFOC`需要经常在你的主循环中调用，你不能一直输出到`串行`端口。你必须以某种方式编写代码以便最小化输出字节，并且要包含一些计时代码以确保函数每秒只输出一次或两次。
+但是你必须注意不要在串口输出上花费太多时间。`move`和`loopFOC`函数需要在主`loop`中非常频繁地调用，你不能一直向串口输出。你必须编写代码以尽量减少输出的字节数，并包含一些计时代码以确保每秒只输出一两次。
 
-### 空余引脚
+### 备用引脚
 
-调试简单代码的好办法是使用 `digitalWrite` 和一个未被使用过的引脚：
+调试简单问题的一个好方法是使用`digitalWrite`和一个未使用的引脚：
 ```cpp
-digitalWrite(5, HIGH); // 引脚5是仍未被使用过的引脚
+digitalWrite(5, HIGH); // 5 is an unused pin
 
 // ...
 
 digitalWrite(5, LOW);
 ```
 
-使用上述办法不会影响到程序执行时间。通过使用示波器或逻辑分析仪，你可以检查输出引脚，查看调用执行了多长时间，代码是否占用了某些分支等等。
+使用这种技术不会影响执行时间，使用示波器或逻辑分析仪可以检查输出引脚，查看诸如调用执行时间、代码是否执行特定分支等情况。
 
-### IDE 调试
+### IDE 调试器
 
-在<span class="simple">Simple<span class="foc">FOC</span>library</span> 做真正的调试会是一个挑战。代码是实时，不易暂停或运行缓慢的。根据本人的经验，使用调试器会减慢执行速度，以至于无法进行BLDC无刷电机控制。
+在SimpleFOC库中使用真正的调试器可能是一个挑战。代码对实时性要求很高，不能轻易暂停或减慢运行速度。根据作者的经验，使用调试器会减慢执行速度，以至于无刷直流电机控制几乎无法实现。
 
-但这也取决于你想要发现的问题、所用的MCU、调试硬件以及其他各种因素。所以要记住根据实际情况考虑，在你选择的调试器中尝试一下，看下它会如何运行。
+但这取决于你要解决的问题、所使用的微控制器和调试硬件以及其他因素，因此请记住实时性考虑，在你选择的调试工具中尝试一下，看看效果如何。
 
-### 求助他人！
+### 社区求助！
 
-如果你发现问题，我们无法言说<span class="simple">Simple<span class="foc">FOC</span>library</span>社区能给予你多大帮助！
+我们再怎么强调SimpleFOC库社区的帮助都不为过，如果你遇到问题的话！
 
-此外，我们还有[话题论坛](https://community.simplefoc.com/)以及[Discord服务器](https://discord.com/invite/JbH772tfnB)，你随时都可以加入提问。我们的会员都是知识渊博、乐于助人的，所以与其自己埋头苦干，不如找一些同好交流意见。
+我们有一个[Discourse 论坛](https://community.simplefoc.com/) 和一个 [Discord 服务器](https://discord.com/invite/JbH772tfnB)，你可以随时加入并提问。我们的成员既知识渊博又乐于助人，所以与其自己苦苦琢磨，不如过来向一些志同道合的人寻求建议。
 
-### 报告问题！
+### 报告问题!
 
-如果你定位到问题，并发现是我们库的问题，请不要犹豫，立即 [提交bug报告到GitHub](https://github.com/simplefoc/Arduino-FOC/issues/new)!
+如果你隔离了问题，并发现这是我们的问题，请毫不犹豫地在 GitHub 上[提交错误报告！
+](https://github.com/simplefoc/Arduino-FOC/issues/new)!

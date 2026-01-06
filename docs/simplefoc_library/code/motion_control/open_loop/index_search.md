@@ -3,47 +3,54 @@ layout: default
 title: 索引搜索程序
 nav_order: 3
 permalink: /index_search_loop
-parent: Open-Loop control
-grand_parent: Motion Control
-grand_grand_parent: Writing the Code
+parent: 开环控制
+grand_parent: 运动控制
+grand_grand_parent: 编写代码
 grand_grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+toc: true
 ---
 
+
 # 索引搜索程序
-只有当`Encoder` 的构造函数提供了索引引脚时，才能执行索引搜索程序。该程序首先使电机恒定转速运动，而后便进行索引引脚的搜索。要设置电机的转速，可以修改参数：
+只有当 `Encoder` 类的构造函数提供了 `index` 引脚时，才会执行编码器索引的查找。搜索通过将电机设置为恒定速度来进行，直到它到达索引引脚。要设置所需的搜索速度，请更改以下参数：
 
 ```cpp
-// 索引搜索速度 - 默认为1rad/s
+// index search velocity - default 1rad/s
 motor.velocity_index_search = 2;
 ```
-索引搜索会在`motor.initFOC()`函数中执行。
+索引搜索在` motor.initFOC()` 函数中执行。
 
-该程序的速度控制环实际上与 [开环速度](/velocity_loop) 控制相同，唯一的区别是电压设定值将不在是`motor.volatge_limit` (或 `motor.curren_limit*motor.phase_resistance`)而是`motor.voltage_sensor_align`.
-
-
+这个速度控制环的实现与 [开环速度控制](/velocity_openloop) 完全相同，唯一的区别是设置给电机的电压不是 `motor.voltage_limit`，而是 `motor.voltage_sensor_align`。
 
 ## 使用索引搜索的代码示例
 
-这是一个运动控制的例程，它使用编码器作为位置传感器，特别是带索引的编码器。索引搜索速度设置为`3 RAD/s`:
+
+<a href ="javascript:show('b','type');"  class="btn btn-type btn-b btn-primary">BLDC 电机</a>
+<a href ="javascript:show('s','type');" class="btn btn-type btn-s"> 步进电机</a>
+
+
+这是一个运动控制程序的示例，它使用编码器作为位置传感器，特别是带有 index 信号的编码器。索引搜索速度设置为 3 RAD/s：
 
 ```cpp
-// 索引搜索速度 [rad/s]
+// index search velocity [rad/s]
 motor.velocity_index_search = 3;
 ```
 
-在 `motor.initFOC()`中通过索引搜索对齐电机和位置传感器后，电机将以角速度 `2 RAD/s` 开始旋转并保持此速度。
+在 motor.initFOC() 中通过执行索引搜索对电机和位置传感器进行对齐后，电机将以 2 RAD/s 的角速度开始旋转并保持该值。
+
+<div class="type type-b" markdown="1">
 
 ```cpp
 #include <SimpleFOC.h>
 
-// 电机实例
+// motor instance
 BLDCMotor motor = BLDCMotor(11);
-// 驱动器实例
+// driver instance
 BLDCDriver3PWM driver = BLDCDriver3PWM(9, 10, 11, 8);
 
-// 编码器实例
+// encoder instance
 Encoder encoder = Encoder(2, 3, 500, A0);
-// 回调通道A和B
+// channel A and B callbacks
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doIndex(){encoder.handleIndex();}
@@ -51,48 +58,48 @@ void doIndex(){encoder.handleIndex();}
 
 void setup() {
   
-  // 初始化编码传感器硬件
+  // initialize encoder sensor hardware
   encoder.init();
   encoder.enableInterrupts(doA, doB,doIndex); 
 
-  // 连接电机和传感器
+  // link the motor to the sensor
   motor.linkSensor(&encoder);
 
-  // 配置驱动器
+  // driver config
   driver.init();
   motor.linkDriver(&driver);
 
-  // 索引搜索速度 [rad/s]
+  // index search velocity [rad/s]
   motor.velocity_index_search = 3; // rad/s
   motor.voltage_sensor_align = 4; // Volts
 
-  // 设置运动控制环
+  // set motion control loop to be used
   motor.controller = MotionControlType::velocity;
 
-  // 配置控制器
-  // 默认参数见defaults.h
+  // controller configuration 
+  // default parameters in defaults.h
 
-  // 速度PI控制器参数
+  // velocity PI controller parameters
   motor.PID_velocity.P = 0.2;
   motor.PID_velocity.I = 20;
-  // 默认为电源电压
+  // default voltage_power_supply
   motor.voltage_limit = 6;
-  // 基于斜坡电压的急动控制
-  // 默认值为300v/s，即0.3v/ms
+  // jerk control using voltage voltage ramp
+  // default value is 300 volts per sec  ~ 0.3V per millisecond
   motor.PID_velocity.output_ramp = 1000;
  
-  // 速度低通滤波时间常数
+  // velocity low pass filtering time constant
   motor.LPF_velocity.Tf = 0.01;
 
 
-  // 监视串口
+  // use monitoring with serial 
   Serial.begin(115200);
-  // 如果不需要，可以注释掉此行
+  // comment out if not needed
   motor.useMonitoring(Serial);
   
-  // 初始化电机
+  // initialize motor
   motor.init();
-  // 校准编码器，启用FOC
+  // align encoder and start FOC
   motor.initFOC();
 
 
@@ -100,16 +107,102 @@ void setup() {
   _delay(1000);
 }
 
-// 角度设置点变量
+// angle set point variable
 float target_velocity = 2;
 
 void loop() {
-  // FOC算法主函数
+  // main FOC algorithm function
   motor.loopFOC();
 
-  // 运动控制函数
+  // Motion control function
   motor.move(target_velocity);
 
 }
 
 ```
+
+</div>
+
+<div class="type type-s hide" markdown="1">
+
+```cpp
+#include <SimpleFOC.h>
+
+// motor instance
+StepperMotor motor = StepperMotor(50);
+// driver instance
+StepperDriver2PWM driver = StepperDriver2PWM(9, 10, 11, 8);
+
+// encoder instance
+Encoder encoder = Encoder(2, 3, 500, A0);
+// channel A and B callbacks
+void doA(){encoder.handleA();}
+void doB(){encoder.handleB();}
+void doIndex(){encoder.handleIndex();}
+
+
+void setup() {
+  
+  // initialize encoder sensor hardware
+  encoder.init();
+  encoder.enableInterrupts(doA, doB,doIndex); 
+
+  // link the motor to the sensor
+  motor.linkSensor(&encoder);
+
+  // driver config
+  driver.init();
+  motor.linkDriver(&driver);
+
+  // index search velocity [rad/s]
+  motor.velocity_index_search = 3; // rad/s
+  motor.voltage_sensor_align = 4; // Volts
+
+  // set motion control loop to be used
+  motor.controller = MotionControlType::velocity;
+
+  // controller configuration 
+  // default parameters in defaults.h
+
+  // velocity PI controller parameters
+  motor.PID_velocity.P = 0.2;
+  motor.PID_velocity.I = 20;
+  // default voltage_power_supply
+  motor.voltage_limit = 6;
+  // jerk control using voltage voltage ramp
+  // default value is 300 volts per sec  ~ 0.3V per millisecond
+  motor.PID_velocity.output_ramp = 1000;
+ 
+  // velocity low pass filtering time constant
+  motor.LPF_velocity.Tf = 0.01;
+
+
+  // use monitoring with serial 
+  Serial.begin(115200);
+  // comment out if not needed
+  motor.useMonitoring(Serial);
+  
+  // initialize motor
+  motor.init();
+  // align encoder and start FOC
+  motor.initFOC();
+
+
+  Serial.println("Motor ready.");
+  _delay(1000);
+}
+
+// angle set point variable
+float target_velocity = 2;
+
+void loop() {
+  // main FOC algorithm function
+  motor.loopFOC();
+
+  // Motion control function
+  motor.move(target_velocity);
+
+}
+
+```
+</div>

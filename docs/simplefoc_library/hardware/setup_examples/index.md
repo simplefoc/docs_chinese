@@ -10,7 +10,7 @@ has_toc: false
 grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
-#  <span class="simple">Simple<span class="foc">FOC</span>library</span> 设置示例
+#   <span class="simple">简易<span class="foc">FOC</span>库</span> 设置示例
 <div class="image_icon">
     <a href="arduino_simplefoc_shield">
         <img src="extras/Images/foc_shield_v13.jpg">

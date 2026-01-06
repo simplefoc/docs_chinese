@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 树莓派 Pico
+title: Raspberry Pi Pico
 nav_order: 7
 description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /rpi_mcu
@@ -9,31 +9,26 @@ grand_parent: 支持的硬件
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
 ---
 
+# Raspberry Pi Pico（rp2040）开发板支持
 
+| 微控制器 | 2 PWM 模式 | 4 PWM 模式 | 3 PWM 模式 | 6 PWM 模式 | PWM 频率配置 |
+| --- | --- | --- | --- | --- | --- |
+| （RP2040）RPI Pico | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 
-# 支持 Rapspberry Pi Pico (rp2040) 板
+由于 [@runger1101001](https://github.com/runger1101001) 的大量努力，Arduino <span class="simple">简易<span class="foc">FOC</span>库</span>最近开始支持 Raspberry Pi Pico 开发板。目前支持仍处于初期阶段，但大多数与 PWM 相关的功能已经实现。
 
-MCU | 2路PWM模式 | 4路PWM模式 | 3路PWM模式 | 6路PWM模式 | pwm频率配置 
---- | --- |--- |--- |--- |--- 
-(RP2040) RPI Pico | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ 
+| 开发板 | 名称 | 规格 | 链接 | 价格 |
+| ---- | --- | --- | --- | --- |
+| [<img src="extras/Images/pico.jpg" class="imgtable150">](https://www.adafruit.com/product/4883) | Raspberry Pi Pico RP2040 | 双核 ARM Cortex-M0+<br>- 3.3V 逻辑电平<br>- 16 路 PWM<br>- DMA 控制器<br>- 4 个 ADC 引脚<br>- 133MHz | [Adafruit 商店](https://www.adafruit.com/product/4883) | 5€ |
 
-由于[@runger1101001](https://github.com/runger1101001)投入了大量的努力，Arduino <span>Simple<span>FOC</span></span>library现已开始支持Raspberry pi Pico板。虽然这种支持仍处于初始阶段，但大多数PWM相关功能已经实现。
-
- 板子示意图 | 名称 | 规格 | 链接 | 价格 
----- | --- | --- | --- | --- 
-[<img src="extras/Images/pico.jpg" class="imgtable150">](https://www.adafruit.com/product/4883) | Raspberry Pi Pico RP2040 | Dual ARM Cortex-M0+  <br>- 3.3V logic<br> - 16 PWMs<br> - DMA controller <br>- 4 adc pins<br>- 133MHz |[Adafruit Store](https://www.adafruit.com/product/4883) | 5€ 
-
-<blockquote class="warning"> <p class="heading">注意：当前实现的局限性⚠️</p>
-Raspberry Pi Pico只得到了早期阶段的支持。PWM功能工作得很好，并已经过测试，大多数传感器都工作得很好
+<blockquote class="warning"> <p class="heading">注意：当前实现的局限性 ⚠️</p>
+Raspberry Pi Pico 的 ADC 功能不足以支持低侧电流检测，但支持串联电流检测。电流检测功能是最近开发的，尚未经过充分测试。
 </blockquote>
 
+## Arduino IDE 支持包
+为了在 Arduino IDE 中使用 Pico 开发板，请通过 Arduino IDE 开发板管理器安装 Arduino MBED OS RP2040 开发板支持包。
 
-# Arduino IDE支持包
+如果使用 Windows 系统，您可能需要对 USB 驱动程序进行一些操作，但解决方法相当快速和直接。这里是[相关链接](https://arduino-pico.readthedocs.io/en/latest/install.html#uploading-sketches)，里面有一些操作说明。
 
-为了在 Arduino IDE 中使用 Pico 板，请使用 Arduino IDE 板子管理器安装 Arduino MBED OS RP2040 板支持包。
-
-如果使用 windows，你可能必须设置下USB驱动程序，但过程是相当快速和简单的。更多如何做到这一点的信息在此[链接](https://arduino-pico.readthedocs.io/en/latest/install.html#uploading-sketches)。
-
-下面是一个简短的视频，告诉你该怎么做：
-
+以下是一个快速演示视频：
 <iframe class="youtube" src="https://www.youtube.com/embed/5YOEauk9bLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

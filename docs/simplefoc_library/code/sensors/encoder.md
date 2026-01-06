@@ -5,9 +5,11 @@ description: "Arduino Simple Field Oriented Control (FOC) library ."
 permalink: /encoder
 nav_order: 1
 parent: 位置传感器
-grand_parent: 代码
+grand_parent: 编写代码
 grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>
+toc: true
 ---
+
 
 
 # 编码器设置
@@ -15,78 +17,73 @@ grand_grand_parent: Arduino <span class="simple">Simple<span class="foc">FOC</sp
 <img src="extras/Images/enc0.jpg" style="width:32%;display:inline"><img src="extras/Images/enc.jpg" style="width:32%;display:inline"><img src="extras/Images/enc1.png" style="width:32%;display:inline">
 </div>
 
-## 步骤1.实例化 `Encoder` 类
-要初始化编码器，你需要提供编码器 `A` 和 `B`通道引脚，编码器的 `PPR` 和 可选的`index` 引脚。
+## 步骤1. 实例化`Encoder`类
+要初始化编码器，你需要提供编码器的`A`和`B`通道引脚、编码器的`PPR`以及可选的`index`引脚。
 ```cpp
-/63/  Encoder(int encA, int encB , int cpr, int index)
-//  - encA, encB    - 编码器 A 和 B 引脚
-//  - ppr           - 每转脉冲数 (cpr=ppr*4)
-//  - index pin     -（可选输入）
+//  Encoder(int encA, int encB , int cpr, int index)
+//  - encA, encB    - encoder A and B pins
+//  - ppr           - impulses per rotation  (cpr=ppr*4)
+//  - index pin     - (optional input)
 Encoder encoder = Encoder(2, 3, 8192, A0);
 ```
-## 步骤2.配置
-Encoder实例化后需要对齐进行配置。我们可以配置的第一个特性是启用或禁用`Quadrature` 模式。如果编码器以正交模式运行，则通过检测信号 `A` 和 `B` - `CPR = 4xPPR`的每次 `CHANGE` ，其每次旋转的脉冲数(`PPR`)增加四倍。因为编码器`PPR`过高时Arduino可能无法处理，最好不要使用`Quadrature` 模式。默认情况下，所有编码器都使用`Quadrature` mode。如果你想启用或禁用这个参数，请在`init()` 调用之前在Arduino  `setup()` 函数中执行:
-
+## 步骤2. 配置
+当实例化Encoder类后，我们需要对其进行配置。首先可以配置的功能是启用或禁用`Quadrature`（正交）模式。如果编码器运行在正交模式下，其每转脉冲数（`PPR`）会通过检测`A`和`B`信号的每个`CHANGE`（变化）而 quadruple（变为四倍），即`CPR = 4xPPR`。在某些应用中，当编码器的`PPR`较高时，可能会给Arduino带来过大负担，因此最好不使用正交模式。默认情况下，所有编码器都使用正交模式。如果要启用或禁用此参数，请在Arduino的`setup()`函数中`init()`调用之前进行操作：
 ```cpp
-//  正交模式启用和禁用
-//  Quadrature::ON - CPR = 4xPPR  - 默认开启
+// Quadrature mode enabling and disabling
+//  Quadrature::ON - CPR = 4xPPR  - default
 //  Quadrature::OFF - CPR = PPR
 encoder.quadrature = Quadrature::OFF;
 ```
-<blockquote class="warning"><p class="heading">CPR, PPR?!</p> PPR(每转脉冲数)——这是编码器每转脉冲数的物理量。
-CPR(每转计数)-这是编码器完全旋转后计数器中的数字。
-现在，取决于你使用Quadrature模式(计算脉冲边沿)或不使用(仅计算上升沿)，对相同的PPR会有有不同的CPR。
-对于Quadrature模式，有CPR= 4xPPR，如果不使用Quadrature模式，有CPR=PPR</blockquote>
+<blockquote class="warning"><p class="heading">CPR、PPR？！</p> PPR（每转脉冲数）——这是编码器每转的物理脉冲数。CPR（每转计数）——这是编码器完整旋转一圈后计数器中的数值。现在，根据是否使用正交模式（计数脉冲的每个边沿），对于相同的PPR，会得到不同的CPR。在正交模式下，CPR = 4xPPR；如果不使用正交模式，CPR = PPR。</blockquote>
 
-此外，编码器还有一个更重要的参数，上拉。很多编码器都需要上拉，如果你有一个需要上拉电阻的编码器，但你手上没有上拉电阻，则可以使用Arduino pullups的`encoder.pullup` 值来设置。默认值设置为`Pullup::USE_EXTERN` 但如果你想改用MCU的内部上拉，可以:
-
+此外，编码器还有一个重要参数是上拉位置。许多编码器需要上拉电阻，如果你有一个需要上拉电阻但手头没有的编码器，可以使用Arduino的内部上拉电阻。这可以通过更改`encoder.pullup`变量的值来设置。默认值为`Pullup::USE_EXTERN`（使用外部上拉），如果你想将其改为使用MCU（微控制器）的内部上拉，请执行：
 ```cpp
-// 检查是否需要内部上拉
-// Pullup::USE_EXTERN - 增加外部上拉  - 默认
-// Pullup::USE_INTERN - 需要 arduino 内部上拉
+// check if you need internal pullups
+// Pullup::USE_EXTERN - external pullup added  - default
+// Pullup::USE_INTERN - needs internal arduino pullup
 encoder.pullup = Pullup::USE_INTERN;
 ```
-<blockquote class="warning"><p class="heading">Arduino Pullup 20kΩ</p> 使用内部上拉时要小心，Arduino有比较高的20kΩ左右的上拉电阻，这意味着可能较高转速下(较短的脉冲持续时间)会出现一些问题。推荐的上拉值在1kΩ到5kΩ之间。.</blockquote>
-## 步骤3.编码器中断设置
-有两种使用Simple FOC库运行编码器的方法。
-- 使用 [hardware external interrupt](#hardware-external-interrupt) 
-   - Arduino UNO(Atmega328) 引脚 `2` 和 `3`
-   
-   - ##### STM32 任何引脚
-   
-   - ESP32 任何引脚
-   
--  使用[software pin change interrupt](#software-pin-change-interrupt)，如 [PciManager library](https://github.com/prampec/arduino-pcimanager)
-   
-   - 仅适用于Arduino设备(Atmga328和Atmage2560)
+<blockquote class="warning"><p class="heading">Arduino 上拉电阻 20kΩ</p> 使用内部上拉电阻时要小心，Arduino的上拉电阻值相对较高，约为20kΩ，这意味着在较高速度下（脉冲持续时间较短时）可能会出现一些问题。推荐的上拉电阻值在1kΩ到5kΩ之间。</blockquote>
 
-<blockquote class="warning"><p class="heading">软件中断</p> 使用硬件外部中断通常会得到更好和更可靠的性能，但是软件中断在较低的速度下也运行得很好，特别是在没有足够的硬件中断引脚的板上。有了这个功能基本上可以在这些板上实现FOC。</blockquote>
+## 步骤3. 编码器中断设置
+使用Simple FOC库运行编码器有两种方式：
+- 使用[硬件外部中断](#硬件外部中断)
+  - Arduino UNO（ATmega328）引脚`2`和`3`
+  - STM32开发板的任何引脚
+  - ESP32的任何引脚
+- 使用[软件引脚变化中断](#软件引脚变化中断)，可借助如[PciManager库](https://github.com/prampec/arduino-pcimanager)之类的库
+  - 仅适用于Arduino设备（ATmega328和ATmega2560）
+
+<blockquote class="warning"><p class="heading">软件中断</p> 使用硬件外部中断通常会带来更好、更可靠的性能，但软件中断在较低速度下也能很好地工作。特别是在那些没有足够硬件中断引脚的开发板上，此功能基本上可以使FOC在这些开发板上运行。</blockquote>
+
 ### 硬件外部中断
-Arduino UNO有两个硬件外部中断引脚，pin `2` 和 `3`，Arduino Mega有6个中断引脚，  `2`, `3`, `18`, `19`, `20`和 `2` ，而STM32如Nucleo和Bluepill可以以任意引脚为中断引脚，使实现更加容易。对于Arduino Uno，编码器通道 `A` 和 `B` 必须连接到pins `2` 和 `3`，以便使用硬件中断。
+Arduino UNO有两个硬件外部中断引脚，引脚`2`和`3`；Arduino Mega有6个中断引脚，引脚`2`、`3`、`18`、`19`、`20`和`21`；而STM32开发板（如Nucleo和Bluepill）可以将其所有数字引脚用作中断引脚，这使得实现更加容易。
 
-SimpleFOC的 `Encoder` 类已经实现了初始化和编码器 `A` 和 `B`通道回调。你所需要做的就是定义两个函数 `doA()` 和 `doB()`，编码器回调函数中的的buffer函数
+对于Arduino Uno，要使用硬件中断，编码器通道`A`和`B`必须准确连接到引脚`2`和`3`。
 
-`encoder.handleA()` 和 `encoder.handleB()`. 
 
+Simple FOC的`Encoder`类已经实现了初始化和编码器`A`、`B`通道的回调函数。
+
+你只需要定义两个函数`doA()`和`doB()`，它们是编码器回调函数`encoder.handleA()`和`encoder.handleB()`的缓冲函数。
 ```cpp
-// 中断例程初始化
+// interrupt routine initialization
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 ```
-并将这些函数提供给编码器中断初始化函数 `encoder.enableInterrupts()`
+然后将这些函数提供给编码器中断初始化函数`encoder.enableInterrupts()`。
 
 ```cpp
-// 启用编码器硬件中断
+// enable encoder hardware interrupts
 encoder.enableInterrupts(doA, doB)
 ```
-你可以自行命名buffer函数。将它们提供给 `encoder.enableInterrupts()` 是很重要的。这个过程是可伸缩性和简单性之间的权衡。这可以实现一个MCU连接多个编码器。你所需要做的就是实例化新的 `Encoder` class并创建新的buffer函数。例如:
+你可以随意命名缓冲函数，重要的是将它们提供给`encoder.enableInterrupts()`函数。这种做法是在可扩展性和简单性之间的权衡。这使你可以在同一个MCU上连接多个编码器。你只需要实例化新的`Encoder`类并创建新的缓冲函数。
 
 ```cpp
-// 编码器 1
+// encoder 1
 Encoder enc1 =  Encoder(...);
 void doA1(){enc1.handleA();}
 void doB1(){enc1.handleB();}
-// 编码器 2
+// encoder 2
 Encoder enc2 =  Encoder(...);
 void doA2(){enc2.handleA();}
 void doB2(){enc2.handleB();}
@@ -101,17 +98,16 @@ void setup(){
 }
 ```
 
-#### index引脚的配置
-为了有效地读取index引脚 ，SimpleFOC library 可以使用与通道 `A` 和 `B`相同的方法。首先，你需要提供 `Encoder`类的index引脚编号:
-
+#### 索引引脚配置
+为了有效地读取索引引脚，Simple FOC库允许你使用与`A`和`B`通道相同的方法。首先，你需要向`Encoder`类提供索引引脚号：
 ```cpp
 Encoder encoder = Encoder(pinA, pinB, cpr, index_pin);
 ```
-如果你用的Arduino board，比如Arduino Mega，有超过2个硬件中断，你可以将你的index引脚链接到硬件中断引脚(例如Arduino Mega 引脚`21`)。代码示例如下:
+如果你使用的是Arduino Mega等类似的Arduino开发板，并且有两个以上的硬件中断引脚，你可以将索引引脚连接到硬件中断引脚（例如Arduino Mega的引脚`21`）。你的代码将如下所示：
 
 ```cpp
 Encoder encoder =  Encoder(2,3,600,21);
-// A和B引脚中断例程 
+// A and B interrupt routine 
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doIndex(){encoder.handleIndex();}
@@ -122,80 +118,78 @@ void setup(){
   ...
   }
 ```
-函数 `enableInterrupts` 可以处理所有初始化。
+函数`enableInterrupts`将为你处理所有的初始化工作。
 
-如果你用的是Arduino UNO来运行这个算法，但没有足够的硬件中断引脚，就需要使用软件中断库，如[PciManager library](https://github.com/prampec/arduino-pcimanager)。使用带有index的编码器的Arduino UNO代码如下:
-
+如果你使用Arduino UNO运行此算法，且没有足够的硬件中断引脚，则需要使用软件中断库，如[PciManager库](https://github.com/prampec/arduino-pcimanager)。使用带索引的编码器的Arduino UNO代码可以是：
 ```cpp
 Encoder encoder =  Encoder(2,3,600,A0);
-// A和B引脚中断例程 
+// A and B interrupt routine 
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doIndex(){encoder.handleIndex();}
 
-// I引脚使用软件中断监听器
+// software interrupt listener for index pin
 PciListenerImp listenerIndex(encoder.index_pin, doIndex);
 
 void setup(){
   ...
-  // A和B引脚使用硬件中断
+  // hardware interrupts for A and B
   encoder.enableInterrupts(doA,doB);
-  // I引脚使用软件中断
+  // software interrupt for index
   PciManager.registerListener(&listenerIndex);
   ...
   }
 ```
-如果你跑的程序占用了所有的硬件中断引脚，同样可以用上面的程序来配置引脚`A`和`B`。软件中断的效果不亚于硬件中断，，尤其是在你没有其他选择的情况下。每转一圈，`index` 引脚产生一个中断，它不是必要的，所以性能上软件或硬件中断不会改变太多。
+对于`A`和`B`引脚，如果你的应用导致硬件中断引脚不足，也可以采用相同的程序。软件中断非常强大，其产生的结果与硬件中断相当，特别是在你别无选择的情况下。`index`（索引）引脚每转产生一个脉冲，因此它不是很关键，所以使用软件还是硬件中断在性能方面不会有太大变化。
 
-为了更好地探索编码器功能与硬件和软件中断方法的差异，请检查编码器示例 `encoder_example.ino` 和 `encoder_software_interrupts_example.ino`.
 
-### 软件中断引脚
-如果你无法使用Arduino UNO的pin `2` 和 `3` ，或者想使用多个编码器，你就必须使用软件中断方法。
+要更好地了解使用硬件和软件中断方法的编码器函数之间的差异，请查看示例`encoder_example.ino`和`encoder_software_interrupts_example.ino`。
 
-我建议使用[PciManager library](https://github.com/prampec/arduino-pcimanager).
+### 软件引脚变化中断
+如果你无法访问Arduino UNO的引脚`2`和`3`，或者想使用多个编码器，则必须使用软件中断方法。
+建议使用[PciManager库](https://github.com/prampec/arduino-pcimanager)。
 
-在代码中使用这个库的步骤与 [hardware interrupt](#arduino-hardware-external-interrupt)非常相似。SimpleFOC  `Encoder` 类提供所有 `A`, `B` 和 `Index` 通道的回调，但Simple FOC library 不会初始化中断。
+在代码中使用该库的步骤与[硬件中断](#arduino-hardware-external-interrupt)非常相似。
+SimpleFOC的`Encoder`类仍然为你提供所有的`A`、`B`和`Index`（索引）通道的回调函数，但Simple FOC库不会为你初始化中断。
 
-为了使用 `PCIManager`，你需要将它include进你的代码中:
 
+为了使用`PCIManager`库，你需要在代码中包含它：
 ```cpp
 #include <PciManager.h>
 #include <PciListenerImp.h>
 ```
-下一步和前面一样，初始化新 `Encoder` 的实例。
-
+下一步与之前相同，你只需初始化新的`Encoder`实例。
 ```cpp
 Encoder encoder = Encoder(10, 11, 8192);
-// A 和 B 中断调回 buffers
+// A and B interrupt callback buffers
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 ```
-然后声明监听器 `PciListenerImp `:
+接下来，你声明监听器`PciListenerImp`：
 ```cpp
-// 初始化编码器中断
+// encoder interrupt init
 PciListenerImp listenerA(encoder.pinA, doA);
 PciListenerImp listenerB(encoder.pinB, doB);
 ```
-最后，在运行 `encoder.init()` 之后，跳过 `encoder.enableInterrupts()` 并调用`PCIManager` library来注册所有编码器通道的中断。
-
+最后，在运行`encoder.init()`之后，跳过`encoder.enableInterrupts()`的调用，调用`PCIManager`库为所有编码器通道注册中断。
 ```cpp
-// 初始化编码器硬件
+// initialize encoder hardware
 encoder.init();
-// 初始化中断
+// interrupt initialization
 PciManager.registerListener(&listenerA);
 PciManager.registerListener(&listenerB);
 ```
-就是这样，非常简单。如果你想要多个编码器，你只需初始化新的 `Encoder`实例，创建新的`A` 和 `B` 回调，初始化新的监听器。下面是一个简单的例子:
+就是这样，非常简单。如果你想要多个编码器，只需初始化新的类实例，创建新的`A`和`B`回调函数，初始化新的监听器。
 
 ```cpp
-// 编码器 1
+// encoder 1
 Encoder enc1 =  Encoder(9, 10, 8192);
 void doA1(){enc1.handleA();}
 void doB1(){enc1.handleB();}
 PciListenerImp listA1(enc1.pinA, doA1);
 PciListenerImp listB1(enc1.pinB, doB1);
 
-// 编码器 2
+// encoder 2
 Encoder enc2 =  Encoder(13, 12, 8192);
 void doA2(){enc2.handleA();}
 void doB2(){enc2.handleB();}
@@ -204,43 +198,40 @@ PciListenerImp listB2(enc2.pinB, doB2);
 
 void setup(){
 ...
-  // 编码器 1
+  // encoder 1
   enc1.init();
   PciManager.registerListener(&listA1);
   PciManager.registerListener(&listB1);
-  // 编码器 2
+  // encoder 2
   enc2.init();
   PciManager.registerListener(&listA2);
   PciManager.registerListener(&listB2);
 ...
 }
 ```
-你可以查看 `HMBGC_example.ino` 示例，以查看该代码的实际操作。
-
-#### index引脚的配置
-在软件中断的情况下使用index pin是非常简单的。你只需要将它作为附加参数提供给 `Encoder` 的初始化。
-
+你可以查看 HMBGC_example.ino 示例，了解这段代码的实际应用。
+#### 索引引脚配置
+在软件中断的情况下启用索引引脚非常简单。你只需要在`Encoder`类初始化时将其作为附加参数提供。
 ```cpp
 Encoder encoder = Encoder(pinA, pinB, cpr, index_pin);
 ```
-然后，创建与 `A` 和 `B` 通道相同类型的回调buffer函数，并使用`PCIManager` 初始化和注册 `index`通道的监听器。下面是一个示例:
-
+之后，你为`index`通道创建与`A`和`B`通道相同类型的回调缓冲函数，并使用`PCIManager`工具像初始化和注册`A`和`B`的监听器一样初始化和注册`index`通道的监听器。
 ```cpp
-// 初始化类
+// class init
 Encoder encoder =  Encoder(9, 10, 8192,11);
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 void doIndex(){encoder.handleIndex();}
-// 初始化监听器
+// listeners init
 PciListenerImp listenerA(encoder.pinA, doA);
 PciListenerImp listenerB(encoder.pinB, doB);
 PciListenerImp listenerIndex(encoder.index_pin, doIndex);
 
 void setup(){
 ...
-  // 启动硬件
-  enc1.init();
-  // 启用中断
+  // enable the hardware
+  encoder.init();
+  // enable interrupt
   PciManager.registerListener(&listenerA);
   PciManager.registerListener(&listenerB);
   PciManager.registerListener(&listenerIndex);
@@ -248,56 +239,87 @@ void setup(){
 }
 ```
 
-## 步骤4.实时使用编码器
+## 步骤4. 实时使用编码器
 
-在这个库中有两种使用编码器的方法:
+此库中实现的编码器有两种使用方式：
+- 作为FOC算法的电机位置传感器
+- 作为独立的位置传感器
 
-- 作为电机位置传感器用于FOC算法
-- 作为独立位置传感器
+### FOC算法的位置传感器
 
-### 用于FOC算法的位置传感器
-
-要利用这个库通过编码器实现FOC算法，一旦你初始化了 `encoder.init()` 它和启用了中断 `encoder.enableInterrupts(...)` 你只需要通过执行以下命令将它链接到BLDC电机:
+要将编码器传感器与本库中实现的foc算法一起使用，一旦你初始化了`encoder.init()`并启用了中断`encoder.enableInterrupts(...)`，你只需通过执行以下操作将其链接到BLDC电机：
 
 ```cpp
 motor.linkSensor(&encoder);
 ```
 
-### 独立的传感器
+然后，你将能够使用电机实例访问电机的角度和速度：
+```cpp
+motor.shaft_angle; // motor angle
+motor.shaft_velocity; // motor velocity
+```
 
-要获得编码器的角度和速度，你可以使用public方法:
+或者通过传感器实例：
+```cpp
+encoder.getAngle(); // motor angle
+encoder.getVelocity(); // motor velocity
+```
+
+
+### 独立传感器
+
+要在任何给定时间获取编码器的角度和速度，你可以使用公共方法：
 ```cpp
 class Encoder{
  public:
-    // 获取轴速度
+    // shaft velocity getter
     float getVelocity();
-	  // 获取轴角度
+	  // shaft angle getter
     float getAngle();
 }
 ```
 
-下面是一个简单的例子:
+<blockquote markdown="1" class="info">
+<p class="heading" markdown="1">多次调用`getVelocity`</p>
+调用`getVelocity`时，只有当前一次调用以来的经过时间长于变量`min_elapsed_time`（默认100us）中指定的时间时，它才会计算速度。如果自上次调用以来的经过时间短于`min_elapsed_time`，则该函数将返回先前计算的值。如有必要，可以轻松更改变量`min_elapsed_time`：
+
+```cpp
+encoder.min_elapsed_time = 0.0001; // 100us by default
+```
+</blockquote>
+
+#### 示例代码
+
+
+<a href="javascript:show('hint','type');" class="btn btn-type btn-hint btn-primary">硬件中断</a> 
+<a href ="javascript:show('sint','type');"  class="btn btn-type btn-sint"> 软件中断</a>
+
+
+<div class="type type-hint"  markdown="1">
+
+以下是使用**硬件中断**的快速示例：
+
 ```cpp
 #include <SimpleFOC.h>
 
 Encoder encoder = Encoder(2, 3, 8192);
-// 初始化中断例程
+// interrupt routine initialization
 void doA(){encoder.handleA();}
 void doB(){encoder.handleB();}
 
 void setup() {
-  // 监视点
+  // monitoring port
   Serial.begin(115200);
 
-  // 启用/禁用正交模式
+  // enable/disable quadrature mode
   encoder.quadrature = Quadrature::ON;
 
-  // 检查是否需要内部上拉
+  // check if you need internal pullups
   encoder.pullup = Pullup::USE_EXTERN;
   
-  // 初始化磁传感器硬件
+  // initialize encoder hardware
   encoder.init();
-  // 启用硬件中断
+  // hardware interrupt enable
   encoder.enableInterrupts(doA, doB);
 
   Serial.println("Encoder ready");
@@ -305,12 +327,65 @@ void setup() {
 }
 
 void loop() {
-  // 在终端显示角度和角速度
+  // IMPORTANT - call as frequently as possible
+  // update the sensor values 
+  encoder.update();
+  // display the angle and the angular velocity to the terminal
   Serial.print(encoder.getAngle());
   Serial.print("\t");
   Serial.println(encoder.getVelocity());
 }
 ```
 
+</div>
 
 
+<div class="type type-sint hide"  markdown="1">
+
+
+以下是使用**软件中断**的快速示例：
+```cpp
+#include <SimpleFOC.h>
+#include <PciManager.h>
+#include <PciListenerImp.h>
+
+Encoder encoder = Encoder(2, 3, 8192);
+// interrupt routine initialization
+void doA(){encoder.handleA();}
+void doB(){encoder.handleB();}
+
+// sensor interrupt init
+PciListenerImp listenA(encoder.pinA, doA);
+PciListenerImp listenB(encoder.pinB, doB);
+
+void setup() {
+  // monitoring port
+  Serial.begin(115200);
+
+  // enable/disable quadrature mode
+  encoder.quadrature = Quadrature::ON;
+
+  // check if you need internal pullups
+  encoder.pullup = Pullup::USE_EXTERN;
+  
+  // initialize encoder hardware
+  encoder.init();
+  // interrupt initialization
+  PciManager.registerListener(&listenA);
+  PciManager.registerListener(&listenB);
+
+  Serial.println("Encoder ready");
+  _delay(1000);
+}
+
+void loop() {
+  // IMPORTANT - call as frequently as possible
+  // update the sensor values 
+  encoder.update();
+  // display the angle and the angular velocity to the terminal
+  Serial.print(encoder.getAngle());
+  Serial.print("\t");
+  Serial.println(encoder.getVelocity());
+}
+```
+</div>
