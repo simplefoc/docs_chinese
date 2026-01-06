@@ -25,7 +25,7 @@ permalink: /
 
 如果在国内的朋友访问速度慢，可以访问中国国内中文文档镜像站： http://simplefoc.cn/ <br>
 基于以上痛点，本项目尝试：
-- 🎯 揭开 FOC 算法的神秘面纱，制作一个强大而简单的 Arduino 库： [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>](https://docs.simplefoc.com/arduino_simplefoc_library_showcase)（连接需要更换我们的）
+- 🎯 揭开 FOC 算法的神秘面纱，制作一个强大而简单的 Arduino 库： [Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span>](https://docs.simplefoc.com/arduino_simplefoc_library_showcase)
   - <i>支持尽可能多的电机 + 传感器 + 驱动器 + MCU 组合</i>
 - 🎯 开发模块化和易于使用的FOC，支持BLDC的驱动板
    - 官方驱动板，看[<span class="simple">Simple<span class="foc">FOC</span>Boards</span>](https://docs.simplefoc.com/boards)
@@ -53,7 +53,7 @@ permalink: /
  - 请参阅v2.3.5的错误修复和新特性的完整列表 [修复与新特性](https://github.com/simplefoc/Arduino-FOC/milestone/12) 
 </blockquote>
 
-# Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <small>- [了解更多 ...](arduino_simplefoc_library_showcase)（链接需要修改）</small>
+# Arduino <span class="simple">Simple<span class="foc">FOC</span>library</span> <small>- [了解更多 ...](arduino_simplefoc_library_showcase)</small>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?color=blue)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/simplefoc/arduino-foc)
